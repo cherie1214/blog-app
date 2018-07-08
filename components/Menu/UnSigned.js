@@ -11,7 +11,7 @@ export default class UnSignedMenu extends Component {
       <Wrap>
         {/*StatusBar hidden={true} />*/}
         <CloseBox>
-          <BtnClose>
+          <BtnClose onPressOut={() => this.props.props.navigation.closeDrawer()}>
             <Ionicons name="ios-close" color="#333" size={50} style={{marginRight:15}}/>
           </BtnClose>
         </CloseBox>
@@ -20,7 +20,7 @@ export default class UnSignedMenu extends Component {
           <BorderBox></BorderBox>
         </LogoBox>
         <BtnBox>
-          <Button>
+          <Button onPressOut={() => this.props.props.navigation.navigate('SignIn')}>
             <BtnText>Begin My Travel</BtnText>
           </Button>
         </BtnBox>

@@ -5,18 +5,16 @@ import { DrawerActions } from 'react-navigation';
 
 const { height, width } = Dimensions.get("window");
 
-import Login from '../components/Login';
 import Home from '../components/Home/Home';
 import Menu from '../components/Menu'
+import SignIn from '../components/Sign/SignIn';
+import SignUp from '../components/Sign/SignUp';
 
 
 const DrawerNavi = createDrawerNavigator(
   {
     Home: {
       screen: Home,
-    },
-    Login: {
-      screen: Login,
     },
   }, 
   {
@@ -33,7 +31,7 @@ const DrawerNavi = createDrawerNavigator(
       },
     },
     contentComponent: (props) => (
-      <Menu />
+      <Menu {...props} />
     )
   }
 );
@@ -43,12 +41,14 @@ export const SwitchNavi = createSwitchNavigator(
     Home : {
       screen : DrawerNavi,
     },
-    Login : {
-      screen : Login,
-    }
+    SignIn : {
+      screen : SignIn,
+    },
+     SignUp: {
+      screen: SignUp,
+    },
   },
   {
     initialRouteName : 'Home',
-    // headerMode : 'none',
   }
 )

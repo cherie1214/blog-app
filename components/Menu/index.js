@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Button } from 'react-native';
 import styled from 'styled-components';
 import SignedMenu from './Signed';
 import UnSignedMenu from './UnSigned';
 
 export default class Menu extends Component {
   state = {
-      isSigned: false,
+      isLoggedIn: false,
   }
     
   render() {
-    const { isSigned } = this.state;
+    const { isLoggedIn } = this.state;
     
     return (
       <Wrap>
-        {isSigned ? (<SignedMenu />) : (<UnSignedMenu />)}
+        {isLoggedIn ? (<SignedMenu />) : (<UnSignedMenu props={this.props} />)}
       </Wrap>
     );
   }

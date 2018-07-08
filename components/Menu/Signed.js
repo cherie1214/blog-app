@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import styled from 'styled-components';
-import { SimpleLineIcons, Ionicons } from '@expo/vector-icons';
+import { SimpleLineIcons, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default class SignedMenu extends Component {
   static navigationOptions = {
@@ -12,9 +12,11 @@ export default class SignedMenu extends Component {
     return (
       <Wrap>
         {/*StatusBar hidden={true} />*/}
-        {/*<BtnClose onPressOut={() => this.props.navigation.closeDrawer()}>
-          <Ionicons name="ios-close" color="#333" size={50} style={{marginLeft:15}} />
-        </BtnClose>*/}
+       <CloseBox>
+          <BtnClose onPressOut={() => this.props.props.navigation.closeDrawer()}>
+            <Ionicons name="ios-close" color="#333" size={50} style={{marginRight:15}}/>
+          </BtnClose>
+        </CloseBox>
         <ProfileBox>
           <ProfileImgBox source={require('../../assets/bonobono.jpg')}/>
           <UserNickname>bonobono</UserNickname>
@@ -28,14 +30,30 @@ export default class SignedMenu extends Component {
             <BtnText>글 관리</BtnText>
           </Button>
         </BtnBox>
+        <IconBox>
+          <IconBtn>
+            <IconNew yellow></IconNew>
+            <MaterialCommunityIcons name="bell-outline" color="#fff" size={30} />
+          </IconBtn>
+          <IconBtn>
+            <IconNew pink></IconNew>
+            <MaterialCommunityIcons name="heart-outline" color="#fff" size={30} style={{marginTop:5}}/>
+          </IconBtn>
+        </IconBox>
       </Wrap>
     );
   }
 }
 
+
 const Wrap = styled.View`
   flex: 1;
-  padding-top:30%;
+  padding-top:15%;
+`;
+
+const CloseBox = styled.View`
+  flex: 1.5;
+  align-items: flex-end;
 `;
 
 const BtnClose = styled.TouchableOpacity`
@@ -43,6 +61,7 @@ const BtnClose = styled.TouchableOpacity`
 `;
 
 const ProfileBox = styled.TouchableOpacity`
+  flex: 3;
   flex-direction: column,
   align-items:center;
 `;
@@ -56,8 +75,8 @@ const BorderBox = styled.View`
 `;
 
 const BtnBox = styled.View`
+  flex: 4;
   margin-top:20%;
-  justify-content: center;
   align-items: center;
 `;
 
@@ -69,6 +88,39 @@ const Button = styled.TouchableOpacity`
   align-items: center;
   border: 1px #ccc solid;
   border-radius: 22px;
+`;
+
+const IconBox = styled.View`
+  flex: 4;
+  flex-direction:row;
+  justify-content: center;
+`;
+
+const IconBtn = styled.TouchableOpacity`
+  margin: 0 8px;
+  width:60px;
+  height:60px;
+  border-radius:30px;
+  justify-content: center;
+  align-items: center;
+  background: #ccc;
+`;
+
+
+const IconNew = styled.View`
+  position: absolute;
+  top:0; 
+  right:0;
+  width:18px;
+  height:18px;
+  border-radius:9px;
+  background-color: ${props => {
+        if(props.yellow){
+            return `#FFCD19`
+        } else if(props.pink){
+          return `#EF3774`
+        }
+    }}
 `;
 
 const Logo = styled.Text`
