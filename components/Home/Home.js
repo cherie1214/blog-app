@@ -22,7 +22,7 @@ export default class Home extends Component {
         </HomeBody>
         <HomeFooter>
           <Button>
-            <SimpleLineIcons name="plus" color="#333" size={40} />
+            <SimpleLineIcons name="plus" color="#333" size={30} />
           </Button>
         </HomeFooter>
         
@@ -37,15 +37,15 @@ const Container = styled.View`
 `;
 
 const HomeHeader = styled.View`
-  flex: 2;
+  flex: 3;
+  padding-bottom:5%;
   align-items: flex-end
   flex-direction: row;
   justify-content: flex-end;
 `;
 
 const HomeBody = styled.View`
-    flex : 5;
-    margin-top: 50px;
+    flex : 6;
 `;
 
 const HomeFooter = styled.View`
