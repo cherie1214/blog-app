@@ -4,7 +4,7 @@ import { createStackNavigator, createDrawerNavigator, createSwitchNavigator } fr
 import { DrawerActions } from 'react-navigation';
 
 import Login from '../components/Login';
-import Home from '../components/Home';
+import Home from '../components/Home/Home';
 
 export const SwitchNavi = createSwitchNavigator(
   {
