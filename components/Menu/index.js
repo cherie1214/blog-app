@@ -6,7 +6,7 @@ import UnSignedMenu from './UnSigned';
 
 export default class Menu extends Component {
   state = {
-      isLoggedIn: false,
+      isLoggedIn: true,
   }
     
   render() {
@@ -14,7 +14,7 @@ export default class Menu extends Component {
     
     return (
       <Wrap>
-        {isLoggedIn ? (<SignedMenu />) : (<UnSignedMenu props={this.props} />)}
+        {isLoggedIn ? (<SignedMenu props={this.props} />) : (<UnSignedMenu props={this.props} />)}
       </Wrap>
     );
   }

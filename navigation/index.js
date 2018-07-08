@@ -9,6 +9,8 @@ import Home from '../components/Home/Home';
 import Menu from '../components/Menu'
 import SignIn from '../components/Sign/SignIn';
 import SignUp from '../components/Sign/SignUp';
+import Like from '../components/Feed/Like';
+import Notify from '../components/Feed/Notify';
 
 
 const DrawerNavi = createDrawerNavigator(
@@ -44,8 +46,14 @@ export const SwitchNavi = createSwitchNavigator(
     SignIn : {
       screen : SignIn,
     },
-     SignUp: {
+    SignUp: {
       screen: SignUp,
+    },
+    Like: {
+      screen: Like,
+    },
+    Notify: {
+      screen: Notify,
     },
   },
   {

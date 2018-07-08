@@ -4,9 +4,6 @@ import styled from 'styled-components';
 import { SimpleLineIcons, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default class SignedMenu extends Component {
-  static navigationOptions = {
-    drawerLabel: 'Home'
-  };
   
   render() {
     return (
@@ -31,11 +28,11 @@ export default class SignedMenu extends Component {
           </Button>
         </BtnBox>
         <IconBox>
-          <IconBtn>
+          <IconBtn onPressOut={() => this.props.props.navigation.navigate('Notify')}>
             <IconNew yellow></IconNew>
             <MaterialCommunityIcons name="bell-outline" color="#fff" size={30} />
           </IconBtn>
-          <IconBtn>
+          <IconBtn onPressOut={() => this.props.props.navigation.navigate('Like')}>
             <IconNew pink></IconNew>
             <MaterialCommunityIcons name="heart-outline" color="#fff" size={30} style={{marginTop:5}}/>
           </IconBtn>
@@ -62,7 +59,7 @@ const BtnClose = styled.TouchableOpacity`
 
 const ProfileBox = styled.TouchableOpacity`
   flex: 3;
-  flex-direction: column,
+  flex-direction: column;
   align-items:center;
 `;
 
