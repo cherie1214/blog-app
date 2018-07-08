@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Image, TextInput } from 'react-native';
+import { Text, View, StyleSheet, Image, TextInput, Dimensions } from 'react-native';
+
+const { height, width } = Dimensions.get("window");
 
 export default class Home extends Component {
   state = {

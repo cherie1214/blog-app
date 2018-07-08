@@ -1,6 +1,9 @@
 import {
   AUTH_LOGIN, 
   AUTH_LOGOUT,
+  AUTH_GETTING,
+  AUTH_GET_SUCCESS,
+  AUTH_GET_FAILURE,
 } from './ActionTypes'
 
 export function requestLogin(){
