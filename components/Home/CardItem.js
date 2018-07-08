@@ -76,7 +76,7 @@ const Wrap = styled.View`
 const Box = styled.View`
   flex-direction: column;
   justify-content: space-between;
-  padding:20px;
+  padding:15px;
   width: ${width * 0.65};
   background: #5ED9FF;
   border-radius: 10px;

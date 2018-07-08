@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet, Image, TextInput, Dimensions, TouchableOpacity } from 'react-native';
 import styled from 'styled-components';
-import { SimpleLineIcons } from '@expo/vector-icons';
+import { SimpleLineIcons, Ionicons } from '@expo/vector-icons';
 
 // components
 import Search from './Search';
@@ -10,10 +10,19 @@ import Card from './Card';
 const { height, width } = Dimensions.get("window");
 
 export default class Home extends Component {
+  
+  static navigationOptions = {
+    drawerLabel: 'Home'
+  };
 
   render() {
     return (
       <Container>
+        <HomeMenu>
+          <Button onPressOut={() => this.props.navigation.toggleLeftDrawer()}>
+            <Ionicons name="ios-menu" color="#333" size={40} style={{marginLeft:15}}/>
+          </Button>
+        </HomeMenu>
         <HomeHeader>
           <Search />
         </HomeHeader>
@@ -32,12 +41,19 @@ export default class Home extends Component {
 }
 
 const Container = styled.View`
-    flex : 1;
+    flex: 1;
     justify-content: flex-start;
 `;
 
+const HomeMenu = styled.View`
+  flex: 1.5;
+  align-items: flex-end
+  flex-direction: row;
+  justify-content: flex-start;
+`;
+
 const HomeHeader = styled.View`
-  flex: 3;
+  flex: 1.5;
   padding-bottom:5%;
   align-items: flex-end
   flex-direction: row;
@@ -55,5 +71,4 @@ const HomeFooter = styled.View`
 `;
 
 const Button = styled.TouchableOpacity`
-  
 `;
