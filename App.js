@@ -1,21 +1,25 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { Component } from 'react';
+import { Text, View, StyleSheet } from 'react-native';
+import { Constants } from 'expo';
 
-export default class App extends React.Component {
+// Redux
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import reducers from './reducers';
+import thunk from 'redux-thunk';
+
+// import Home from './components/Home';
+import Login from './components/Login';
+
+const store = createStore(reducers, applyMiddleware(thunk));
+
+export default class App extends Component {
   render() {
     return (
-      <View style={styles.container}>
-        <Text>Blog app!</Text>
-      </View>
+      <Provider store={store}>
+        <Login />
+      </Provider>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
