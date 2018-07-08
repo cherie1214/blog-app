@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons } from '@expo/vector-icons';
+
+import LikeItem from './LikeItem';
 
 const { height, width } = Dimensions.get("window");
 
@@ -21,23 +23,14 @@ export default class Like extends Component {
             </BtnIcon>
             <H1>좋아요</H1>
           </HeaderBox>
-          <Contents>
+          <ScrollView style={height - 50}>
             <ConBox>
-              <Tit>45days in Western Europe</Tit>
-              <Con>을 <Strong>Nickname2</Strong> 회원님 <Strong>외 7명</Strong>이 좋아합니다.</Con>
-              <TimeBox>
-                <New></New>
-                <Time>10분 전</Time>
-              </TimeBox>
+              <LikeItem />
+              <LikeItem />
+              <LikeItem />
+              <LikeItem />
             </ConBox>
-            <ConBox>
-              <Tit>45days in Western Europe</Tit>
-              <Con>을 <Strong>Nickname2</Strong> 회원님이 좋아합니다.</Con>
-              <TimeBox>
-                <Time>5시간 전</Time>
-              </TimeBox>
-            </ConBox>
-          </Contents>
+          </ScrollView>
         </Wrap>
       )
   }
@@ -45,13 +38,14 @@ export default class Like extends Component {
 
 const Wrap = styled.View`
   flex: 1;
-  padding-top: 5%;
+  margin-top:7%;
+  margin-bottom:-7%;
 `;
 
 const HeaderBox = styled.View`
   position: relative;
   padding: 0 15px;
-  flex: 1.2;
+  height:50px;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
@@ -72,51 +66,6 @@ const H1 = styled.Text`
   font-family: 'hd-regular';
 `;
 
-const Contents = styled.View`
-  flex: 8.8;
-`;
-
 const ConBox = styled.View`
-  padding: 7% 5%;
-  border-bottom-color:#ddd;
-  border-bottom-width: 1px;
-`;
-
-const TimeBox = styled.View`
-  margin-top:20px;
-  flex-direction:row;
-  justify-content: flex-end;
-`;
-
-const New = styled.View`
-  width:14px;
-  height:14px;
-  margin-right:5px;
-  border-radius: 7px;
-  background:#EF3774;
-`;
-
-const Tit = styled.Text`
-  font-family: 'hd-bold';
-  font-size:20px;
-  color: #333;
-`;
-
-const Con = styled.Text`
-  margin-top:4px;
-  font-family: 'hd-regular';
-  font-size:14px;
-  color:#666;
-`;
-
-const Strong = styled.Text`
-  font-family: 'hd-bold';
-  font-size:14px;
-  color:#666;
-`;
-
-const Time = styled.Text`
-  font-family: 'hd-regular';
-  font-size:14px;
-  color:#999;
+  flex: 8.8;
 `;

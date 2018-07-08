@@ -1,36 +1,38 @@
-import React, { Component } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView } from 'react-native';
-import styled from 'styled-components';
-import { Ionicons } from '@expo/vector-icons';
+import React, { Component } from 'react';
+import { Animated, View, Text, TouchableOpacity, Button, Dimensions, StatusBar, ScrollView, StyleSheet } from 'react-native';
+import styled, { css } from 'styled-components';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
-import NotifyItem from './NotifyItem'
+import WriteCon from './WriteCon';
 
 const { height, width } = Dimensions.get("window");
 
-export default class Notify extends Component {
+
+export default class Write extends Component {
   constructor(props){
     super(props);
     this.state = {
     }
   }
-  
+
   render(){
+    
+
     return(
         <Wrap>
+          <StatusBar hidden={true} />
           <HeaderBox>
             <BtnIcon onPressOut={() => this.props.navigation.navigate('Home')}>
               <Ionicons name="ios-arrow-round-back" color="#333" size={45}/>
             </BtnIcon>
-            <H1>알림</H1>
+            <H1>글 쓰기</H1>
+            <BtnSave title="저장" />
           </HeaderBox>
           <ScrollView style={height - 50}>
             <ConBox>
-              <NotifyItem />
-              <NotifyItem />
-              <NotifyItem />
-              <NotifyItem />
+              <WriteCon />
             </ConBox>
-          </ScrollView>  
+          </ScrollView>
         </Wrap>
       )
   }
@@ -53,6 +55,7 @@ const HeaderBox = styled.View`
   border-bottom-width: 1px;
 `;
 
+
 const BtnIcon = styled.TouchableOpacity`
 `;
 
@@ -66,7 +69,10 @@ const H1 = styled.Text`
   font-family: 'hd-regular';
 `;
 
+const BtnSave = styled.Button`
+`;
+
 const ConBox = styled.View`
-  flex: 8.8;
+  flex:10;
 `;
 

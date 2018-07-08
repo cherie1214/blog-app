@@ -14,16 +14,16 @@ export default class SignedMenu extends Component {
             <Ionicons name="ios-close" color="#333" size={50} style={{marginRight:15}}/>
           </BtnClose>
         </CloseBox>
-        <ProfileBox>
+        <ProfileBox onPressOut={() => this.props.props.navigation.navigate('Mypage')}>
           <ProfileImgBox source={require('../../assets/bonobono.jpg')}/>
           <UserNickname>bonobono</UserNickname>
         </ProfileBox>
         <BorderBox></BorderBox>
         <BtnBox>
-          <Button>
+          <Button onPressOut={() => this.props.props.navigation.navigate('Write')}>
             <BtnText>글 쓰기</BtnText>
           </Button>
-          <Button>
+          <Button onPressOut={() => this.props.props.navigation.navigate('Edit')}>
             <BtnText>글 관리</BtnText>
           </Button>
         </BtnBox>
@@ -113,7 +113,7 @@ const IconNew = styled.View`
   border-radius:9px;
   background-color: ${props => {
         if(props.yellow){
-            return `#FFCD19`
+          return `#FFCD19`
         } else if(props.pink){
           return `#EF3774`
         }

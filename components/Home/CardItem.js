@@ -23,15 +23,15 @@ export default class CardItem extends Component {
       }
     });
   }
-  
+
   render() {
     const { isLiked, likeCount } = this.state;
-    
+
     return (
       <Wrap>
         <Box>
           <FlexBox flex2>
-            <ViewLinkBox>
+            <ViewLinkBox onPressOut={() => this.props.props.props.navigation.navigate('View')}>
               <WeatherBox>
                 <MaterialCommunityIcons name="weather-sunny" color="#fff" size={22} style={{marginLeft:3, marginRight:3}}/>
                 <MaterialCommunityIcons name="weather-partlycloudy" color="#fff" size={22} style={{marginLeft:3, marginRight:3}} />
@@ -62,7 +62,7 @@ export default class CardItem extends Component {
             </WriterBox>
           </FlexBox>
         </Box>
-      </Wrap>  
+      </Wrap>
     );
   }
 }
@@ -84,9 +84,9 @@ const Box = styled.View`
 `;
 
 const FlexBox = styled.View`
-  flex: ${props => props.flex2 ? "2" : "1"}
+  flex: ${props => props.flex2 ? "2" : "1"};
   flex-direction: column;
-  justify-content: ${props => props.flexEnd ? "flex-end" : "flex-start"}
+  justify-content: ${props => props.flexEnd ? "flex-end" : "flex-start"};
 `;
 
 const ViewLinkBox = styled.TouchableOpacity`
@@ -101,7 +101,22 @@ const DateBox = styled.View`
   margin: 10% 0 5%;
 `;
 
+const DateText = styled.Text`
+  font-family: 'hd-regular';
+  color:#fff;
+  font-size:13px;
+  font-weight:500;
+`;
+
 const TitBox = styled.View`
+`;
+
+const TitText = styled.Text`
+  font-family: 'hd-bold';
+  color:#fff;
+  font-size:20px;
+  line-height:23px;
+  font-weight:600;
 `;
 
 const LikeBox = styled.View`
@@ -115,31 +130,17 @@ const BtnLike = styled.TouchableOpacity`
   flex-direction: row;
 `;
 
-const WriterBox = styled.TouchableOpacity`
-   flex-direction: row;
-   align-items: center;
-`;
-
-const DateText = styled.Text`
-  font-family: 'hd-regular';
-  color:#fff;
-  font-size:13px;
-  font-weight:500;
-`;
-
-const TitText = styled.Text`
-  font-family: 'hd-bold';
-  color:#fff;
-  font-size:20px;
-  font-weight:600;
-`;
-
 const LikeNum = styled.Text`
   font-family: 'hd-regular';
   margin-left:3px;
   color:#fff;
   font-size:13px;
   font-weight:500;
+`;
+
+const WriterBox = styled.TouchableOpacity`
+   flex-direction: row;
+   align-items: center;
 `;
 
 const WriterNickname = styled.Text`
@@ -153,6 +154,6 @@ const ProfileImgBox = styled.Image`
     width : 40px;
     height : 40px;
     border-radius : 20px;
-    margin-right : 5px;
+    margin-right : 7px;
     background-color : transparent;
 `;

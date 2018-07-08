@@ -27,7 +27,7 @@ export default class Home extends Component {
           <Search />
         </HomeHeader>
         <HomeBody>
-          <Card />
+          <Card props={this.props} />
         </HomeBody>
         <HomeFooter>
           <Button>
@@ -47,7 +47,7 @@ const Container = styled.View`
 
 const HomeMenu = styled.View`
   flex: 1.5;
-  align-items: flex-end
+  align-items: flex-end;
   flex-direction: row;
   justify-content: flex-start;
 `;
@@ -55,7 +55,7 @@ const HomeMenu = styled.View`
 const HomeHeader = styled.View`
   flex: 1.5;
   padding-bottom:5%;
-  align-items: flex-end
+  align-items: flex-end;
   flex-direction: row;
   justify-content: flex-end;
 `;

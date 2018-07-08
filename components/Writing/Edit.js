@@ -1,36 +1,35 @@
-import React, { Component } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView } from 'react-native';
-import styled from 'styled-components';
-import { Ionicons } from '@expo/vector-icons';
+import React, { Component } from 'react';
+import { Animated, View, Text, TouchableOpacity, Dimensions, StatusBar, ScrollView, StyleSheet } from 'react-native';
+import styled, { css } from 'styled-components';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
-import NotifyItem from './NotifyItem'
+import EditItem from './EditItem';
 
 const { height, width } = Dimensions.get("window");
 
-export default class Notify extends Component {
+export default class Edit extends Component {
   constructor(props){
     super(props);
     this.state = {
     }
   }
-  
+
   render(){
+
     return(
         <Wrap>
           <HeaderBox>
             <BtnIcon onPressOut={() => this.props.navigation.navigate('Home')}>
               <Ionicons name="ios-arrow-round-back" color="#333" size={45}/>
             </BtnIcon>
-            <H1>알림</H1>
+            <H1>글 관리</H1>
           </HeaderBox>
           <ScrollView style={height - 50}>
             <ConBox>
-              <NotifyItem />
-              <NotifyItem />
-              <NotifyItem />
-              <NotifyItem />
+              <EditItem />
+              <EditItem />
             </ConBox>
-          </ScrollView>  
+          </ScrollView>
         </Wrap>
       )
   }
@@ -53,6 +52,7 @@ const HeaderBox = styled.View`
   border-bottom-width: 1px;
 `;
 
+
 const BtnIcon = styled.TouchableOpacity`
 `;
 
@@ -67,6 +67,6 @@ const H1 = styled.Text`
 `;
 
 const ConBox = styled.View`
-  flex: 8.8;
+  flex:10;
+  padding: 7%;
 `;
-

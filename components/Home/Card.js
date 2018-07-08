@@ -12,7 +12,7 @@ export default class Card extends Component {
   render() {
     return (
       <Wrap>
-        <CardItem />
+        <CardItem props={this.props} />
       </Wrap>  
     );
   }
