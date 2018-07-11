@@ -20,11 +20,13 @@ export default class App extends Component {
     }
   }
 
+
   async componentDidMount() {
     await Font.loadAsync({
-      'hd-black': require('./assets/fonts/hyundai/Youandi_Modern_HeadExtraBold.woff'),
-      'hd-bold': require('./assets/fonts/hyundai/Youandi_Modern_TextBold.woff'),
-      'hd-regular': require('./assets/fonts/hyundai/Youandi_Modern_TextRegular.woff'),
+      'hd-black': require('./assets/fonts/hyundai_black.ttf'),
+      'hd-bold': require('./assets/fonts/hyundai_bold.ttf'),
+      'hd-regular': require('./assets/fonts/hyundai_regular.ttf'),
+      'iropke': require('./assets/fonts/IropkeBatangM.ttf')
     })
     this.setState({ fontLoaded: true })
   }
@@ -39,8 +41,7 @@ export default class App extends Component {
         <SwitchNavi />
       </Provider>
     )
-  }
-    
+  }   
   
 }
 
