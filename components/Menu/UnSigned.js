@@ -2,16 +2,17 @@ import React, { Component } from 'react';
 import { View, Text, StatusBar, Dimensions, TouchableOpacity } from 'react-native';
 import styled from 'styled-components';
 import { SimpleLineIcons, Ionicons } from '@expo/vector-icons';
+import { withNavigation } from 'react-navigation';
 
 const { height, width } = Dimensions.get("window");
 
-export default class UnSignedMenu extends Component {
+class UnSignedMenu extends Component {
   render() {
     return (
       <Wrap>
         {/*StatusBar hidden={true} />*/}
         <CloseBox>
-          <BtnClose onPressOut={() => this.props.props.navigation.closeDrawer()}>
+          <BtnClose onPressOut={() => this.props.navigation.closeDrawer()}>
             <Ionicons name="ios-close" color="#333" size={50} style={{marginRight:15}}/>
           </BtnClose>
         </CloseBox>
@@ -20,7 +21,7 @@ export default class UnSignedMenu extends Component {
           <BorderBox></BorderBox>
         </LogoBox>
         <BtnBox>
-          <Button onPressOut={() => this.props.props.navigation.navigate('SignIn')}>
+          <Button onPressOut={() => this.props.navigation.navigate('SignIn')}>
             <BtnText>Begin My Travel</BtnText>
           </Button>
         </BtnBox>
@@ -80,3 +81,5 @@ const BtnText = styled.Text`
   color:#333;
   font-size:15px;
 `;
+
+export default withNavigation(UnSignedMenu);

@@ -116,6 +116,7 @@ const LogoBox = styled.View`
   flex: 1;
   margin-left:18%;
   justify-content: flex-end;
+  // background:red;
 `;
 
 const BorderBox = styled.View`
@@ -156,7 +157,7 @@ const Logo = styled.Text`
 
 const BtnText = styled.Text`
   font-family: 'hd-bold';
-  font-size: ${props => props.fs14 ? ("14px") : ("16px")}
+  font-size: ${props => props.fs14 ? ("14px;") : ("16px;")}
   color:#fff;
 `
 

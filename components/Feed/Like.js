@@ -2,12 +2,13 @@ import React, { Component } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons } from '@expo/vector-icons';
+import { withNavigation } from 'react-navigation';
 
 import LikeItem from './LikeItem';
 
 const { height, width } = Dimensions.get("window");
 
-export default class Like extends Component {
+class Like extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -69,3 +70,5 @@ const H1 = styled.Text`
 const ConBox = styled.View`
   flex: 8.8;
 `;
+
+export default withNavigation(Like);

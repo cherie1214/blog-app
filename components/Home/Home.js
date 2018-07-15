@@ -2,14 +2,15 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet, Image, TextInput, Dimensions, TouchableOpacity } from 'react-native';
 import styled from 'styled-components';
 import { SimpleLineIcons, Ionicons } from '@expo/vector-icons';
+import { withNavigation } from 'react-navigation';
 
 // components
-import Search from './Search';
+import SearchBox from './SearchBox';
 import Card from './Card';
 
 const { height, width } = Dimensions.get("window");
 
-export default class Home extends Component {
+class Home extends Component {
   
   static navigationOptions = {
     drawerLabel: 'Home'
@@ -24,13 +25,13 @@ export default class Home extends Component {
           </Button>
         </HomeMenu>
         <HomeHeader>
-          <Search />
+          <SearchBox />
         </HomeHeader>
         <HomeBody>
-          <Card props={this.props} />
+          <Card />
         </HomeBody>
         <HomeFooter>
-          <Button>
+          <Button onPressOut={() => this.props.navigation.navigate('Write')}>
             <SimpleLineIcons name="plus" color="#333" size={30} />
           </Button>
         </HomeFooter>
@@ -72,3 +73,5 @@ const HomeFooter = styled.View`
 
 const Button = styled.TouchableOpacity`
 `;
+
+export default withNavigation(Home);

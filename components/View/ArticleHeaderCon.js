@@ -5,8 +5,18 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const { height, width } = Dimensions.get("window");
 
-export default class HeaderCon extends Component {
+export default class ArticleHeaderCon extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      writtenDate: "2018.05.06 15:11",
+    }
+  }
+
   render(){
+
+    const { writtenDate } = this.state;
+
     return(
         <Wrap>
           <ConBox>
@@ -22,10 +32,13 @@ export default class HeaderCon extends Component {
               <BorderBox></BorderBox>
             </TitBox>
           </ConBox>
-          <WriterBox>
-            <ProfileImgBox source={require('../../assets/bonobono.jpg')}/>
-            <WriterNickname>bonobono</WriterNickname>
-          </WriterBox>  
+          <Row>
+            <WriterBox>
+              <ProfileImgBox source={require('../../assets/bonobono.jpg')}/>
+              <WriterNickname>bonobono</WriterNickname>
+            </WriterBox>  
+            
+          </Row>       
         </Wrap>
       )
   }
@@ -78,9 +91,13 @@ const BorderBox = styled.View`
   border-bottom-color: #efefef;
 `;
 
-  
-const WriterBox = styled.TouchableOpacity`
+const Row = styled.View`
   padding: 12% 7% 8%;
+  flex-direction: row;
+  align-items: center;
+`;
+
+const WriterBox = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
 `;
@@ -98,4 +115,10 @@ const ProfileImgBox = styled.Image`
     border-radius : 20px;
     margin-right : 7px;
     background-color : transparent;
+`;
+
+const WrittenDate = styled.Text`
+  font-family: 'hd-regular';
+  color:#fff;
+  font-size:12px;
 `;

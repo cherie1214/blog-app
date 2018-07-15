@@ -2,12 +2,13 @@ import React, { Component } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons } from '@expo/vector-icons';
+import { withNavigation } from 'react-navigation';
 
 import NotifyItem from './NotifyItem'
 
 const { height, width } = Dimensions.get("window");
 
-export default class Notify extends Component {
+class Notify extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -70,3 +71,4 @@ const ConBox = styled.View`
   flex: 8.8;
 `;
 
+export default withNavigation(Notify);

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet, Image, TextInput, TouchableOpacity, Dimensions } from 'react-native';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { requestLogin } from '../../actions';
+import { requestLogin, requestGetUsers } from '../../actions';
 import { Ionicons, Feather } from '@expo/vector-icons';
 
 const { height, width } = Dimensions.get("window");
@@ -56,7 +56,7 @@ class SignIn extends Component {
             <BtnText>Sign In</BtnText>
           </Button>
           <P>Create Your Travel</P>
-          <Button small onPressOut={() => this.props.navigation.navigate('SignUp')} >
+          <Button small>
             <BtnText fs14>Sign Up</BtnText>
           </Button>
         </InputBox>
@@ -67,7 +67,8 @@ class SignIn extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    status: state.auth.login.status,
+    status: state.redux.auth.login.status,
+    users: state.redux.auth.status.currentUser
   }
 }
 
@@ -75,6 +76,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     requestLogin: () => {
       return dispatch(requestLogin());
+    },
+    requestGetUsers: () => { 
+        return dispatch(requestGetUsers()); 
     }
   }
 }
@@ -155,7 +159,7 @@ const Logo = styled.Text`
 
 const BtnText = styled.Text`
   font-family: 'hd-bold';
-  font-size: ${props => props.fs14 ? ("14px") : ("16px")}
+  font-size: ${props => props.fs14 ? ("14px;") : ("16px;")}
   color:#fff;
 `
 

@@ -3,11 +3,13 @@ import { Animated, View, Text, TouchableOpacity, Dimensions, StatusBar, ScrollVi
 import styled, { css } from 'styled-components';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
-import HeaderCon from './HeaderCon'
+import ArticleHeaderCon from './ArticleHeaderCon'
 
 const { height, width } = Dimensions.get("window");
 
-export default class ContentView extends Component {
+
+
+export default class ArticleView extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -16,6 +18,7 @@ export default class ContentView extends Component {
       isLiked: false,
       likeCount: 120,
       lastScrollPos: 0,
+      writtenDate: "9시간 전",
     }
   }
 
@@ -32,48 +35,32 @@ export default class ContentView extends Component {
 
   render(){
     
-    const { isLiked, likeCount, conText, isScrolling } = this.state;
+    const { isLiked, likeCount, conText, isScrolling, writtenDate } = this.state;
 
     return(
         <Wrap>
           <StatusBar hidden={true} />
           <HeaderBox visual={isScrolling}>
-            <BtnIcon onPressOut={() => this.props.navigation.navigate('Home')}>
-              <Ionicons name="ios-arrow-round-back" color={isScrolling ? ("#333") : ("#fff")} size={45}/>
-            </BtnIcon>
-            <BtnLike onPressOut={() => this._handleLikeStatus(isLiked)}>
-              {isLiked ? (
-                <Ionicons name="md-heart" color="#EC4568" size={13} />
-                ) : (
-                <Ionicons name="md-heart-outline" color={isScrolling ? ("#333") : ("#fff")} size={13} />
-                )
-              }
-              <LikeNum visual={isScrolling}>{this.state.lastScrollPos}</LikeNum>
-            </BtnLike>
+              <BtnIcon onPressOut={() => this.props.navigation.navigate('Home')}>
+                <Ionicons name="ios-arrow-round-back" color={isScrolling ? ("#333") : ("#fff")} size={45}/>
+              </BtnIcon>
+              <Row>
+                <BtnLike onPressOut={() => this._handleLikeStatus(isLiked)}>
+                  {isLiked ? (
+                    <Ionicons name="md-heart" color="#EC4568" size={13} />
+                    ) : (
+                    <Ionicons name="md-heart-outline" color={isScrolling ? ("#333") : ("#fff")} size={13} />
+                    )
+                  }
+                  <LikeNum visual={isScrolling}>{this.state.lastScrollPos}</LikeNum>
+                </BtnLike>
+                <WrittenDate> · {writtenDate}</WrittenDate>   
+             </Row> 
           </HeaderBox>
           <ScrollView 
-            onResponderRelease={(e) => {
-                if(this.state.lastScrollPos > 10) {
-                    // alert("reached offset value");
-                  return this.setState({isScrolling:true})
-                } else if (this.state.lastScrollPos <= 10) {
-                  // alert("top");
-                  return this.setState({isScrolling:false})
-                }
-            }}
-            onScroll={(e) => {
-
-              const currentScrollPos = e.nativeEvent.contentOffset.y
-              const sensitivity = 50
-  
-              if (Math.abs(currentScrollPos - this.state.lastScrollPos) > sensitivity) {
-                this.setState({lastScrollPos: e.nativeEvent.contentOffset.y })
-              }
-            }}
-            style={height - 50} 
-            bounces={false}>  
+            style={height - 50}>  
             <HeaderConBox>
-              <HeaderCon />
+              <ArticleHeaderCon />
             </HeaderConBox>  
             <TextBox>
               <ConText>{conText}</ConText>
@@ -91,8 +78,8 @@ const Wrap = styled.View`
 
 const HeaderBox = styled.View`
   z-index:100;
-  padding: 0 15px;
-  height:50px;
+  padding: 20px 15px 0;
+  height:70px;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
@@ -113,8 +100,12 @@ const HeaderBox = styled.View`
 const BtnIcon = styled.TouchableOpacity`
 `;
 
-const LikeBox = styled.View`
-  margin-top:20%;
+const Row = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
+
+const LikeBox = styled.View`  
   flex-direction: row;
   justify-content: flex-end;
 `;
@@ -128,8 +119,14 @@ const LikeNum = styled.Text`
   font-family: 'hd-regular';
   margin-left:3px;
   font-size:13px;
-  color: ${props => props.visual ? ('#333') : ('#fff')}
+  color: ${props => props.visual ? ('#333;') : ('#fff;')}
   font-weight:500;
+`;
+
+const WrittenDate = styled.Text`
+  font-family: 'hd-regular';
+  color:#fff;
+  font-size:13px;
 `;
 
 const HeaderConBox = styled.View`

@@ -5,14 +5,39 @@ import { Font, Constants, AppLoading } from 'expo';
 import { SwitchNavi } from './navigation';
 
 // Redux
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
+import { Provider, connect } from 'react-redux';
+import { createStore, applyMiddleware, combineReducers } from 'redux';
 import reducers from './reducers';
 import thunk from 'redux-thunk';
 
-const store = createStore(reducers, applyMiddleware(thunk));
+// Combine Navigation with Redux
+import {
+  reduxifyNavigator,
+  createReactNavigationReduxMiddleware,
+  createNavigationReducer,
+} from 'react-navigation-redux-helpers';
 
-export default class App extends Component {
+// Middleware & store
+const navReducer = createNavigationReducer(SwitchNavi);
+const appReducer = combineReducers({
+  nav: navReducer,
+  redux: reducers
+});
+
+
+const navigationMiddleware = createReactNavigationReduxMiddleware(
+  "root",
+  state => state.nav,
+);
+const App = reduxifyNavigator(SwitchNavi, "root");
+const mapStateToProps = (state) => ({
+  state: state.nav
+});
+const AppWithNavigationState = connect(mapStateToProps)(App);
+
+const store = createStore(appReducer, applyMiddleware(thunk, navigationMiddleware));
+
+export default class Root extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -38,7 +63,7 @@ export default class App extends Component {
     }
     return (
       <Provider store={store}>
-        <SwitchNavi />
+        <AppWithNavigationState />
       </Provider>
     )
   }   

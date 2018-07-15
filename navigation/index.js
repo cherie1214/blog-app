@@ -11,7 +11,11 @@ import {
 const { height, width } = Dimensions.get("window");
 
 import Home from '../components/Home/Home';
-import ContentView from '../components/View';
+import Search from '../components/Search';
+import ArticleTab from '../components/Search/ArticleTab';
+import WriterTab from '../components/Search/WriterTab';
+import ArticleView from '../components/View/ArticleView';
+import WriterView from '../components/View/WriterView';
 import Menu from '../components/Menu'
 import SignIn from '../components/Sign/SignIn';
 import SignUp from '../components/Sign/SignUp';
@@ -19,8 +23,8 @@ import Like from '../components/Feed/Like';
 import Notify from '../components/Feed/Notify';
 import Mypage from '../components/My/Mypage';
 import ChangePw from '../components/My/ChangePw';
-import Write from '../components/Writing/Write';
-import Edit from '../components/Writing/Edit';
+import Write from '../components/Article/Write';
+import Edit from '../components/Article/Edit';
 
 
 const DrawerNavi = createDrawerNavigator(
@@ -48,13 +52,33 @@ const DrawerNavi = createDrawerNavigator(
   }
 );
 
+const SearchTabNavi = createStackNavigator(
+  {
+    ArticleTab: {
+      screen: ArticleTab,
+    },
+    WriterTab: {
+      screen: WriterTab,
+    }    
+  },
+  {
+    initialRouteName : 'ArticleTab',
+  }
+)
+
 export const SwitchNavi = createSwitchNavigator(
   {
     Home : {
       screen : DrawerNavi,
     },
-    View : {
-      screen: ContentView,
+    Search : {
+      screen: Search,
+    },
+    ArticleView : {
+      screen: ArticleView,
+    },
+    WriterView : {
+      screen: WriterView,
     },
     SignIn : {
       screen : SignIn,

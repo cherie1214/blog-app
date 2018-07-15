@@ -44,6 +44,7 @@ class Mypage extends Component {
   // }
   
   render(){
+    const { isLoggedIn } = this.props.status;
     const { isEditing } = this.state;
     
     return(
@@ -100,7 +101,7 @@ class Mypage extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    status: state.auth.login.status,
+    status: state.redux.auth.status,
   }
 }
 

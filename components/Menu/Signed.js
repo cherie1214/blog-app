@@ -1,47 +1,70 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import styled from 'styled-components';
-import { SimpleLineIcons, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import {
+  SimpleLineIcons,
+  Ionicons,
+  MaterialCommunityIcons,
+} from '@expo/vector-icons';
+import { withNavigation } from 'react-navigation';
 
-export default class SignedMenu extends Component {
-  
+class SignedMenu extends Component {
   render() {
     return (
       <Wrap>
         {/*StatusBar hidden={true} />*/}
-       <CloseBox>
-          <BtnClose onPressOut={() => this.props.props.navigation.closeDrawer()}>
-            <Ionicons name="ios-close" color="#333" size={50} style={{marginRight:15}}/>
+        <CloseBox>
+          <BtnClose
+            onPressOut={() => this.props.navigation.closeDrawer()}>
+            <Ionicons
+              name="ios-close"
+              color="#333"
+              size={50}
+              style={{ marginRight: 15 }}
+            />
           </BtnClose>
         </CloseBox>
-        <ProfileBox onPressOut={() => this.props.props.navigation.navigate('Mypage')}>
-          <ProfileImgBox source={require('../../assets/bonobono.jpg')}/>
+        <ProfileBox
+          onPressOut={() => this.props.navigation.navigate('Mypage')}>
+          <ProfileImgBox source={require('../../assets/bonobono.jpg')} />
           <UserNickname>bonobono</UserNickname>
         </ProfileBox>
-        <BorderBox></BorderBox>
+        <BorderBox />
         <BtnBox>
-          <Button onPressOut={() => this.props.props.navigation.navigate('Write')}>
+          <Button
+            onPressOut={() => this.props.navigation.navigate('Write')}>
             <BtnText>글 쓰기</BtnText>
           </Button>
-          <Button onPressOut={() => this.props.props.navigation.navigate('Edit')}>
+          <Button
+            onPressOut={() => this.props.navigation.navigate('Edit')}>
             <BtnText>글 관리</BtnText>
           </Button>
         </BtnBox>
         <IconBox>
-          <IconBtn onPressOut={() => this.props.props.navigation.navigate('Notify')}>
-            <IconNew yellow></IconNew>
-            <MaterialCommunityIcons name="bell-outline" color="#fff" size={30} />
+          <IconBtn
+            onPressOut={() => this.props.navigation.navigate('Notify')}>
+            <IconNew yellow />
+            <MaterialCommunityIcons
+              name="bell-outline"
+              color="#fff"
+              size={30}
+            />
           </IconBtn>
-          <IconBtn onPressOut={() => this.props.props.navigation.navigate('Like')}>
-            <IconNew pink></IconNew>
-            <MaterialCommunityIcons name="heart-outline" color="#fff" size={30} style={{marginTop:5}}/>
+          <IconBtn
+            onPressOut={() => this.props.navigation.navigate('Like')}>
+            <IconNew pink />
+            <MaterialCommunityIcons
+              name="heart-outline"
+              color="#fff"
+              size={30}
+              style={{ marginTop: 5 }}
+            />
           </IconBtn>
         </IconBox>
       </Wrap>
     );
   }
 }
-
 
 const Wrap = styled.View`
   flex: 1;
@@ -103,7 +126,6 @@ const IconBtn = styled.TouchableOpacity`
   background: #ccc;
 `;
 
-
 const IconNew = styled.View`
   position: absolute;
   top:0; 
@@ -112,12 +134,12 @@ const IconNew = styled.View`
   height:18px;
   border-radius:9px;
   background-color: ${props => {
-        if(props.yellow){
-          return `#FFCD19`
-        } else if(props.pink){
-          return `#EF3774`
-        }
-    }}
+    if (props.yellow) {
+      return "#FFCD19;"
+    } else if (props.pink) {
+      return "#EF3774;"
+    }
+  }}
 `;
 
 const Logo = styled.Text`
@@ -147,3 +169,4 @@ const UserNickname = styled.Text`
   font-weight:500;
 `;
 
+export default withNavigation(SignedMenu);

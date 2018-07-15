@@ -2,15 +2,19 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet, Image, TextInput, Dimensions, TouchableOpacity } from 'react-native';
 import styled from 'styled-components';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
+import { connect } from 'react-redux';
+import { likeToggle } from '../../actions';
+import { withNavigation } from 'react-navigation';
 
 const { height, width } = Dimensions.get("window");
 
-export default class CardItem extends Component {
+class CardItem extends Component {
   constructor(props){
     super(props);
     this.state = {
       isLiked: false,
       likeCount: 120,
+      writtenDate: "9시간 전",
     }
   }
 
@@ -23,15 +27,16 @@ export default class CardItem extends Component {
       }
     });
   }
-
+  
   render() {
-    const { isLiked, likeCount } = this.state;
-
+    // const { isLiked, likeCount } = this.props.status;
+    const { isLiked, likeCount, writtenDate } = this.state;
+    
     return (
       <Wrap>
         <Box>
           <FlexBox flex2>
-            <ViewLinkBox onPressOut={() => this.props.props.props.navigation.navigate('View')}>
+            <ViewLinkBox onPressOut={() => this.props.navigation.navigate('ArticleView')}>
               <WeatherBox>
                 <MaterialCommunityIcons name="weather-sunny" color="#fff" size={22} style={{marginLeft:3, marginRight:3}}/>
                 <MaterialCommunityIcons name="weather-partlycloudy" color="#fff" size={22} style={{marginLeft:3, marginRight:3}} />
@@ -43,29 +48,49 @@ export default class CardItem extends Component {
                 <TitText>45일동안 서유럽 한바퀴, 45days in Wetern Europe</TitText>
               </TitBox>
             </ViewLinkBox>
-            <LikeBox>
-              <BtnLike onPressOut={() => this._handleLikeStatus(isLiked)}>
-                {isLiked ? (
-                  <Ionicons name="md-heart" color="#EC4568" size={13} />
-                  ) : (
-                  <Ionicons name="md-heart-outline" color="#fff" size={13} />
-                  )
-                }
-                <LikeNum>{likeCount}</LikeNum>
-              </BtnLike>
-            </LikeBox>
+            <Row>
+              <LikeBox>
+                <BtnLike onPressOut={() => this._handleLikeStatus(isLiked)}>
+                  {isLiked ? (
+                    <Ionicons name="md-heart" color="#EC4568" size={13} />
+                    ) : (
+                    <Ionicons name="md-heart-outline" color="#fff" size={13} />
+                    )
+                  }
+                  <LikeNum>{likeCount}</LikeNum>
+                </BtnLike>
+              </LikeBox>
+              <WrittenDate> · {writtenDate}</WrittenDate>
+            </Row>
           </FlexBox>
           <FlexBox flexEnd>
-            <WriterBox>
+            <WriterBox onPressOut={() => this.props.navigation.navigate('WriterView')}>
               <ProfileImgBox source={require('../../assets/bonobono.jpg')}/>
               <WriterNickname>bonobono</WriterNickname>
             </WriterBox>
           </FlexBox>
         </Box>
-      </Wrap>
+      </Wrap>  
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    status: state.redux.like.likeStatus,
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    likeToggle: (status) => {
+      return dispatch(likeToggle(status));
+    }
+  }
+}
+
+const CardItemWithNavigation = withNavigation(CardItem);
+export default connect(mapStateToProps, mapDispatchToProps)(CardItemWithNavigation);
 
 const Wrap = styled.View`
   flex: 1;
@@ -84,9 +109,9 @@ const Box = styled.View`
 `;
 
 const FlexBox = styled.View`
-  flex: ${props => props.flex2 ? "2" : "1"};
+  flex: ${props => props.flex2 ? "2" : "1"}
   flex-direction: column;
-  justify-content: ${props => props.flexEnd ? "flex-end" : "flex-start"};
+  justify-content: ${props => props.flexEnd ? "flex-end" : "flex-start"}
 `;
 
 const ViewLinkBox = styled.TouchableOpacity`
@@ -119,8 +144,14 @@ const TitText = styled.Text`
   font-weight:600;
 `;
 
+const Row = styled.View`
+  margin-top:30px;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+`;
+
 const LikeBox = styled.View`
-  margin-top:20%;
   flex-direction: row;
   justify-content: flex-end;
 `;
@@ -136,6 +167,12 @@ const LikeNum = styled.Text`
   color:#fff;
   font-size:13px;
   font-weight:500;
+`;
+
+const WrittenDate = styled.Text`
+  font-family: 'hd-regular';
+  color:#fff;
+  font-size:13px;
 `;
 
 const WriterBox = styled.TouchableOpacity`
@@ -157,3 +194,5 @@ const ProfileImgBox = styled.Image`
     margin-right : 7px;
     background-color : transparent;
 `;
+
+

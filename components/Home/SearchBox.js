@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet, Image, TextInput, Dimensions } from 'react-native';
 import styled from 'styled-components';
 import { Feather } from '@expo/vector-icons';
+import { connect } from 'react-redux';
+import { withNavigation } from 'react-navigation';
 
 const { height, width } = Dimensions.get("window");
 
-export default class Search extends Component {
+class SearchBox extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -14,11 +16,11 @@ export default class Search extends Component {
     }
   }
   
-   _handleTextChange = inputValue => {
+  _handleTextChange = inputValue => {
     this.setState({ inputValue });
   };
 
-   _handleInputAppear(){
+  _handleInputAppear(){
     this.setState({
       isSearching: true,
     });
@@ -50,7 +52,7 @@ export default class Search extends Component {
           }
         </LogoBox>
           {isSearching ? (
-            <Button onPressOut={() => this._handleSearchSubmit()}>
+            <Button onPressOut={() => this.props.navigation.navigate('Search')}>
               <Feather name="check" color="#afafaf" size={25} />
             </Button>  
             ) : (
@@ -63,6 +65,8 @@ export default class Search extends Component {
     );
   }
 }
+
+export default withNavigation(SearchBox);
 
 const Wrap = styled.View`
   width: ${width * 0.82};
