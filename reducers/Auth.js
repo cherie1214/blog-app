@@ -1,8 +1,13 @@
 import * as types from '../actions/ActionTypes';
 
 const initialState = {
-    login: {
-        status: 'INIT'
+    http: {
+        //INIT: 초기
+        //GETTING: 요청 중
+        //FAILED: 요청 실패
+        //SUCCESS: 요청 성공
+        status: 'INIT',
+        result: 'INIT',
     },
     status: {
         isLoggedIn: false,
@@ -12,10 +17,13 @@ const initialState = {
 
 export default function auth(state = initialState, action) {
     switch(action.type) {
+
+        //sign in
         case types.AUTH_LOGIN:
             return {
-                ...initialState,
-                login: {
+                ...state,
+                http: {
+                    ...state.http,
                     status: 'LOGIN'
                 },
                 status: {
@@ -24,8 +32,9 @@ export default function auth(state = initialState, action) {
             };
         case types.AUTH_LOGOUT:
             return {
-                ...initialState,
-                login: {
+                ...state,
+                http: {
+                    ...state.http,
                     status: 'LOGOUT'
                 },
                 status: {
@@ -34,8 +43,9 @@ export default function auth(state = initialState, action) {
             };
         case types.AUTH_GETTING:
             return {
-                ...initialState,
-                login: {
+                ...state,
+                http: {
+                    ...state.http,
                     status: 'GETTING'
                 }
             };
@@ -45,17 +55,50 @@ export default function auth(state = initialState, action) {
                     isLoggedIn: false,
                     currentUser: action.users,
                 },
-                login: {
+                http: {
+                    ...state.http,
                     status: 'SUCCESS'
                 }
             };
         case types.AUTH_GET_FAILURE:
             return {
-                ...initialState,
-                login: {
+                ...state,
+                http: {
+                    ...state.http,
                     status: 'FAIL'
                 }
             };
+
+
+        //sign up
+        case types.AUTH_SIGNUP_SUCCESS:
+            return {
+                ...state,
+                http: {
+                    status: 'SUCCESS',
+                    result: 'SUCCESS'
+                }
+            };
+        case types.AUTH_SIGNUP_FAILURE:
+            return {
+                ...state,
+                http: {
+                    status: 'SUCCESS',
+                    result: 'FAILURE'
+                }
+            };
+
+        case types.AUTH_SIGNUP_INIT:
+            return {
+                ...state,
+                http: {
+                    ...state.http,
+                    result: 'INIT'
+                }
+            };    
+
+
+        //default   
         default:
             return state;
     }

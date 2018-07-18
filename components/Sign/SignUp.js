@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet, Image, TextInput, TouchableOpacity, Dimensions } from 'react-native';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
+import { userSignUp, signUpInit} from '../../actions';
 import { SimpleLineIcons, Ionicons, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 
 const { height, width } = Dimensions.get("window");
@@ -16,7 +18,25 @@ class SignUp extends Component {
     }
   }
   
- render() {
+  componentDidUpdate(prevProps){
+    const result = this.props.result;
+    if(prevProps.result !== result){
+      
+      if(result === "SUCCESS"){
+        this.props.signUpInit();
+        alert("회원가입이 완료되었습니다.")
+        this.props.navigation.navigate('SignIn');
+      } else if(result === "FAILURE"){
+        this.props.signUpInit();
+        alert("오류가 발생했습니다.")
+      }
+    }
+    
+  }
+
+  render() {
+    const userInfo = this.state;
+
     return (
       <Wrap>
         <BtnBox>
@@ -25,7 +45,7 @@ class SignUp extends Component {
           </BtnBack>
         </BtnBox>
          <LogoBox>
-          <Logo>New Travel</Logo>
+          <Logo>New Travel{this.props.result}</Logo>
           <BorderBox></BorderBox>
         </LogoBox>
         <InputBox>
@@ -72,7 +92,7 @@ class SignUp extends Component {
             />
           </InputWrap>
           <P>* 닉네임은 마이페이지에서 변경할 수 있어요.</P>
-          <Button onPressOut={this.props.requestLogin} >
+          <Button onPressOut={() => this.props.userSignUp(userInfo)} >
             <BtnText>Sign Up</BtnText>
           </Button>
         </InputBox>
@@ -81,7 +101,25 @@ class SignUp extends Component {
   }
 }
 
-export default SignUp;
+const mapStateToProps = (state) => {
+  return {
+    status: state.redux.auth.http.status,
+    result: state.redux.auth.http.result,
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    userSignUp: (userInfo) => {
+      return dispatch(userSignUp(userInfo));
+    },
+    signUpInit: () => {
+      return dispatch(signUpInit());
+    },
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
 
 const Wrap = styled.View`
   flex: 1;
@@ -116,7 +154,6 @@ const LogoBox = styled.View`
   flex: 1;
   margin-left:18%;
   justify-content: flex-end;
-  // background:red;
 `;
 
 const BorderBox = styled.View`

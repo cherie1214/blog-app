@@ -56,7 +56,7 @@ class SignIn extends Component {
             <BtnText>Sign In</BtnText>
           </Button>
           <P>Create Your Travel</P>
-          <Button small>
+          <Button small onPressOut={() => this.props.navigation.navigate('SignUp')}>
             <BtnText fs14>Sign Up</BtnText>
           </Button>
         </InputBox>
@@ -67,7 +67,7 @@ class SignIn extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    status: state.redux.auth.login.status,
+    status: state.redux.auth.http.status,
     users: state.redux.auth.status.currentUser
   }
 }
