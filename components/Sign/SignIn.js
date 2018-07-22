@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet, Image, TextInput, TouchableOpacity, Dimensions } from 'react-native';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { requestLogin, requestGetUsers } from '../../actions';
+import { userSignIn } from '../../actions';
 import { Ionicons, Feather } from '@expo/vector-icons';
+import { AsyncStorage } from 'react-native';
 
 const { height, width } = Dimensions.get("window");
 
@@ -15,8 +16,25 @@ class SignIn extends Component {
       pw: "",
     }
   }
+  componentDidMount(){
+    this.getKey();
+  }
   
- render() {
+  async getKey(){
+    try {
+      const _storedData = await AsyncStorage.getItem('@BlogApp.Auth');
+      alert(_storedData)
+    } catch(error) {
+      alert("Error retrieving data :" + error);
+    }
+  }
+
+  render() {
+
+    const userInfo = this.state;
+    // const reduxState = this.props.reduxState;
+    // const rs = JSON.stringify(reduxState, 0, 2)
+
     return (
       <Wrap>
         <CloseBox>
@@ -27,6 +45,7 @@ class SignIn extends Component {
          <LogoBox>
           <Logo>{this.props.status}</Logo>
           <BorderBox></BorderBox>
+          {/*<Text style={{height:210}}>{rs}</Text>*/}
         </LogoBox>
         <InputBox>
           <InputWrap>
@@ -52,7 +71,7 @@ class SignIn extends Component {
               autoCorrect={false}
             />
           </InputWrap>
-          <Button onPressOut={this.props.requestLogin} >
+          <Button onPressOut={() => this.props.userSignIn(userInfo)} >
             <BtnText>Sign In</BtnText>
           </Button>
           <P>Create Your Travel</P>
@@ -67,6 +86,7 @@ class SignIn extends Component {
 
 const mapStateToProps = (state) => {
   return {
+    reduxState: state.redux.auth,
     status: state.redux.auth.http.status,
     users: state.redux.auth.status.currentUser
   }
@@ -74,12 +94,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    requestLogin: () => {
-      return dispatch(requestLogin());
+    userSignIn: (userInfo) => {
+      return dispatch(userSignIn(userInfo));
     },
-    requestGetUsers: () => { 
-        return dispatch(requestGetUsers()); 
-    }
   }
 }
 

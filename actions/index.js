@@ -1,9 +1,12 @@
 import { 
-  AUTH_LOGIN, 
-  AUTH_LOGOUT,
   AUTH_GETTING,
   AUTH_GET_SUCCESS,
   AUTH_GET_FAILURE, 
+
+  AUTH_SIGNIN_ERROR,
+  AUTH_SIGNIN_FAILURE,
+  AUTH_SIGNIN_SUCCESS,
+
   AUTH_SIGNUP_SUCCESS,
   AUTH_SIGNUP_FAILURE,
   AUTH_SIGNUP_INIT,
@@ -14,20 +17,9 @@ import {
 } from './ActionTypes';
 
 import axios from 'axios';
+import { AsyncStorage } from 'react-native';
 
 //action creators
-export function requestLogin() {
-    return {
-        type: AUTH_LOGIN
-    };
-}
-
-export function requestLogout() {
-    return {
-        type: AUTH_LOGOUT
-    };
-}
-
 export function getting() {
   return {
       type: AUTH_GETTING,
@@ -47,6 +39,27 @@ export function getFailure() {
   };
 }
 
+//sign in
+export function signInError() {
+    return {
+        type: AUTH_SIGNIN_ERROR,
+
+    };
+}
+export function signInSuccess(nickname) {
+    return {
+        type: AUTH_SIGNIN_SUCCESS,
+        nickname
+    };
+}
+export function signInFailure() {
+    return {
+        type: AUTH_SIGNIN_FAILURE,
+
+    };
+}
+
+//sign up
 export function signUpSuccess() {
     return {
         type: AUTH_SIGNUP_SUCCESS,
@@ -68,25 +81,51 @@ export function signUpInit() {
 
 
 //action functions
-//Sign In
-export function requestGetUsers() {
-  return (dispatch) => {
-      // Inform Login API is starting
-      dispatch(getting());
 
-      // API REQUEST
-      return axios.get('http://localhost:8000/api/get/1')
-      .then((res) => {
-          // SUCCEED
-          const result = JSON.stringify(res.data,0,2)
-          dispatch(getSuccess(result));
-          
-      }).catch((error) => {
-          // FAILED
-          dispatch(getFailure());
-      });
-  }    
-}
+//Sign In
+export function userSignIn(userInfo) {
+    return (dispatch) => {
+        // Inform Login API is starting
+        dispatch(getting());
+
+        // API REQUEST
+        return axios.post('http://localhost:8000/api/auth/signIn', userInfo)
+        .then((res) => {
+            // SUCCEED
+            const status = res.data.status;
+            const nickname = res.data.nickname;
+            const id = res.data.id;
+
+            // alert(nickname);
+            // alert(JSON.stringify(userInfo));          
+
+            switch(status){
+                case "SIGNIN_ERROR" : dispatch(signInError());
+                    break;
+                case "SIGNIN_FAILED" : dispatch(signInFailure());
+                    break;
+                case "SIGNIN_SUCCESS" : 
+                    try {
+                        AsyncStorage.setItem('@BlogApp.Auth', JSON.stringify({
+                            id, 
+                            nickname
+                        }))
+                    } catch(error) {
+                        alert("Storage Error: " + error)
+                    } finally {
+                        dispatch(signInSuccess(nickname));
+                        break;       
+
+                    }
+
+            }  
+
+        }).catch((error) => {
+            // FAILED
+            dispatch(getFailure());
+        });
+    }    
+  }
 
 
 //Sign Up
@@ -99,9 +138,15 @@ export function userSignUp(userInfo) {
         return axios.post('http://localhost:8000/api/auth/signUp', userInfo)
         .then((res) => {
             // alert(res)
-            if(res.data.status === "SUCCESS"){
+            if(res.data.status === "SIGNUP_SUCCESS"){
                 dispatch(signUpSuccess());
             } else {
+                if (res.data.status === "SIGNUP_ID_DUPLICATED"){
+                    alert("아이디가 중복 되었습니다.");
+                } 
+                if (res.data.status === "SIGNUP_NICKNAME_DUPLICATED"){
+                    alert("닉네임이 중복 되었습니다.");
+                }
                 dispatch(signUpFailure());
             }
         }).catch((error) => {

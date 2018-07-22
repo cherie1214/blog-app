@@ -12,6 +12,10 @@ const initialState = {
     status: {
         isLoggedIn: false,
         currentUser: '',
+    },
+    login: {
+        logged: false,
+        nickname: "",
     }
 };
 
@@ -19,56 +23,38 @@ export default function auth(state = initialState, action) {
     switch(action.type) {
 
         //sign in
-        case types.AUTH_LOGIN:
+        case types.AUTH_SIGNIN_ERROR:
             return {
                 ...state,
                 http: {
                     ...state.http,
-                    status: 'LOGIN'
+                    status: "SUCCESS",
+                    result: "FAILED"
                 },
-                status: {
-                    isLoggedIn: true,
-                }
             };
-        case types.AUTH_LOGOUT:
+        case types.AUTH_SIGNIN_FAILURE:
             return {
                 ...state,
                 http: {
                     ...state.http,
-                    status: 'LOGOUT'
+                    status: "SUCCESS",
+                    result: "FAILED"
                 },
-                status: {
-                    isLoggedIn: false,
-                }
-            };
-        case types.AUTH_GETTING:
+            };    
+        case types.AUTH_SIGNIN_SUCCESS:
             return {
                 ...state,
                 http: {
                     ...state.http,
-                    status: 'GETTING'
-                }
-            };
-        case types.AUTH_GET_SUCCESS:
-            return {
-                status: {
-                    isLoggedIn: false,
-                    currentUser: action.users,
+                    status: "SUCCESS",
+                    result: "SUCCESS"
                 },
-                http: {
-                    ...state.http,
-                    status: 'SUCCESS'
+                login: {
+                    ...state.login,
+                    logged: true,
+                    nickname: action.nickname,
                 }
-            };
-        case types.AUTH_GET_FAILURE:
-            return {
-                ...state,
-                http: {
-                    ...state.http,
-                    status: 'FAIL'
-                }
-            };
-
+            };    
 
         //sign up
         case types.AUTH_SIGNUP_SUCCESS:
