@@ -9,53 +9,85 @@ const initialState = {
         status: 'INIT',
         result: 'INIT',
     },
-    status: {
-        isLoggedIn: false,
-        currentUser: '',
-    },
     login: {
-        logged: false,
+        loggedIn: false,
+        id: "",
         nickname: "",
     }
 };
 
 export default function auth(state = initialState, action) {
     switch(action.type) {
+        //getting
+        case types.AUTH_GETTING:
+            return {
+            ...state,
+            http: {
+                ...state.http,
+                status: "GETTING",
+            },
+        };
+        case types.AUTH_GET_SUCCESS:
+            return {
+            ...state,
+            http: {
+                ...state.http,
+                status: "SUCCESS",
+            },
+        };
+        case types.AUTH_GET_FAILURE:
+            return {
+            ...state,
+            http: {
+                ...state.http,
+                status: "FAILED",
+            },
+        };
 
         //sign in
         case types.AUTH_SIGNIN_ERROR:
             return {
-                ...state,
-                http: {
-                    ...state.http,
-                    status: "SUCCESS",
-                    result: "FAILED"
-                },
-            };
+            ...state,
+            http: {
+                ...state.http,
+                status: "SUCCESS",
+                result: "FAILED"
+            },
+        };
         case types.AUTH_SIGNIN_FAILURE:
             return {
-                ...state,
-                http: {
-                    ...state.http,
-                    status: "SUCCESS",
-                    result: "FAILED"
-                },
-            };    
+            ...state,
+            http: {
+                ...state.http,
+                status: "SUCCESS",
+                result: "FAILED"
+            },
+        };    
         case types.AUTH_SIGNIN_SUCCESS:
+            return {
+            ...state,
+            http: {
+                ...state.http,
+                status: "SUCCESS",
+                result: "SUCCESS"
+            },
+            login: {
+                ...state.login,
+                loggedIn: true,
+                id: action.id,
+                nickname: action.nickname,
+            }
+        };    
+        case types.AUTH_SIGNIN_INIT:
             return {
                 ...state,
                 http: {
                     ...state.http,
-                    status: "SUCCESS",
-                    result: "SUCCESS"
-                },
-                login: {
-                    ...state.login,
-                    logged: true,
-                    nickname: action.nickname,
+                    status: 'INIT',
+                    result: 'INIT',
                 }
             };    
-
+        
         //sign up
         case types.AUTH_SIGNUP_SUCCESS:
             return {
@@ -83,6 +115,20 @@ export default function auth(state = initialState, action) {
                 }
             };    
 
+        //sign out
+        case types.AUTH_SIGNOUT:
+            return {
+                ...state,
+                http: {
+                    status: 'INIT',
+                    result: 'INIT'
+                },
+                login: {
+                    loggedIn: false,
+                    id: "",
+                    nickname: "",
+                }
+            }
 
         //default   
         default:

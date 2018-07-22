@@ -20,18 +20,16 @@ class SignUp extends Component {
   
   componentDidUpdate(prevProps){
     const result = this.props.result;
-    if(prevProps.result !== result){
-      
+    if(prevProps.result !== result){      
       if(result === "SUCCESS"){
         this.props.signUpInit();
         alert("회원가입이 완료되었습니다.")
         this.props.navigation.navigate('SignIn');
-      } else if(result === "FAILURE"){
+      } else if(result === "FAILED"){
         this.props.signUpInit();
         alert("오류가 발생했습니다.")
       }
-    }
-    
+    }    
   }
 
   render() {

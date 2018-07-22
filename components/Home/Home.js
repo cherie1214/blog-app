@@ -3,6 +3,8 @@ import { Text, View, StyleSheet, Image, TextInput, Dimensions, TouchableOpacity 
 import styled from 'styled-components';
 import { SimpleLineIcons, Ionicons } from '@expo/vector-icons';
 import { withNavigation } from 'react-navigation';
+import { connect } from 'react-redux';
+import { getStorage } from '../../actions';
 
 // components
 import SearchBox from './SearchBox';
@@ -12,9 +14,11 @@ const { height, width } = Dimensions.get("window");
 
 class Home extends Component {
   
-  static navigationOptions = {
-    drawerLabel: 'Home'
-  };
+  componentDidMount(){
+    if(!this.props.auth.login.loggedIn){
+      this.props.getStorage();
+    }
+  }
 
   render() {
     return (
@@ -40,6 +44,24 @@ class Home extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    auth: state.redux.auth,
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getStorage: () => {
+      return dispatch(getStorage());
+    }
+  }
+}
+
+const HomeWithNavigation = withNavigation(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(HomeWithNavigation);
+
 
 const Container = styled.View`
     flex: 1;
@@ -74,4 +96,4 @@ const HomeFooter = styled.View`
 const Button = styled.TouchableOpacity`
 `;
 
-export default withNavigation(Home);
+

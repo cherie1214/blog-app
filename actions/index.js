@@ -6,14 +6,13 @@ import {
   AUTH_SIGNIN_ERROR,
   AUTH_SIGNIN_FAILURE,
   AUTH_SIGNIN_SUCCESS,
+  AUTH_SIGNIN_INIT,
 
   AUTH_SIGNUP_SUCCESS,
   AUTH_SIGNUP_FAILURE,
   AUTH_SIGNUP_INIT,
 
-  Like_Add,
-  Like_Remove,
-  Like_Toggle,  
+  AUTH_SIGNOUT,
 } from './ActionTypes';
 
 import axios from 'axios';
@@ -26,10 +25,9 @@ export function getting() {
   };
 }
 
-export function getSuccess(users) {
+export function getSuccess() {
   return {
       type: AUTH_GET_SUCCESS,
-      users
   };
 }
 
@@ -46,9 +44,10 @@ export function signInError() {
 
     };
 }
-export function signInSuccess(nickname) {
+export function signInSuccess(id, nickname) {
     return {
         type: AUTH_SIGNIN_SUCCESS,
+        id,
         nickname
     };
 }
@@ -58,6 +57,13 @@ export function signInFailure() {
 
     };
 }
+
+export function signInInit() {
+    return {
+        type: AUTH_SIGNIN_INIT
+    };
+}
+
 
 //sign up
 export function signUpSuccess() {
@@ -79,6 +85,13 @@ export function signUpInit() {
     };
 }
 
+
+//sign out
+export function signout(){
+    return {
+        type: AUTH_SIGNOUT
+    }
+}
 
 //action functions
 
@@ -113,13 +126,11 @@ export function userSignIn(userInfo) {
                     } catch(error) {
                         alert("Storage Error: " + error)
                     } finally {
-                        dispatch(signInSuccess(nickname));
+                        dispatch(signInSuccess(id, nickname));
                         break;       
 
                     }
-
             }  
-
         }).catch((error) => {
             // FAILED
             dispatch(getFailure());
@@ -157,23 +168,24 @@ export function userSignUp(userInfo) {
   }
 
 
+//storage 조회
+export function getStorage(){
+    return async(dispatch) => {
+        try {
+            const _storedData = await AsyncStorage.getItem('@BlogApp.Auth');
+            if(_storedData){
+                _storedData = JSON.parse(_storedData);
+                dispatch(signInSuccess(_storedData.id, _storedData.nickname));
+            }
+        } catch(error) {
+            alert("ERROR RETRIEVEING data: " + error);
+        }
+    }
+} 
 
-
-
-
-export function likeAdd() {
-    return {
-        type: Like_Add,
-    };
-}
-export function likeRemove() {
-    return {
-        type: Like_Remove,
-    };
-}
-export function likeToggle(status) {
-    return {
-        type: Like_Toggle,
-        status    
-    };
+export function signOut(){
+    return (dispatch) => {
+        AsyncStorage.removeItem('@BlogApp.Auth');
+        dispatch(signout());
+    }
 }

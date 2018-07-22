@@ -2,14 +2,17 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import styled from 'styled-components';
 import {
-  SimpleLineIcons,
   Ionicons,
   MaterialCommunityIcons,
 } from '@expo/vector-icons';
+import { connect } from 'react-redux';
 import { withNavigation } from 'react-navigation';
 
 class SignedMenu extends Component {
+  
   render() {
+    const auth = this.props.auth;
+
     return (
       <Wrap>
         {/*StatusBar hidden={true} />*/}
@@ -27,7 +30,7 @@ class SignedMenu extends Component {
         <ProfileBox
           onPressOut={() => this.props.navigation.navigate('Mypage')}>
           <ProfileImgBox source={require('../../assets/bonobono.jpg')} />
-          <UserNickname>bonobono</UserNickname>
+          <UserNickname>{auth.login.nickname}</UserNickname>
         </ProfileBox>
         <BorderBox />
         <BtnBox>
@@ -65,6 +68,15 @@ class SignedMenu extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    auth: state.redux.auth,
+  }
+}
+
+const SignedMenuWithNavigation = withNavigation(SignedMenu);
+export default connect(mapStateToProps)(SignedMenuWithNavigation);
 
 const Wrap = styled.View`
   flex: 1;
@@ -169,4 +181,3 @@ const UserNickname = styled.Text`
   font-weight:500;
 `;
 
-export default withNavigation(SignedMenu);

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet, Image, TextInput, TouchableOpacity, Dimensions } from 'react-native';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { userSignIn } from '../../actions';
+import { userSignIn, signInInit } from '../../actions';
 import { Ionicons, Feather } from '@expo/vector-icons';
 import { AsyncStorage } from 'react-native';
 
@@ -17,13 +17,27 @@ class SignIn extends Component {
     }
   }
   componentDidMount(){
-    this.getKey();
+    // this.getKey();
+  }
+
+  componentDidUpdate(prevProps){
+    const auth = this.props.auth;
+    if(prevProps.auth !== auth){  
+      if(auth.http.result === "SUCCESS"){
+        this.props.signInInit();
+        // alert("로그인 되었습니다.");
+        this.props.navigation.navigate('Home');
+      } else if(auth.http.result === "FAILED"){
+        this.props.signInInit();
+        alert("로그인에 실패했습니다.");
+      }
+    }    
   }
   
   async getKey(){
     try {
       const _storedData = await AsyncStorage.getItem('@BlogApp.Auth');
-      alert(_storedData)
+      alert(_storedData);
     } catch(error) {
       alert("Error retrieving data :" + error);
     }
@@ -32,8 +46,8 @@ class SignIn extends Component {
   render() {
 
     const userInfo = this.state;
-    // const reduxState = this.props.reduxState;
-    // const rs = JSON.stringify(reduxState, 0, 2)
+    // const auth = this.props.auth;
+    // const authState = JSON.stringify(auth, 0, 2)
 
     return (
       <Wrap>
@@ -43,9 +57,9 @@ class SignIn extends Component {
           </BtnClose>
         </CloseBox>
          <LogoBox>
-          <Logo>{this.props.status}</Logo>
+          <Logo>Travel</Logo>
           <BorderBox></BorderBox>
-          {/*<Text style={{height:210}}>{rs}</Text>*/}
+          {/* <Text style={{height:210}}>{authState}</Text> */}
         </LogoBox>
         <InputBox>
           <InputWrap>
@@ -86,9 +100,7 @@ class SignIn extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    reduxState: state.redux.auth,
-    status: state.redux.auth.http.status,
-    users: state.redux.auth.status.currentUser
+    auth: state.redux.auth,
   }
 }
 
@@ -96,6 +108,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     userSignIn: (userInfo) => {
       return dispatch(userSignIn(userInfo));
+    },
+    signInInit: () => {
+      return dispatch(signInInit());
     },
   }
 }

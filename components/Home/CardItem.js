@@ -77,15 +77,11 @@ class CardItem extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    status: state.redux.like.likeStatus,
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    likeToggle: (status) => {
-      return dispatch(likeToggle(status));
-    }
   }
 }
 

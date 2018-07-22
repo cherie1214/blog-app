@@ -8,11 +8,11 @@ import { connect } from 'react-redux';
 class Menu extends Component {
     
   render() {
-    const { isLoggedIn } = this.props.status;
+    const auth = this.props.auth;
     
     return (
       <Wrap>
-        {isLoggedIn ? (<SignedMenu />) : (<UnSignedMenu />)}
+        {auth.login.loggedIn ? (<SignedMenu />) : (<UnSignedMenu />)}
       </Wrap>
     );
   }
@@ -24,7 +24,7 @@ const Wrap = styled.View`
 
 const mapStateToProps = (state) => { 
   return {
-    status: state.redux.auth.status,
+    auth: state.redux.auth,
   }
 }
 

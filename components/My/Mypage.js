@@ -3,7 +3,7 @@ import { CameraRoll, View, Text, TouchableOpacity, InputText, StyleSheet, Dimens
 import styled from 'styled-components';
 import { Ionicons, Feather, Foundation } from '@expo/vector-icons';
 import { connect } from 'react-redux';
-import { requestLogout } from '../../actions';
+import { signOut } from '../../actions';
 
 
 const { height, width } = Dimensions.get("window");
@@ -13,7 +13,6 @@ class Mypage extends Component {
     super(props);
     this.state = {
       isEditing: false,
-      nickname: "bonobono",
     }
   }
   _handleCameraRoll = () => {
@@ -39,13 +38,20 @@ class Mypage extends Component {
     });
   }
   
-  // _handleFocusInput(){
-  //   this.inputRef[NicknameInput].inputRef.TextInput.focus();
-  // }
+  componentDidUpdate(prevProps){
+    const auth = this.props.auth;
+    if(prevProps.auth !== auth){  
+      if(auth.login.loggedIn === false){
+        alert("로그아웃 되었습니다.");
+        this.props.navigation.navigate('Home');
+      }
+    }    
+  }
+
   
   render(){
-    const { isLoggedIn } = this.props.status;
     const { isEditing } = this.state;
+    const auth = this.props.auth;
     
     return(
         <Wrap>
@@ -65,7 +71,7 @@ class Mypage extends Component {
               </ImgBox>
               <NicknameBox>
                {!isEditing ? (
-                   <UserNickname>{this.state.nickname}</UserNickname>
+                   <UserNickname>{auth.login.nickname}</UserNickname>
                    ) : (
                     <Input 
                       inputRef="NicknameInput"
@@ -86,7 +92,7 @@ class Mypage extends Component {
               <Button borderType onPressOut={() => this.props.navigation.navigate('ChangePw')}>
                 <BtnText borderType>비밀번호 변경</BtnText>
               </Button>
-              <Button onPressOut={this.props.requestLogout}>
+              <Button onPressOut={() => this.props.signOut()}>
                 <BtnText>Sign Out</BtnText>
               </Button>
             </BtnBox>
@@ -101,15 +107,15 @@ class Mypage extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    status: state.redux.auth.status,
+    auth: state.redux.auth,
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    requestLogout: () => {
-      return dispatch(requestLogout());
-    }
+    signOut: () => {
+      return dispatch(signOut());
+    },
   }
 }
 
