@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import { Ionicons, Feather, Foundation } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { signOut } from '../../actions';
+import CameraRollPicker from 'react-native-camera-roll-picker';
+// import Camera from 'react-native-camera';
 
 
 const { height, width } = Dimensions.get("window");
@@ -15,6 +17,7 @@ class Mypage extends Component {
       isEditing: false,
     }
   }
+
   _handleCameraRoll = () => {
    CameraRoll.getPhotos({
        first: 20,
@@ -96,6 +99,13 @@ class Mypage extends Component {
                 <BtnText>Sign Out</BtnText>
               </Button>
             </BtnBox>
+            {/* <CameraRollPicker
+                callback={this.getSelectedImages} /> */}
+            {/* <Camera
+              ref={(cam) => {
+                this.camera = cam;
+              }}>
+            </Camera> */}
           </Contents>
         </Wrap>
       )
@@ -124,13 +134,14 @@ export default connect(mapStateToProps, mapDispatchToProps)(Mypage);
 
 const Wrap = styled.View`
   flex: 1;
-  padding-top: 5%;
+  padding-top: 7%;
+  padding-bottom:-7%;
 `;
 
 const HeaderBox = styled.View`
   position: relative;
   padding: 0 15px;
-  flex: 1.2;
+  height:50px;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;

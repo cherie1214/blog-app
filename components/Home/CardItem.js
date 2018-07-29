@@ -3,8 +3,8 @@ import { Text, View, StyleSheet, Image, TextInput, Dimensions, TouchableOpacity 
 import styled from 'styled-components';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
-import { likeToggle } from '../../actions';
 import { withNavigation } from 'react-navigation';
+import Carousel from 'react-native-snap-carousel';
 
 const { height, width } = Dimensions.get("window");
 
@@ -12,64 +12,126 @@ class CardItem extends Component {
   constructor(props){
     super(props);
     this.state = {
-      isLiked: false,
-      likeCount: 120,
-      writtenDate: "9시간 전",
+      errors: [],
     }
+    this.props = props;
+    this._carousel = {};
+    this.init();
   }
 
-  _handleLikeStatus(isLiked){
-    this.setState(function(prevState){
-      if(isLiked) {
-        return {isLiked:false, likeCount: prevState.likeCount -1}
-      } else {
-        return {isLiked:true, likeCount: prevState.likeCount +1}
-      }
-    });
+  init(){
+    this.state = {
+      cardCon: [
+        {
+          bgStyle : {
+            backgroundColor: "#1adeb8",
+          },
+          weather: "weather-sunny",
+          travelDate: "2018.01.01 - 2018.01.01",
+          title: "45일동안 서유럽 한바퀴, 45days in Wetern Europe",
+          isLiked: false,
+          likeCount: 120,
+          writtenDate: "9시간 전",
+          profileImg: "https://image.fmkorea.com/files/attach/new/20180501/486616/909844983/1039257189/2761aa3169424351e01076f85b61ba45.jpeg",
+          nickname: "bonobono"
+        }, {
+          bgStyle : {
+            backgroundColor: "#5ED9FF",
+          },
+          weather: "weather-sunny",
+          travelDate: "2018.01.01 - 2018.01.01",
+          title: "자전거 여행의 매력, 느림보 제주 여행",
+          isLiked: false,
+          likeCount: 80,
+          writtenDate: "12시간 전",
+          profileImg: "http://t1.daumcdn.net/friends/prod/editor/fe1fbe7c-4c82-446e-bc5c-f571d90b0ba9.jpg",
+          nickname: "어피치"
+        }, {
+          bgStyle : {
+            backgroundColor: "#ffd021",
+          },
+          weather: "weather-sunny",
+          travelDate: "2018.01.01 - 2018.01.01",
+          title: "단 기간 여행이 만족스러웠던 아담한 동네, 블라디보스톡",
+          isLiked: false,
+          likeCount: 102,
+          writtenDate: "18시간 전",
+          profileImg: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2KYrEEV1hf0hBxY-N7XqOK-8Csx-z0Wa_oZ9WcJEp9xVKVsgx",
+          nickname: "바바파파"
+        }, 
+      ]
+    };
+
+    console.log("ThumbnailCarousel Props: ", this.props)
   }
+
+
+  handleSnapToItem(index){
+    console.log("snapped to ", index)
+  }
+
+  _renderItem = ( {item, index} ) => {
+    console.log("rendering,", index, item)
+
+    // const { bgStyle, weather, travelDate, title, isLiked, likeCount, writtenDate, profileImg, nickname } = this.state.cardCon;
+
+    return (
+      <ItemBox style={item.bgStyle}>
+        <FlexBox flex2>
+          <ViewLinkBox onPressOut={() => this.props.navigation.navigate('ArticleView')}>
+            <WeatherBox>
+              <MaterialCommunityIcons name={item.weather} color="#fff" size={22} style={{marginLeft:3, marginRight:3}}/>
+            </WeatherBox>
+            <DateBox>
+              <DateText>{item.travelDate}</DateText>
+            </DateBox>
+            <TitBox>
+              <TitText>{item.title}</TitText>
+            </TitBox>
+          </ViewLinkBox>
+          <Row>
+            <LikeBox>
+              <BtnLike>
+                {item.isLiked ? (
+                  <Ionicons name="md-heart" color="#EC4568" size={13} />
+                  ) : (
+                  <Ionicons name="md-heart-outline" color="#fff" size={13} />
+                  )
+                }
+                <LikeNum>{item.likeCount}</LikeNum>
+              </BtnLike>
+            </LikeBox>
+            <WrittenDate> · {item.writtenDate}</WrittenDate>
+          </Row>
+        </FlexBox>
+        <FlexBox flexEnd>
+          <WriterBox onPressOut={() => this.props.navigation.navigate('WriterView')}>
+            <ProfileImgBox source={{ uri: item.profileImg }} />
+            <WriterNickname>{item.nickname}</WriterNickname>
+          </WriterBox>
+        </FlexBox>
+      </ItemBox>
+    );
+  }
+
   
   render() {
-    // const { isLiked, likeCount } = this.props.status;
-    const { isLiked, likeCount, writtenDate } = this.state;
+    
     
     return (
       <Wrap>
-        <Box>
-          <FlexBox flex2>
-            <ViewLinkBox onPressOut={() => this.props.navigation.navigate('ArticleView')}>
-              <WeatherBox>
-                <MaterialCommunityIcons name="weather-sunny" color="#fff" size={22} style={{marginLeft:3, marginRight:3}}/>
-                <MaterialCommunityIcons name="weather-partlycloudy" color="#fff" size={22} style={{marginLeft:3, marginRight:3}} />
-              </WeatherBox>
-              <DateBox>
-                <DateText>2018.01.01 - 2018.01.01</DateText>
-              </DateBox>
-              <TitBox>
-                <TitText>45일동안 서유럽 한바퀴, 45days in Wetern Europe</TitText>
-              </TitBox>
-            </ViewLinkBox>
-            <Row>
-              <LikeBox>
-                <BtnLike onPressOut={() => this._handleLikeStatus(isLiked)}>
-                  {isLiked ? (
-                    <Ionicons name="md-heart" color="#EC4568" size={13} />
-                    ) : (
-                    <Ionicons name="md-heart-outline" color="#fff" size={13} />
-                    )
-                  }
-                  <LikeNum>{likeCount}</LikeNum>
-                </BtnLike>
-              </LikeBox>
-              <WrittenDate> · {writtenDate}</WrittenDate>
-            </Row>
-          </FlexBox>
-          <FlexBox flexEnd>
-            <WriterBox onPressOut={() => this.props.navigation.navigate('WriterView')}>
-              <ProfileImgBox source={require('../../assets/bonobono.jpg')}/>
-              <WriterNickname>bonobono</WriterNickname>
-            </WriterBox>
-          </FlexBox>
-        </Box>
+        <Carousel
+          ref={ (c) => { this._carousel = c; } }
+          data={this.state.cardCon}
+          inactiveSlideOpacity={0.3}
+          inactiveSlideScale={0.7}
+          renderItem={this._renderItem.bind(this)}
+          onSnapToItem={this.handleSnapToItem.bind(this)}
+          sliderWidth={width}
+          itemWidth={width * 0.65}
+          layout={'default'}
+          firstItem={0}
+        />
       </Wrap>  
     );
   }
@@ -94,12 +156,12 @@ const Wrap = styled.View`
   justify-content: center;
 `;
 
-const Box = styled.View`
+const ItemBox = styled.View`
   flex-direction: column;
   justify-content: space-between;
+  margin-top:15px;
   padding:15px;
-  width: ${width * 0.65};
-  background: #5ED9FF;
+  flex: 0.95;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.16)
 `;
@@ -179,7 +241,7 @@ const WriterBox = styled.TouchableOpacity`
 const WriterNickname = styled.Text`
   font-family: 'hd-bold';
   color:#fff;
-  font-size:17px;
+  font-size:15px;
   font-weight:500;
 `;
 

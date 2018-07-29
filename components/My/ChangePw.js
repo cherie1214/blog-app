@@ -2,13 +2,16 @@ import React, { Component } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons } from '@expo/vector-icons';
+import { connect } from 'react-redux';
+import { userChangePw } from '../../actions';
 
 const { height, width } = Dimensions.get("window");
 
-export default class Mypage extends Component {
+class ChangePw extends Component {
   constructor(props){
     super(props);
     this.state = {
+      id: this.props.auth.login.id,
       currentPw: "",
       newPw: "",
       confirmPw: "",
@@ -16,6 +19,8 @@ export default class Mypage extends Component {
   }
   
   render(){
+    const UserInfo = this.state;
+
     return(
         <Wrap>
           <HeaderBox>
@@ -58,7 +63,7 @@ export default class Mypage extends Component {
                 autoCorrect={false}
               />
             </InputWrap>
-            <Button onPressOut={this.props.requestLogin}>
+            <Button onPressOut={() => this.props.userChangePw(UserInfo)}>
               <BtnText>Submit</BtnText>
             </Button>
           </InputBox>
@@ -67,15 +72,33 @@ export default class Mypage extends Component {
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    auth: state.redux.auth,
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    userChangePw: (UserInfo) => {
+      return dispatch(userChangePw(UserInfo));
+    },
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(ChangePw);
+
 const Wrap = styled.View`
   flex: 1;
-  padding-top: 5%;
+  padding-top: 7%;
+  padding-bottom:-7%;
 `;
 
 const HeaderBox = styled.View`
   position: relative;
   padding: 0 15px;
-  flex: 1.2;
+  height:50px;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;

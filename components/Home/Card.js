@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Image, TextInput, Dimensions } from 'react-native';
+import { Dimensions } from 'react-native';
 import styled from 'styled-components';
-import { Feather } from '@expo/vector-icons';
 import CardItem from './CardItem';
 
 const { height, width } = Dimensions.get("window");

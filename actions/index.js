@@ -13,6 +13,9 @@ import {
   AUTH_SIGNUP_INIT,
 
   AUTH_SIGNOUT,
+
+  AUTH_CHANGE_PW,
+  AUTN_CHANGE_PW_FAILURE,
 } from './ActionTypes';
 
 import axios from 'axios';
@@ -93,6 +96,20 @@ export function signout(){
     }
 }
 
+//change password
+export function changePw(pw){
+    return {
+        type: AUTH_CHANGE_PW,
+        pw
+    }
+}
+
+export function changePwFailure(){
+    return {
+        type: AUTN_CHANGE_PW_FAILURE,
+    }
+}
+
 //action functions
 
 //Sign In
@@ -167,6 +184,33 @@ export function userSignUp(userInfo) {
     }    
   }
 
+//change password
+export function userChangePw(userInfo) {
+    return (dispatch) => {
+        // Inform Login API is starting
+        dispatch(getting());
+
+        // API REQUEST
+        return axios.post('http://localhost:8000/api/auth/changePw', userInfo)
+        .then((res) => {
+            alert(res.data.status)
+            const id = res.data.id;
+            const pw = res.data.pw;
+            alert(id);
+            if(res.data.status === "CHANGE_PW_SUCCESS"){
+                dispatch(changePw(pw));
+            } else {
+                if(res.data.status === "CHANGE_PW_DISCORD"){
+                    alert("현재 비밀번호가 일치하지 않습니다.")
+                }
+                dispatch(changePwFailure());
+            }
+        }).catch((error) => {
+            // FAILED
+            dispatch(getFailure());
+        });
+    }    
+  }
 
 //storage 조회
 export function getStorage(){

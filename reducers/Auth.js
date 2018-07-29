@@ -130,6 +130,19 @@ export default function auth(state = initialState, action) {
                 }
             }
 
+        //change pw
+        case types.AUTH_CHANGE_PW:
+            return {
+                ...state,
+                http: {
+                    status: 'SUCCESS',
+                    result: 'SUCCESS'
+                },
+                login: {
+                    loggedIn: false,
+                }
+            }    
+
         //default   
         default:
             return state;

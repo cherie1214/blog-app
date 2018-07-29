@@ -40,6 +40,8 @@ export default class Write extends Component {
 
 const Wrap = styled.View`
   flex: 1;
+  margin-top:7%;
+  margin-bottom:-7%;
 `;
 
 const HeaderBox = styled.View`

@@ -42,18 +42,13 @@ export default class WriteCon extends Component {
 }
     
 const Wrap = styled.View`
-  // padding: 7% 10%;
-  // margin-bottom:7%;
-  // background:#5ED9FF;
-  // border-radius: 10px;
+
   flex: 1;
 `;
 
 
 const HeaderConBox = styled.View`
-  // flex-direction: row;
-  // justify-content: space-between;
-  // align-items: center;
+ 
   background:#5ED9FF;
 `;
 
