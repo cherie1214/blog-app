@@ -69,14 +69,14 @@ const Container = styled.View`
 `;
 
 const HomeMenu = styled.View`
-  flex: 1.5;
+  flex: 1.3;
   align-items: flex-end;
   flex-direction: row;
   justify-content: flex-start;
 `;
 
 const HomeHeader = styled.View`
-  flex: 1.5;
+  flex: 1.4;
   padding-bottom:5%;
   align-items: flex-end;
   flex-direction: row;
@@ -88,7 +88,7 @@ const HomeBody = styled.View`
 `;
 
 const HomeFooter = styled.View`
-    flex : 1.5;
+    flex : 1.3;
     align-items: center;
     justify-content: center;
 `;

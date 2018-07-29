@@ -61,20 +61,13 @@ class CardItem extends Component {
         }, 
       ]
     };
-
-    console.log("ThumbnailCarousel Props: ", this.props)
   }
 
 
   handleSnapToItem(index){
-    console.log("snapped to ", index)
   }
 
   _renderItem = ( {item, index} ) => {
-    console.log("rendering,", index, item)
-
-    // const { bgStyle, weather, travelDate, title, isLiked, likeCount, writtenDate, profileImg, nickname } = this.state.cardCon;
-
     return (
       <ItemBox style={item.bgStyle}>
         <FlexBox flex2>
@@ -124,13 +117,13 @@ class CardItem extends Component {
           ref={ (c) => { this._carousel = c; } }
           data={this.state.cardCon}
           inactiveSlideOpacity={0.3}
-          inactiveSlideScale={0.7}
+          inactiveSlideScale={0.75}
           renderItem={this._renderItem.bind(this)}
           onSnapToItem={this.handleSnapToItem.bind(this)}
           sliderWidth={width}
-          itemWidth={width * 0.65}
+          itemWidth={width * 0.7}
           layout={'default'}
-          firstItem={0}
+          firstItem={1}
         />
       </Wrap>  
     );
