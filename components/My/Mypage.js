@@ -1,13 +1,12 @@
 import React, { Component } from 'react'
-import { CameraRoll, View, Text, TouchableOpacity, InputText, StyleSheet, Dimensions } from 'react-native';
+import { CameraRoll, Dimensions } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons, Feather, Foundation } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { signOut, changeNicknameRequest } from '../../actions';
-import CameraRollPicker from 'react-native-camera-roll-picker';
+// import CameraRollPicker from 'react-native-camera-roll-picker';
 // import { userInfo } from 'os';
 // import Camera from 'react-native-camera';
-
 
 const { height, width } = Dimensions.get("window");
 

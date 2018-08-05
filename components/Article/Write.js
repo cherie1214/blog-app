@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Animated, View, Text, TouchableOpacity, Button, Dimensions, StatusBar, ScrollView, StyleSheet } from 'react-native';
-import styled, { css } from 'styled-components';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Dimensions, StatusBar, ScrollView } from 'react-native';
+import styled from 'styled-components';
+import { Ionicons } from '@expo/vector-icons';
 
 import WriteCon from './WriteCon';
 
@@ -22,7 +22,7 @@ export default class Write extends Component {
         <Wrap>
           <StatusBar hidden={true} />
           <HeaderBox>
-            <BtnIcon onPressOut={() => this.props.navigation.navigate('Home')}>
+            <BtnIcon onPress={() => this.props.navigation.navigate('Home')}>
               <Ionicons name="ios-arrow-round-back" color="#333" size={45}/>
             </BtnIcon>
             <H1>글 쓰기</H1>

@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import { Animated, View, Text, TextInput, TouchableOpacity, Dimensions, StatusBar, ScrollView, StyleSheet } from 'react-native';
-import styled, { css } from 'styled-components';
-import { Ionicons, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
+import { Dimensions, ScrollView } from 'react-native';
+import styled from 'styled-components';
+import { Ionicons, Feather } from '@expo/vector-icons';
 
 import ArticleTab from './ArticleTab';
 import WriterTab from './WriterTab';
 
 const { height, width } = Dimensions.get("window");
-
 
 export default class Search extends Component {
   constructor(props){

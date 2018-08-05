@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Image, TextInput, Dimensions } from 'react-native';
+import { Dimensions } from 'react-native';
 import styled from 'styled-components';
 import { Feather } from '@expo/vector-icons';
-import { connect } from 'react-redux';
 import { withNavigation } from 'react-navigation';
 
 const { height, width } = Dimensions.get("window");

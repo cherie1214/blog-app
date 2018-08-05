@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Button } from 'react-native';
+// import {  } from 'react-native';
 import styled from 'styled-components';
 import SignedMenu from './Signed';
 import UnSignedMenu from './UnSigned';

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Animated, View, Text, TouchableOpacity, Dimensions, StatusBar, Button, ScrollView, StyleSheet, Alert } from 'react-native';
-import styled, { css } from 'styled-components';
-import { Ionicons, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Dimensions } from 'react-native';
+import styled from 'styled-components';
+import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const { height, width } = Dimensions.get("window");
 

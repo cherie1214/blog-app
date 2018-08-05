@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import { Animated, View, Text, TouchableOpacity, Dimensions, StatusBar, ScrollView, StyleSheet } from 'react-native';
-import styled, { css } from 'styled-components';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Dimensions, View } from 'react-native';
+import styled from 'styled-components';
 
 import ArticleItem  from './ArticleItem';
 
 const { height, width } = Dimensions.get("window");
-
 
 export default class ArticleTab extends Component {
   constructor(props){

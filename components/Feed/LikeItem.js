@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView } from 'react-native';
+import { Dimensions } from 'react-native';
 import styled from 'styled-components';
-import { Ionicons } from '@expo/vector-icons';
 
 const { height, width } = Dimensions.get("window");
 

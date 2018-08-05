@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Dimensions, TouchableOpacity } from 'react-native';
+import { Dimensions } from 'react-native';
 import styled from 'styled-components';
-import { SimpleLineIcons, Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { withNavigation } from 'react-navigation';
 
 const { height, width } = Dimensions.get("window");

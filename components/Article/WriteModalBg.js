@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, Dimensions } from 'react-native';
+import { Dimensions } from 'react-native';
 import styled from 'styled-components';
 import { Feather } from '@expo/vector-icons';
 
@@ -11,14 +11,10 @@ class RadioButton extends Component{
   render(){
     return(
       <RadioBtn 
-        onPress = { this.props.onClick } activeOpacity = { 0.8 } >
+        onPress = { () => this.props.onClick() } activeOpacity = { 0.8 } >
           <ColorCircle style={{backgroundColor: this.props.button.color}}>
-          {
-            (this.props.button.selected) ?
-              (<Feather name="check" color="#fff" size={30} />)
-              :
-                null
-          }
+          {(this.props.button.id === this.props.selectedId) ?
+              (<Feather name="check" color="#fff" size={30} />) : ''}
           </ColorCircle>
       </RadioBtn>
     );
@@ -132,42 +128,33 @@ export default class ModalBg extends Component {
         }
 
       ], 
-      selectedId: '',
-      selectedColor: '', 
+      selectedId: this.props.parentState.bgId,
+      selectedColor: this.props.parentState.bgStyle.bgColor,
     }
-  }
-
-  componentDidMount(){
-    this.state.radioItems.map(( item ) =>
-    {
-      if( item.selected == true ){
-        this.setState({ 
-          selectedId: item.id,
-          selectedColor: item.color 
-        });
-      }
-    });
   }
   
   changeActiveRadioButton(index){
-      this.state.radioItems.map(( item ) => { 
-        item.selected = false; 
-      });
+    const id =  this.state.radioItems[index].id;
+    const color = this.state.radioItems[index].color;
 
-      this.state.radioItems[index].selected = true;
+    this.state.radioItems.map(( item ) => { 
+      item.selected = false; 
+    });
 
-      this.setState({ radioItems: this.state.radioItems }, () => {
-          this.setState({ 
-            selectedId: this.state.radioItems[index].id, 
-            selectedColor: this.state.radioItems[index].color,
-          });
-      });
+    this.state.radioItems[index].selected = true;
+
+    this.setState({ radioItems: this.state.radioItems }, () => {
+        this.setState({ 
+          selectedId: id, 
+          selectedColor: color,
+        });
+    });
+
+    this.props.handleBg(id, color);
   }
 
   
-  render(){
-    const parentState = this.props.parentState;
-    
+  render(){    
     return(
       <ModalWrap>
         <ModalRow>
@@ -179,10 +166,10 @@ export default class ModalBg extends Component {
           <ModalLabel>Color</ModalLabel>
           <RadioBox>
             {this.state.radioItems.map(( item, key ) => (
-              <RadioButton key = { key } button = { item } onClick = { this.changeActiveRadioButton.bind( this, key ) }/>
+              <RadioButton key = { key } button = { item } selectedId ={this.state.selectedId}  onClick = { this.changeActiveRadioButton.bind( this, key ) }/>
             ))}
           </RadioBox>
-          <Text style={{height:30}}>id: {this.state.selectedId}, bgColor: {this.state.selectedColor}</Text>
+          {/* <Text style={{height:30}}>id: {this.state.selectedId}, bgColor: {this.state.selectedColor}</Text> */}
         </ColorBox>
       </ModalWrap>
     )

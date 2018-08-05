@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions } from 'react-native';
-import { DrawerNavigator, DrawerItems, createStackNavigator, createDrawerNavigator, createSwitchNavigator } from 'react-navigation';
+import { Dimensions } from 'react-native';
+import { createStackNavigator, createDrawerNavigator, createSwitchNavigator } from 'react-navigation';
 import { DrawerActions } from 'react-navigation';
 import {
   reduxifyNavigator,

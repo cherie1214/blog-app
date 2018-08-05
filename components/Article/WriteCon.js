@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Dimensions, Button } from 'react-native';
 import styled from 'styled-components';
-import { Entypo } from '@expo/vector-icons';
+import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import Modal from "react-native-modal";
 import ModalDate from './WriteModalDate';
 import ModalWeather from './WriteModalWeather';
@@ -15,17 +15,65 @@ export default class WriteCon extends Component {
     this.state = {
       isModalVisible: false,
       modalType: "",
+      switchOneday: false,
       startDate: "",
       finishDate: "",
-      weatherId: "",
-      weatherIcon: "",
-      bgId: "",
-      bgColor: "",
+      title: "",
+      weather: {
+        id: 1,
+        name: "",
+      },
+      bgId: 1,
+      bgStyle: {
+        backgroundColor: "#6B5ED1"
+      },
+      contents: "",
     };
     this._toggleModal = this._toggleModal.bind(this);
     this._rednerModalType = this._rednerModalType.bind(this);
     this._renderModalContent = this._renderModalContent.bind(this);
   }
+
+  _handleDate = (startDate, finishDate, switchOneday) => {
+    if(startDate){
+      this.setState({
+        startDate
+      })
+    }
+    if(finishDate){
+      this.setState({
+        finishDate
+      })
+    }
+    if(finishDate === "remove"){
+      this.setState({
+        finishDate : null
+      });
+    }
+    switchOneday ? 
+    this.setState({
+      switchOneday : true
+    })
+    :this.setState({
+      switchOneday : false
+    });
+  }
+
+  _handleWeather = (value) => {
+    this.setState({
+      weather : value
+    })
+  }
+
+  _handleBg = (id, color) => {
+    this.setState({
+      bgId: id,
+      bgStyle : {
+        backgroundColor: color,
+      }
+    })
+  }
+
   _toggleModal = (type) => {
     this.setState({ 
       isModalVisible: !this.state.isModalVisible, 
@@ -50,15 +98,15 @@ export default class WriteCon extends Component {
         <Button value="cancle" title="닫기" onPress={() => this._toggleModal('')}/>
       </ModalHeader>
       {this._rednerModalType(
-        <ModalDate parentState={this.state} />, 
-        <ModalWeather parentState={this.state} />,
-        <ModalBg parentState={this.state} />
+        <ModalDate parentState={this.state} handleDate={this._handleDate} />, 
+        <ModalWeather parentState={this.state} handleWeather={this._handleWeather}/>,
+        <ModalBg parentState={this.state} handleBg={this._handleBg}/>
       )} 
     </View>
   );
   
   render(){
-    const { isModalVisible, startDate, finishDate } = this.state;
+    const { isModalVisible, startDate, finishDate, title, weather, bgStyle, contents } = this.state;
 
     return (
       <Wrap>
@@ -68,22 +116,29 @@ export default class WriteCon extends Component {
           {this._renderModalContent()}
         </Modal>
 
-
-        <HeaderConBox>
+        <HeaderConBox style={bgStyle}>
           <DateBox>
-            <Select onPress={() => this._toggleModal("date")}>
-              <CommonText>날짜 {this.state.modalType}</CommonText>
-              <CommonText>{startDate} - {finishDate}</CommonText>
+            <Select onPress={() => this._toggleModal("date")}>   
+              <CommonText>날짜</CommonText>      
+              <CommonText>{startDate ? startDate : ''} {finishDate ? '- ' + finishDate : ''}</CommonText>
             </Select>
           </DateBox>
           <TitBox>
             <Select> 
               <CommonText>제목</CommonText>
+              <TitInput
+                onChangeText={(title) => this.setState({title})}
+                value={title}
+                maxLength={45}
+                autoFocus={true}
+              />
              </Select> 
           </TitBox>
           <WeatherBox>
             <Select onPress={() => this._toggleModal("weather")}>
               <CommonText>날씨</CommonText>
+              {weather.name ? 
+                (<MaterialCommunityIcons name={weather.name} size={25} color="#fff" />)  : ''};
             </Select>
           </WeatherBox>
           <Row flexEnd>
@@ -95,7 +150,7 @@ export default class WriteCon extends Component {
         <TextareaBox>
           <Textarea
             multiline={true}
-            onChangeText={(text) => this.setState({text})}
+            onChangeText={(contents) => this.setState({contents})}
             placeholder="당신의 여행은 어땠나요?"
             placeholderStyle={{color:"#999", fontSize:15}}
             value={this.state.text}/>
@@ -112,7 +167,6 @@ const Wrap = styled.View`
 
 const HeaderConBox = styled.View`
   padding: 7%; 
-  background:#5ED9FF;
 `;
 
 const Select = styled.TouchableOpacity`
@@ -130,11 +184,13 @@ const DateBox = styled.View`
 `;
 
 const CommonText = styled.Text`
+  margin-right:10px;
   font-family: 'hd-bold';
   color:#fff;
   font-size:17px;
   font-weight:500;
 `;
+
 
 const WeatherBox = styled.View`
   margin-bottom:25px;
@@ -144,14 +200,19 @@ const TitBox = styled.View`
   margin: 25px 0;
 `;
 
-const TitText = styled.Text`
+const TitInput = styled.TextInput`
+  color: #fff;
+  font-size:17px;
+  font-family: 'hd-regular';
 `;
 
 const Btn = styled.TouchableOpacity`
 `;
 
 const TextareaBox = styled.View`
+  flex: 1;
   padding:7%;
+  background:red;
 `;
 
 const Textarea = styled.TextInput`
