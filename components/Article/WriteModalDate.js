@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Switch, TouchableHighlight, View, Text, TouchableOpacity, Dimensions, StatusBar, Button, ScrollView, StyleSheet, Alert } from 'react-native';
 import styled from 'styled-components';
 import { Foundation, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
-import Modal from "react-native-modal";
 import DatePicker from 'react-native-datepicker';
 
 const { height, width } = Dimensions.get("window");

@@ -4,17 +4,14 @@ import styled from 'styled-components';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const { height, width } = Dimensions.get("window");
+const width20per = (width - width * 0.14) / 5;
+const colorBtnWidth = width20per - 14;
 
 class RadioButton extends Component{
-  constructor(){
-    super();
-  }
- 
   render(){
     return(
       <RadioBtn 
-        onPress = { this.props.onClick } 
-        activeOpacity = { 0.8 } >
+        onPress = { this.props.onClick } activeOpacity = { 0.8 } >
           <ColorCircle style={{backgroundColor: this.props.button.color}}>
           {
             (this.props.button.selected) ?
@@ -182,8 +179,8 @@ export default class ModalBg extends Component {
           <ModalLabel>Color</ModalLabel>
           <RadioBox>
             {this.state.radioItems.map(( item, key ) => (
-                  <RadioButton key = { key } button = { item } onClick = { this.changeActiveRadioButton.bind( this, key ) }/>
-              ))}
+              <RadioButton key = { key } button = { item } onClick = { this.changeActiveRadioButton.bind( this, key ) }/>
+            ))}
           </RadioBox>
           <Text style={{height:30}}>id: {this.state.selectedItem}, bgColor: {this.state.selectedColor}</Text>
         </ColorBox>
@@ -223,7 +220,7 @@ const ColorBox = styled.View`
 `;
 
 const RadioBox = styled.View`
-  margin: 0 -10px;
+  margin: 5px -7px;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -231,16 +228,15 @@ const RadioBox = styled.View`
 
 const RadioBtn = styled.TouchableOpacity`
   flex-direction: row;
-  margin: 10px;
+  margin: 7px;
   align-items: center;
   justify-content: center;
 `;
 
 const ColorCircle = styled.View`
-  width: 40px;
-  height: 40px;
+  width: ${colorBtnWidth};
+  height: ${colorBtnWidth};
   align-items: center;
   justify-content: center;
-  background: #000;
-  border-radius: 20px;
+  border-radius: ${colorBtnWidth / 2};
 `;

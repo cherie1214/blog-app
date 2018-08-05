@@ -5,6 +5,23 @@ import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const { height, width } = Dimensions.get("window");
 
+class Option extends Component{
+  render(){
+    return(
+      <ModalRow 
+        onPress = { this.props.onClick } activeOpacity = { 0.8 } >
+        <ModalIconBox>
+          <MaterialCommunityIcons name={this.props.select.iconName} size={25} color={this.props.select.iconColor} />
+        </ModalIconBox>
+        <ModalLabel>{this.props.select.label}</ModalLabel>
+        <ModalCheckBox>
+          {this.props.select.isChecked ? <Feather name="check" color="#666" size={30} /> : ``}              
+        </ModalCheckBox>
+      </ModalRow>
+    );
+  }
+}
+
 export default class ModalWeather extends Component {
   constructor(props){
     super(props);
@@ -66,55 +83,44 @@ export default class ModalWeather extends Component {
           iconColor: "#333",
           isChecked: false,
         },
-      ]
-    };
-    this._toggleCheck = this._toggleCheck.bind(this);     
+      ],
+      selectedOpt: "",
+    };  
   }
 
-  _toggleCheck = (e) =>{
-    // alert(e.label)
-    let opts = this.state.weatherOpt;
-    e.isChecked = !e.isChecked;
-    this.setState({
-      weatherOpt: opts,
-    }) 
+  componentDidMount(){
+    this.state.weatherOpt.map(( item ) =>
+    {
+      if( item.isChecked == true ){
+        this.setState({ 
+          selectedOpt: item.id,
+        });
+      }
+    });
+  }
+  
+  changeActiveOption(index){
+      this.state.weatherOpt.map(( opt ) => { 
+        opt.isChecked = false; 
+      });
 
-    if(e.id !== 1 ){
-      opts[0].isChecked = false;
-      this.setState({
-        weatherOpt: opts,
-      })
-    }
-    // if(e.id === 1 && e.isChecked){
-    //   alert("1")
-    //   //나머지 isChecked === false로...
-    // }
+      this.state.weatherOpt[index].isChecked = true;
 
+      this.setState({ weatherOpt: this.state.weatherOpt }, () => {
+          this.setState({ 
+            selectedOpt: this.state.weatherOpt[index].id, 
+          });
+      });
   }
 
   render(){
     const parentState = this.props.parentState;
-    const weatherOpt = this.state.weatherOpt;
-
-    const weatherObj = weatherOpt.map (
-      (e) => {
-        return (
-          <ModalRow key={e.id} onPress={() => this._toggleCheck(e)}>
-            <ModalIconBox>
-              <MaterialCommunityIcons name={e.iconName} size={25} color={e.iconColor} />
-            </ModalIconBox>
-            <ModalLabel>{e.label}</ModalLabel>
-            <ModalCheckBox>
-              {e.isChecked ? <Feather name="check" color="#666" size={30} /> : ``}              
-            </ModalCheckBox>
-          </ModalRow>
-        )  
-      }
-    )
 
     return(
       <ModalWrap>
-          {weatherObj}
+        {this.state.weatherOpt.map(( item, key ) => (
+          <Option key = { key } select = { item } onClick = { this.changeActiveOption.bind( this, key ) }/>
+        ))}
       </ModalWrap>
     )
   }

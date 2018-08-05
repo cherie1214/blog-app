@@ -123,7 +123,7 @@ class CardItem extends Component {
           sliderWidth={width}
           itemWidth={width * 0.7}
           layout={'default'}
-          firstItem={1}
+          firstItem={0}
         />
       </Wrap>  
     );
