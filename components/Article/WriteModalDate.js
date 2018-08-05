@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { Switch, TouchableHighlight, View, Text, TouchableOpacity, Dimensions, StatusBar, Button, ScrollView, StyleSheet, Alert } from 'react-native';
+import { Switch, Dimensions } from 'react-native';
 import styled from 'styled-components';
-import { Foundation, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import DatePicker from 'react-native-datepicker';
 
 const { height, width } = Dimensions.get("window");
-
 
 export default class ModalDate extends Component {
   constructor(props){
@@ -17,10 +15,6 @@ export default class ModalDate extends Component {
       finishDate: this.props.parentState.finishDate,
     }
   }
-
-  // _toggleModal = () => {
-  //   this.setState({ isModalVisible: !this.state.isModalVisible });
-  // }
 
   render(){
     const parentState = this.props.parentState;

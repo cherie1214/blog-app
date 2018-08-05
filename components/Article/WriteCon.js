@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Switch, TouchableHighlight, View, Text, TouchableOpacity, Dimensions, Button } from 'react-native';
-import styled, { css } from 'styled-components';
+import { View, Dimensions, Button } from 'react-native';
+import styled from 'styled-components';
 import { Entypo } from '@expo/vector-icons';
 import Modal from "react-native-modal";
 import ModalDate from './WriteModalDate';
@@ -17,8 +17,10 @@ export default class WriteCon extends Component {
       modalType: "",
       startDate: "",
       finishDate: "",
-      test: "test",
-      text: "",
+      weatherId: "",
+      weatherIcon: "",
+      bgId: "",
+      bgColor: "",
     };
     this._toggleModal = this._toggleModal.bind(this);
     this._rednerModalType = this._rednerModalType.bind(this);

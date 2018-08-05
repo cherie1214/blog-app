@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Dimensions, Button, Platform } from 'react-native';
+import { Text, Dimensions } from 'react-native';
 import styled from 'styled-components';
-import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 
 const { height, width } = Dimensions.get("window");
 const width20per = (width - width * 0.14) / 5;
@@ -107,32 +107,32 @@ export default class ModalBg extends Component {
         },
         {
           id: 16,
-          color: '#aaa',
+          color: '#bbb',
           selected: false
         }, 
         {
           id: 17,
-          color: '#888',
+          color: '#999',
           selected: false,
         },
         {
           id: 18,
-          color: '#666',
+          color: '#777',
           selected: false
         },
         {
           id: 19,
-          color: '#444',
+          color: '#555',
           selected: false
         },
         {
           id: 20,
-          color: '#222',
+          color: '#333',
           selected: false
         }
 
       ], 
-      selectedItem: '',
+      selectedId: '',
       selectedColor: '', 
     }
   }
@@ -142,7 +142,7 @@ export default class ModalBg extends Component {
     {
       if( item.selected == true ){
         this.setState({ 
-          selectedItem: item.id,
+          selectedId: item.id,
           selectedColor: item.color 
         });
       }
@@ -158,7 +158,7 @@ export default class ModalBg extends Component {
 
       this.setState({ radioItems: this.state.radioItems }, () => {
           this.setState({ 
-            selectedItem: this.state.radioItems[index].id, 
+            selectedId: this.state.radioItems[index].id, 
             selectedColor: this.state.radioItems[index].color,
           });
       });
@@ -182,7 +182,7 @@ export default class ModalBg extends Component {
               <RadioButton key = { key } button = { item } onClick = { this.changeActiveRadioButton.bind( this, key ) }/>
             ))}
           </RadioBox>
-          <Text style={{height:30}}>id: {this.state.selectedItem}, bgColor: {this.state.selectedColor}</Text>
+          <Text style={{height:30}}>id: {this.state.selectedId}, bgColor: {this.state.selectedColor}</Text>
         </ColorBox>
       </ModalWrap>
     )

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Dimensions } from 'react-native';
+import { Dimensions, Text } from 'react-native';
 import styled from 'styled-components';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 
@@ -15,7 +15,7 @@ class Option extends Component{
         </ModalIconBox>
         <ModalLabel>{this.props.select.label}</ModalLabel>
         <ModalCheckBox>
-          {this.props.select.isChecked ? <Feather name="check" color="#666" size={30} /> : ``}              
+          {this.props.select.selected ? <Feather name="check" color="#666" size={30} /> : ``}              
         </ModalCheckBox>
       </ModalRow>
     );
@@ -32,68 +32,70 @@ export default class ModalWeather extends Component {
           label: "선택 안 함",
           iconName: "cloud-off-outline",
           iconColor: "transparent",
-          isChecked: true,
+          selected: true,
         },
         {
           id: 2,
           label: "Sunny",
           iconName: "weather-sunny",
           iconColor: "#333",
-          isChecked: false,
+          selected: false,
         },
         {
           id: 3,
           label: "Cloudy",
           iconName: "weather-cloudy",
           iconColor: "#333",
-          isChecked: false,
+          selected: false,
         },
         {
           id: 4,
           label: "Sunny & Cloudy",
           iconName: "weather-partlycloudy",
           iconColor: "#333",
-          isChecked: false,
+          selected: false,
         },
         {
           id: 5,
           label: "Rainy",
           iconName: "weather-pouring",
           iconColor: "#333",
-          isChecked: false,
+          selected: false,
         },
         {
           id: 6,
           label: "Windy",
           iconName: "weather-windy",
           iconColor: "#333",
-          isChecked: false,
+          selected: false,
         },
         {
           id: 7,
           label: "Snowy",
           iconName: "weather-snowy",
           iconColor: "#333",
-          isChecked: false,
+          selected: false,
         },
         {
           id: 8,
           label: "fog",
           iconName: "weather-fog",
           iconColor: "#333",
-          isChecked: false,
+          selected: false,
         },
       ],
-      selectedOpt: "",
+      selectedId: "",
+      selectedIconName: "",
     };  
   }
 
   componentDidMount(){
     this.state.weatherOpt.map(( item ) =>
     {
-      if( item.isChecked == true ){
+      if( item.selected == true ){
         this.setState({ 
-          selectedOpt: item.id,
+          selectedId: item.id,
+          selectedIconName: item.iconName,
         });
       }
     });
@@ -101,14 +103,15 @@ export default class ModalWeather extends Component {
   
   changeActiveOption(index){
       this.state.weatherOpt.map(( opt ) => { 
-        opt.isChecked = false; 
+        opt.selected = false; 
       });
 
-      this.state.weatherOpt[index].isChecked = true;
+      this.state.weatherOpt[index].selected = true;
 
       this.setState({ weatherOpt: this.state.weatherOpt }, () => {
           this.setState({ 
-            selectedOpt: this.state.weatherOpt[index].id, 
+            selectedId: this.state.weatherOpt[index].id, 
+            selectedIconName: this.state.weatherOpt[index].iconName, 
           });
       });
   }
@@ -121,6 +124,7 @@ export default class ModalWeather extends Component {
         {this.state.weatherOpt.map(( item, key ) => (
           <Option key = { key } select = { item } onClick = { this.changeActiveOption.bind( this, key ) }/>
         ))}
+        <Text style={{marginLeft:15, height:30}}>id: {this.state.selectedId}, icon name: {this.state.selectedIconName}</Text>
       </ModalWrap>
     )
   }
