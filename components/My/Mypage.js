@@ -3,8 +3,9 @@ import { CameraRoll, View, Text, TouchableOpacity, InputText, StyleSheet, Dimens
 import styled from 'styled-components';
 import { Ionicons, Feather, Foundation } from '@expo/vector-icons';
 import { connect } from 'react-redux';
-import { signOut } from '../../actions';
+import { signOut, changeNicknameRequest } from '../../actions';
 import CameraRollPicker from 'react-native-camera-roll-picker';
+// import { userInfo } from 'os';
 // import Camera from 'react-native-camera';
 
 
@@ -32,8 +33,14 @@ class Mypage extends Component {
    };
 
    _handleChangeNickname(isEditing){
+    const data = {
+      id : this.props.auth.login.id,
+      nickname : this.state.nickname
+    }
+    const token = this.props.auth.login.token;
     this.setState(function(prevState){
       if(isEditing) {
+        if(data.nickname !== this.props.auth.login.nickname) this.props.changeNicknameRequest(data, token);
         return {isEditing:false}
       } else {
         return {isEditing:true}
@@ -63,6 +70,7 @@ class Mypage extends Component {
               <Ionicons name="ios-arrow-round-back" color="#333" size={45}/>
             </BtnIcon>
             <H1>My Travel</H1>
+            {/* <H1>{this.props.auth.login.token}</H1> */}
           </HeaderBox>
           <Contents>
             <ProfileBox>
@@ -78,9 +86,10 @@ class Mypage extends Component {
                    ) : (
                     <Input 
                       inputRef="NicknameInput"
-                      value={this.state.nickname}
-                      placeholder={this.state.nickname}
+                      value={this.props.auth.login.nickname}
+                      placeholder={this.props.auth.login.nickname}
                       placeholderTextColor="#999"
+                      autoFocus={true}
                       onChangeText={(nickname) => this.setState({nickname: nickname})}
                     />
                    )
@@ -125,6 +134,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     signOut: () => {
       return dispatch(signOut());
+    },
+    changeNicknameRequest: (userInfo, token) => {
+      return dispatch(changeNicknameRequest(userInfo, token));
     },
   }
 }

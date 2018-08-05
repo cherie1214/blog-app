@@ -13,6 +13,7 @@ const initialState = {
         loggedIn: false,
         id: "",
         nickname: "",
+        token: "",
     }
 };
 
@@ -76,6 +77,7 @@ export default function auth(state = initialState, action) {
                 loggedIn: true,
                 id: action.id,
                 nickname: action.nickname,
+                token: action.token,
             }
         };    
         case types.AUTH_SIGNIN_INIT:
@@ -141,7 +143,21 @@ export default function auth(state = initialState, action) {
                 login: {
                     loggedIn: false,
                 }
-            }    
+            }  
+            
+        //change nickname
+        case types.CHANGE_NICKNAME:
+            return {
+                ...state,
+                http: {
+                    status: 'SUCCESS',
+                    result: 'SUCCESS'
+                },
+                login: {
+                    ...state.login,
+                    nickname: action.nickname,                    
+                }
+            }      
 
         //default   
         default:

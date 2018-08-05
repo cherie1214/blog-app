@@ -15,7 +15,9 @@ import {
   AUTH_SIGNOUT,
 
   AUTH_CHANGE_PW,
-  AUTN_CHANGE_PW_FAILURE,
+  AUTH_CHANGE_PW_FAILURE,
+
+  CHANGE_NICKNAME,
 } from './ActionTypes';
 
 import axios from 'axios';
@@ -47,11 +49,12 @@ export function signInError() {
 
     };
 }
-export function signInSuccess(id, nickname) {
+export function signInSuccess(id, nickname, token) {
     return {
         type: AUTH_SIGNIN_SUCCESS,
         id,
-        nickname
+        nickname,
+        token
     };
 }
 export function signInFailure() {
@@ -106,9 +109,18 @@ export function changePw(pw){
 
 export function changePwFailure(){
     return {
-        type: AUTN_CHANGE_PW_FAILURE,
+        type: AUTH_CHANGE_PW_FAILURE,
     }
 }
+
+
+export function changeNickname(nickname){
+    return{
+        type: CHANGE_NICKNAME,
+        nickname
+    }
+}
+
 
 //action functions
 
@@ -125,8 +137,9 @@ export function userSignIn(userInfo) {
             const status = res.data.status;
             const nickname = res.data.nickname;
             const id = res.data.id;
+            const token = res.data.token;
 
-            // alert(nickname);
+            // alert(token);
             // alert(JSON.stringify(userInfo));          
 
             switch(status){
@@ -138,12 +151,13 @@ export function userSignIn(userInfo) {
                     try {
                         AsyncStorage.setItem('@BlogApp.Auth', JSON.stringify({
                             id, 
-                            nickname
+                            nickname,
+                            token
                         }))
                     } catch(error) {
                         alert("Storage Error: " + error)
                     } finally {
-                        dispatch(signInSuccess(id, nickname));
+                        dispatch(signInSuccess(id, nickname, token));
                         break;       
 
                     }
@@ -161,7 +175,7 @@ export function userSignUp(userInfo) {
     return (dispatch) => {
         // Inform Login API is starting
         dispatch(getting());
-  
+
         // API REQUEST
         return axios.post('http://localhost:8000/api/auth/signUp', userInfo)
         .then((res) => {
@@ -185,15 +199,22 @@ export function userSignUp(userInfo) {
   }
 
 //change password
-export function userChangePw(userInfo) {
+export function userChangePw(userInfo, token) {
     return (dispatch) => {
         // Inform Login API is starting
         dispatch(getting());
 
+        const header = {
+            headers : {
+                'x-access-token' : token
+            }
+        }
+  
+
         // API REQUEST
-        return axios.post('http://localhost:8000/api/auth/changePw', userInfo)
+        return axios.post('http://localhost:8000/api/auth/changePw', userInfo, header)
         .then((res) => {
-            alert(res.data.status)
+            alert(JSON.stringify(res.data,0,2))
             const id = res.data.id;
             const pw = res.data.pw;
             alert(id);
@@ -219,7 +240,8 @@ export function getStorage(){
             const _storedData = await AsyncStorage.getItem('@BlogApp.Auth');
             if(_storedData){
                 _storedData = JSON.parse(_storedData);
-                dispatch(signInSuccess(_storedData.id, _storedData.nickname));
+                // alert(_storedData.token)
+                dispatch(signInSuccess(_storedData.id, _storedData.nickname, _storedData.token));
             }
         } catch(error) {
             alert("ERROR RETRIEVEING data: " + error);
@@ -227,9 +249,55 @@ export function getStorage(){
     }
 } 
 
+// sign out
 export function signOut(){
     return (dispatch) => {
         AsyncStorage.removeItem('@BlogApp.Auth');
         dispatch(signout());
+    }
+}
+
+// change nickname
+export function changeNicknameRequest (userInfo, token) {
+    return (dispatch) => {
+        dispatch(getting());
+
+        const header = {
+            headers : {
+                'x-access-token' : token
+            }
+        }
+
+        // alert(userInfo + token)
+
+        // API REQUEST
+        return axios.post('http://localhost:8000/api/auth/changeNickname', userInfo, header)
+        .then((res) => {
+            if(res.data.status === "CHANGE_NICKNAME_ERROR"){
+                alert("ERORR");
+            }else if(res.data.status === "CHANGE_NICKNAME_DUPLICATED"){
+                alert("이미 존재하는 닉네임입니다.");
+            }else if(res.data.status === "CHANGE_NICKNAME_SUCCESSED"){
+                try {
+                    AsyncStorage.setItem('@BlogApp:Auth', JSON.stringify({
+                        id : userInfo.id,
+                        nickname : userInfo.nickname,
+                        token
+                    }));
+                } catch (error) {
+                    alert("Storage Error : " + error);
+                } finally {
+                    alert("변경되었습니다.");
+                    // alert(userInfo.nickname)
+                    dispatch(changeNickname(userInfo.nickname));
+                }
+            }else{
+                alert("ERORR");
+            }
+            // dispatch(authInit());
+        }).catch((error) => {
+            // FAILED
+            dispatch(getFailure());
+        });
     }
 }

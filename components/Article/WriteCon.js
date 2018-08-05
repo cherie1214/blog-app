@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Switch, TouchableHighlight, View, Text, TouchableOpacity, Dimensions } from 'react-native';
+import { Switch, TouchableHighlight, View, Text, TouchableOpacity, Dimensions, Button } from 'react-native';
 import styled, { css } from 'styled-components';
 import { Entypo } from '@expo/vector-icons';
 import Modal from "react-native-modal";
 import ModalDate from './WriteModalDate';
 import ModalWeather from './WriteModalWeather';
+import ModalBg from './WriteModalBg';
 
 const { height, width } = Dimensions.get("window");
 
@@ -13,20 +14,44 @@ export default class WriteCon extends Component {
     super(props);
     this.state = {
       isModalVisible: false,
+      modalType: "",
       startDate: "",
       finishDate: "",
       test: "test",
-    }
-    this._toggleModal = () => {
-      this.setState({ isModalVisible: !this.state.isModalVisible });
+      text: "",
+    };
+    this._toggleModal = this._toggleModal.bind(this);
+    this._rednerModalType = this._rednerModalType.bind(this);
+    this._renderModalContent = this._renderModalContent.bind(this);
+  }
+  _toggleModal = (type) => {
+    this.setState({ 
+      isModalVisible: !this.state.isModalVisible, 
+      modalType: type 
+    });
+  };
+
+  _rednerModalType(date, weather, bg){
+      switch (this.state.modalType) {
+        case "date":   return date;
+        case "weather": return weather;
+        case "bg":  return bg;
     }
   }
 
-
   _renderModalContent = () => (
-    <View>      
-      {/* <ModalDate parentState={this.state} /> */}
-      <ModalWeather parentState={this.state} />
+    <View>    
+      <ModalHeader>
+        <ModalTit>
+          {this._rednerModalType("날짜", "날씨", "카드 배경")} 선택하기
+        </ModalTit>
+        <Button value="cancle" title="닫기" onPress={() => this._toggleModal('')}/>
+      </ModalHeader>
+      {this._rednerModalType(
+        <ModalDate parentState={this.state} />, 
+        <ModalWeather parentState={this.state} />,
+        <ModalBg parentState={this.state} />
+      )} 
     </View>
   );
   
@@ -35,18 +60,17 @@ export default class WriteCon extends Component {
 
     return (
       <Wrap>
-        <Modal isVisible={isModalVisible} style={{
-          justifyContent: 'flex-end',
-          margin:0,
-        }}>
+        <Modal 
+          isVisible={isModalVisible} 
+          style={{ justifyContent: 'flex-end', margin:0 }}>
           {this._renderModalContent()}
         </Modal>
 
 
         <HeaderConBox>
           <DateBox>
-            <Select onPress={this._toggleModal}>
-              <CommonText>날짜</CommonText>
+            <Select onPress={() => this._toggleModal("date")}>
+              <CommonText>날짜 {this.state.modalType}</CommonText>
               <CommonText>{startDate} - {finishDate}</CommonText>
             </Select>
           </DateBox>
@@ -55,18 +79,25 @@ export default class WriteCon extends Component {
               <CommonText>제목</CommonText>
              </Select> 
           </TitBox>
-          <WeatherBox onPress={this._toggleModal}>
-            <Select>
+          <WeatherBox>
+            <Select onPress={() => this._toggleModal("weather")}>
               <CommonText>날씨</CommonText>
             </Select>
           </WeatherBox>
           <Row flexEnd>
-            <Btn>
+            <Btn onPress={() => this._toggleModal("bg")}>
               <Entypo name="dots-three-vertical" color="#fff" size={25} /> 
             </Btn>
           </Row>
         </HeaderConBox>
-        
+        <TextareaBox>
+          <Textarea
+            multiline={true}
+            onChangeText={(text) => this.setState({text})}
+            placeholder="당신의 여행은 어땠나요?"
+            placeholderStyle={{color:"#999", fontSize:15}}
+            value={this.state.text}/>
+        </TextareaBox>
       </Wrap>
     )
   }
@@ -117,35 +148,27 @@ const TitText = styled.Text`
 const Btn = styled.TouchableOpacity`
 `;
 
-const ModalWrap = styled.View`
-  background-color: #fff;
+const TextareaBox = styled.View`
+  padding:7%;
+`;
+
+const Textarea = styled.TextInput`
+  color: #333;
+  font-size:15px;
+  font-family: 'hd-regular';
 `;
 
 const ModalHeader = styled.View`
-  padding: 4% 7%;
+  padding: 10px 7%;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   border-bottom-color: #eee;
   border-bottom-width: 1px;
+  background: #fff;
 `
 const ModalTit = styled.Text`
   color:#999;
   font-family: 'hd-regular';
   font-size:15px;
-`;
-
-const ModalRow = styled.View`
-  padding: 7%;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom-color: #eee;
-  border-bottom-width: 1px;
-`;
-
-const ModalLabel = styled.Text`
-  color:#333;
-  font-family: 'hd-regular';
-  font-size:17px;
 `;

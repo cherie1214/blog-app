@@ -20,6 +20,7 @@ class ChangePw extends Component {
   
   render(){
     const UserInfo = this.state;
+    const Token = this.props.auth.login.token;
 
     return(
         <Wrap>
@@ -63,7 +64,7 @@ class ChangePw extends Component {
                 autoCorrect={false}
               />
             </InputWrap>
-            <Button onPressOut={() => this.props.userChangePw(UserInfo)}>
+            <Button onPressOut={() => this.props.userChangePw(UserInfo, Token)}>
               <BtnText>Submit</BtnText>
             </Button>
           </InputBox>
@@ -80,8 +81,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    userChangePw: (UserInfo) => {
-      return dispatch(userChangePw(UserInfo));
+    userChangePw: (UserInfo, token) => {
+      return dispatch(userChangePw(UserInfo, token));
     },
   }
 }

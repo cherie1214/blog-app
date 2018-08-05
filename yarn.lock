@@ -3787,6 +3787,12 @@ react-native-camera@^1.1.4:
     lodash "^4.17.4"
     prop-types "^15.5.10"
 
+react-native-checkbox@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-checkbox/-/react-native-checkbox-2.0.0.tgz#453bbfd2e055a21e69ebe7842414a055d50ff449"
+  dependencies:
+    prop-types "^15.5.10"
+
 react-native-datepicker@^1.7.2:
   version "1.7.2"
   resolved "https://registry.yarnpkg.com/react-native-datepicker/-/react-native-datepicker-1.7.2.tgz#58d0822591a0ac9b32aba082650222a0ee29669d"
@@ -3861,6 +3867,10 @@ react-native-safe-module@^1.1.0:
   resolved "https://registry.yarnpkg.com/react-native-safe-module/-/react-native-safe-module-1.2.0.tgz#a23824ca24edc2901913694a76646475113d570d"
   dependencies:
     dedent "^0.6.0"
+
+react-native-simple-radio-button@^2.7.2:
+  version "2.7.2"
+  resolved "https://registry.yarnpkg.com/react-native-simple-radio-button/-/react-native-simple-radio-button-2.7.2.tgz#295a7baf8b36295e36778a58b75cacf6a53d48df"
 
 react-native-snap-carousel@^3.7.2:
   version "3.7.2"

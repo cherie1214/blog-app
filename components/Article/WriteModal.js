@@ -8,7 +8,7 @@ import DatePicker from 'react-native-datepicker';
 const { height, width } = Dimensions.get("window");
 
 
-export default class ModalDate extends Component {
+export default class ModalDatePicker extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -28,6 +28,11 @@ export default class ModalDate extends Component {
 
     return(
       <ModalWrap>
+        <ModalHeader>
+          <ModalTit>날짜 선택하기</ModalTit>
+          {/* <Text>{JSON.stringify(this.state.isModalVisible)}</Text> */}
+          <Button title="취소" onPress={this._toggleModal}/>
+        </ModalHeader>
         <ModalRow>
           <ModalLabel>One Day Trip</ModalLabel>
           <Switch 
@@ -103,6 +108,20 @@ export default class ModalDate extends Component {
 
 const ModalWrap = styled.View`
   background-color: #fff;
+`;
+
+const ModalHeader = styled.View`
+  padding: 4% 7%;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom-color: #eee;
+  border-bottom-width: 1px;
+`
+const ModalTit = styled.Text`
+  color:#999;
+  font-family: 'hd-regular';
+  font-size:15px;
 `;
 
 const ModalRow = styled.View`

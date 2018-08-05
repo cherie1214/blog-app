@@ -1,103 +1,120 @@
 import React, { Component } from 'react';
-import { Switch, TouchableHighlight, View, Text, TouchableOpacity, Dimensions, StatusBar, Button, ScrollView, StyleSheet, Alert } from 'react-native';
+import { Dimensions } from 'react-native';
 import styled from 'styled-components';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
-import Modal from "react-native-modal";
-import DatePicker from 'react-native-datepicker';
 
 const { height, width } = Dimensions.get("window");
-
-const weatherOption = {
-  opt1: {
-    id: 1,
-    label: "선택 안 함",
-    iconName: "cloud-off-outline",
-    iconColor: "transparent",
-    isChecked: "false"
-  },
-  opt2: {
-    id: 2,
-    label: "Sunny",
-    iconName: "weather-sunny",
-    iconColor: "#333",
-    isChecked: "false"
-  },
-  opt3: {
-    id: 3,
-    label: "Cloudy",
-    iconName: "weather-cloudy",
-    iconColor: "#333",
-    isChecked: "false"
-  },
-  opt4: {
-    id: 4,
-    label: "Sunny &amp; Cloudy",
-    iconName: "weather-partlycloudy",
-    iconColor: "#333",
-    isChecked: "false"
-  },
-  opt5: {
-    id: 5,
-    label: "Rainy",
-    iconName: "weather-pouring",
-    iconColor: "#333",
-    isChecked: "false"
-  },
-  opt6: {
-    id: 6,
-    label: "Windy",
-    iconName: "weather-windy",
-    iconColor: "#333",
-    isChecked: "false"
-  },
-  opt7: {
-    id: 7,
-    label: "Snowy",
-    iconName: "weather-snowy",
-    iconColor: "#333",
-    isChecked: "false"
-  },
-  opt8: {
-    id: 8,
-    label: "fog",
-    iconName: "weather-fog",
-    iconColor: "#333",
-    isChecked: "false"
-  },
-}
 
 export default class ModalWeather extends Component {
   constructor(props){
     super(props);
     this.state = {
-      isModalVisible: false,
-      switchOneday: false,
-      startDate: this.props.parentState.startDate,
-      finishDate: this.props.parentState.finishDate,
-    }
+      weatherOpt: [
+        {
+          id: 1,
+          label: "선택 안 함",
+          iconName: "cloud-off-outline",
+          iconColor: "transparent",
+          isChecked: true,
+        },
+        {
+          id: 2,
+          label: "Sunny",
+          iconName: "weather-sunny",
+          iconColor: "#333",
+          isChecked: false,
+        },
+        {
+          id: 3,
+          label: "Cloudy",
+          iconName: "weather-cloudy",
+          iconColor: "#333",
+          isChecked: false,
+        },
+        {
+          id: 4,
+          label: "Sunny & Cloudy",
+          iconName: "weather-partlycloudy",
+          iconColor: "#333",
+          isChecked: false,
+        },
+        {
+          id: 5,
+          label: "Rainy",
+          iconName: "weather-pouring",
+          iconColor: "#333",
+          isChecked: false,
+        },
+        {
+          id: 6,
+          label: "Windy",
+          iconName: "weather-windy",
+          iconColor: "#333",
+          isChecked: false,
+        },
+        {
+          id: 7,
+          label: "Snowy",
+          iconName: "weather-snowy",
+          iconColor: "#333",
+          isChecked: false,
+        },
+        {
+          id: 8,
+          label: "fog",
+          iconName: "weather-fog",
+          iconColor: "#333",
+          isChecked: false,
+        },
+      ]
+    };
+    this._toggleCheck = this._toggleCheck.bind(this);     
   }
 
-  
+  _toggleCheck = (e) =>{
+    // alert(e.label)
+    let opts = this.state.weatherOpt;
+    e.isChecked = !e.isChecked;
+    this.setState({
+      weatherOpt: opts,
+    }) 
+
+    if(e.id !== 1 ){
+      opts[0].isChecked = false;
+      this.setState({
+        weatherOpt: opts,
+      })
+    }
+    // if(e.id === 1 && e.isChecked){
+    //   alert("1")
+    //   //나머지 isChecked === false로...
+    // }
+
+  }
 
   render(){
     const parentState = this.props.parentState;
+    const weatherOpt = this.state.weatherOpt;
+
+    const weatherObj = weatherOpt.map (
+      (e) => {
+        return (
+          <ModalRow key={e.id} onPress={() => this._toggleCheck(e)}>
+            <ModalIconBox>
+              <MaterialCommunityIcons name={e.iconName} size={25} color={e.iconColor} />
+            </ModalIconBox>
+            <ModalLabel>{e.label}</ModalLabel>
+            <ModalCheckBox>
+              {e.isChecked ? <Feather name="check" color="#666" size={30} /> : ``}              
+            </ModalCheckBox>
+          </ModalRow>
+        )  
+      }
+    )
 
     return(
       <ModalWrap>
-        <ModalHeader>
-          <ModalTit>날씨 선택하기</ModalTit>
-          {/* <Text>{JSON.stringify(this.state.isModalVisible)}</Text> */}
-          <Button title="취소" onPress={this._toggleModal}/>
-        </ModalHeader>
-        <ModalRow>
-          <ModalIconBox>
-            
-          </ModalIconBox>
-          <ModalLabel>선택 안 함</ModalLabel>
-          <ModalCheckBox>
-            <Feather name="check" color="#666" size={30} />
-          </ModalCheckBox>
-        </ModalRow>
+          {weatherObj}
       </ModalWrap>
     )
   }
@@ -108,21 +125,7 @@ const ModalWrap = styled.View`
   background-color: #fff;
 `;
 
-const ModalHeader = styled.View`
-  padding: 10px 7%;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom-color: #eee;
-  border-bottom-width: 1px;
-`
-const ModalTit = styled.Text`
-  color:#999;
-  font-family: 'hd-regular';
-  font-size:15px;
-`;
-
-const ModalRow = styled.View`
+const ModalRow = styled.TouchableOpacity`
   position: relative;
   padding: 0 7%;
   height:60px;
@@ -145,6 +148,7 @@ const ModalLabel = styled.Text`
 
 const ModalCheckBox = styled.View`
   width: 30px;
+  height: 30px;
   position:absolute;
   right:11%;
 `;
