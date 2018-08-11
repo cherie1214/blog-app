@@ -18,20 +18,28 @@ export default class WriteCon extends Component {
       switchOneday: false,
       startDate: "",
       finishDate: "",
-      title: "",
+      b: "",
       weather: {
         id: 1,
         name: "",
       },
-      bgId: 1,
-      bgStyle: {
-        backgroundColor: "#6B5ED1"
+      bg : {
+        photo : null,
+        color : {
+          id : 1,
+          value : "#6B5ED1"
+        }
       },
       contents: "",
     };
     this._toggleModal = this._toggleModal.bind(this);
     this._rednerModalType = this._rednerModalType.bind(this);
     this._renderModalContent = this._renderModalContent.bind(this);
+  }
+
+  componentDidUpdate( prevProps, prevState) {
+    if(JSON.stringify(prevState) !== JSON.stringify(this.state)) this.props.handleState(this.state);
+    // alert(JSON.stringify(prevState,0,2))    
   }
 
   _handleDate = (startDate, finishDate, switchOneday) => {
@@ -65,13 +73,10 @@ export default class WriteCon extends Component {
     })
   }
 
-  _handleBg = (id, color) => {
+  _handleBg = (value) => {
     this.setState({
-      bgId: id,
-      bgStyle : {
-        backgroundColor: color,
-      }
-    })
+      bg : value
+    });
   }
 
   _toggleModal = (type) => {
@@ -106,7 +111,7 @@ export default class WriteCon extends Component {
   );
   
   render(){
-    const { isModalVisible, startDate, finishDate, title, weather, bgStyle, contents } = this.state;
+    const { isModalVisible, startDate, finishDate, title, weather, bg, contents } = this.state;
 
     return (
       <Wrap>
@@ -116,7 +121,7 @@ export default class WriteCon extends Component {
           {this._renderModalContent()}
         </Modal>
 
-        <HeaderConBox style={bgStyle}>
+        <HeaderConBox background={!bg.photo ? bg.color.value : "transparent"}>
           <DateBox>
             <Select onPress={() => this._toggleModal("date")}>   
               <CommonText>날짜</CommonText>      
@@ -124,24 +129,28 @@ export default class WriteCon extends Component {
             </Select>
           </DateBox>
           <TitBox>
-            <Select> 
+            <Row> 
               <CommonText>제목</CommonText>
               <TitInput
                 onChangeText={(title) => this.setState({title})}
                 value={title}
                 maxLength={45}
                 autoFocus={true}
+                selectionColor="#fff"
+                placeholder="45이내로 입력해 주세요."
+                multiline={true}   
+                numberOfLines={2}
               />
-             </Select> 
+             </Row> 
           </TitBox>
           <WeatherBox>
             <Select onPress={() => this._toggleModal("weather")}>
               <CommonText>날씨</CommonText>
               {weather.name ? 
-                (<MaterialCommunityIcons name={weather.name} size={25} color="#fff" />)  : ''};
+                (<MaterialCommunityIcons name={weather.name} size={17} color="#fff" />)  : ''};
             </Select>
           </WeatherBox>
-          <Row flexEnd>
+          <Row justifyEnd>
             <Btn onPress={() => this._toggleModal("bg")}>
               <Entypo name="dots-three-vertical" color="#fff" size={25} /> 
             </Btn>
@@ -167,6 +176,7 @@ const Wrap = styled.View`
 
 const HeaderConBox = styled.View`
   padding: 7%; 
+  background: ${props => props.background};
 `;
 
 const Select = styled.TouchableOpacity`
@@ -176,8 +186,8 @@ const Select = styled.TouchableOpacity`
 
 const Row = styled.View`
   flex-direction: row;
-  align-items: center;
-  justify-content: ${props => props.flexEnd ? "flex-end" : "flex-start"}
+  align-items: flex-start;
+  justify-content: ${props => props.justifyEnd ? "flex-end" : "flex-start"};
 `;
 
 const DateBox = styled.View`
@@ -201,6 +211,8 @@ const TitBox = styled.View`
 `;
 
 const TitInput = styled.TextInput`
+  padding:0;
+  width: 90%;
   color: #fff;
   font-size:17px;
   font-family: 'hd-regular';
@@ -212,7 +224,6 @@ const Btn = styled.TouchableOpacity`
 const TextareaBox = styled.View`
   flex: 1;
   padding:7%;
-  background:red;
 `;
 
 const Textarea = styled.TextInput`

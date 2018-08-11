@@ -93,6 +93,6 @@ const InputSearch = styled.TextInput`
 `;
 
 const Button = styled.TouchableOpacity`
-  margin-right:10px;
+  margin-right:15px;
 `;
 

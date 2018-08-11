@@ -1,22 +1,43 @@
 import React, { Component } from 'react';
-import { Dimensions, StatusBar, ScrollView } from 'react-native';
+import { Dimensions, StatusBar, ScrollView, Text } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons } from '@expo/vector-icons';
+import { connect } from 'react-redux';
+import { requestSaveArticle } from '../../actions';
+import { ConfirmDialog } from 'react-native-simple-dialogs';
 
 import WriteCon from './WriteCon';
 
 const { height, width } = Dimensions.get("window");
 
 
-export default class Write extends Component {
+class Write extends Component {
   constructor(props){
     super(props);
     this.state = {
-    }
+        article: null,
+        dialogVisible: false,
+    };
+  }
+  _handleState = (article) => {
+      this.setState({
+          article
+      });
   }
 
-  render(){
-    
+  componentDidUpdate(prevProps){
+    const http = this.props.http;
+    if(prevProps.http !== http){  
+      if(http.status === "SUCCESS"){
+        this.setState({dialogVisible: true})
+      }
+    }    
+  }
+
+  render(){  
+    const article = this.state.article; 
+    const token = this.props.login.token;
+    const http = this.props.http.status;
 
     return(
         <Wrap>
@@ -26,17 +47,56 @@ export default class Write extends Component {
               <Ionicons name="ios-arrow-round-back" color="#333" size={45}/>
             </BtnIcon>
             <H1>글 쓰기</H1>
-            <BtnSave title="저장" />
+            <BtnSave 
+              title="저장" 
+              onPress={()=>{this.props.requestSaveArticle(article, token)}}
+              />
+            <ConfirmDialog
+              title="글이 저장 되었습니다."
+              message="글 목록에서 확인하시겠습니까?"
+              visible={this.state.dialogVisible}
+              onTouchOutside={() => this.setState({dialogVisible: false})}
+              positiveButton={{
+                  title: "YES",
+                  onPress: () => this.props.navigation.navigate('Edit')
+              }}
+              negativeButton={{
+                  title: "NO",
+                  onPress: () => this.setState({dialogVisible: false}) 
+              }}
+              />    
           </HeaderBox>
-          <ScrollView style={height - 50}>
-            <ConBox>
-              <WriteCon />
+          {/* <ScrollView> */}
+            <ConBox>           
+              {/* <Text>{http}</Text> */}
+              <WriteCon handleState={this._handleState} />
             </ConBox>
-          </ScrollView>
+          {/* </ScrollView> */}
         </Wrap>
       )
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    login: state.redux.auth.login,
+    http : state.redux.article.http,
+  };
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+      requestSaveArticle : (article, token) => {
+          if(article === null) {
+            alert("내용을 입력해 주세요.")
+            return false;
+          }
+          return dispatch(requestSaveArticle(article, token));
+      }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Write);
 
 const Wrap = styled.View`
   flex: 1;

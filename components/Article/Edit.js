@@ -1,21 +1,29 @@
 import React, { Component } from 'react';
-import { Dimensions, ScrollView } from 'react-native';
+import { Dimensions, ScrollView, Text } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons } from '@expo/vector-icons';
+import { connect } from 'react-redux';
+import { requestSaveArticle } from '../../actions';
 
 
 import EditItem from './EditItem';
 
 const { height, width } = Dimensions.get("window");
 
-export default class Edit extends Component {
+class Edit extends Component {
   constructor(props){
     super(props);
     this.state = {
     }
   }
 
+  componentDidMount(){
+
+  }
+
   render(){
+
+    const http = this.props.http.status;
 
     return(
         <Wrap>
@@ -25,8 +33,9 @@ export default class Edit extends Component {
             </BtnIcon>
             <H1>글 관리</H1>
           </HeaderBox>
-          <ScrollView style={height - 50}>
+          <ScrollView>
             <ConBox>
+              <Text>{http}</Text>
               <EditItem />
               <EditItem />
             </ConBox>
@@ -35,6 +44,26 @@ export default class Edit extends Component {
       )
   }
 }
+
+
+const mapStateToProps = (state) => {
+  return {
+    login: state.redux.auth.login,
+    article: state.redux.article,
+    http: state.redux.article.http,
+  };
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+      requestSaveArticle : (article, token) => {
+          return dispatch(requestSaveArticle(article, token));
+      }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Edit);
+
 
 const Wrap = styled.View`
   flex: 1;

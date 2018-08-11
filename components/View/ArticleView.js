@@ -57,8 +57,7 @@ export default class ArticleView extends Component {
                 <WrittenDate> · {writtenDate}</WrittenDate>   
              </Row> 
           </HeaderBox>
-          <ScrollView 
-            style={height - 50}>  
+          <ScrollView>  
             <HeaderConBox>
               <ArticleHeaderCon />
             </HeaderConBox>  

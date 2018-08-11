@@ -24,7 +24,7 @@ class Like extends Component {
             </BtnIcon>
             <H1>좋아요</H1>
           </HeaderBox>
-          <ScrollView style={height - 50}>
+          <ScrollView>
             <ConBox>
               <LikeItem />
               <LikeItem />

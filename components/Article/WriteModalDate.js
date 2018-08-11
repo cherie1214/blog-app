@@ -49,7 +49,7 @@ export default class ModalDate extends Component {
             mode="date"
             placeholder={today}
             format="YYYY.MM.DD"
-            maxDate={today}
+            maxDate={finishDate ? finishDate : today}
             confirmBtnText="확인"
             cancelBtnText="취소"
             showIcon={false}
@@ -84,7 +84,7 @@ export default class ModalDate extends Component {
             mode="date"
             placeholder={today}
             format="YYYY.MM.DD"
-            minDate={startDate}
+            minDate={startDate ? startDate : "1900.01.01"}
             maxDate={today}
             confirmBtnText="확인"
             cancelBtnText="취소"

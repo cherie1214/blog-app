@@ -128,8 +128,8 @@ export default class ModalBg extends Component {
         }
 
       ], 
-      selectedId: this.props.parentState.bgId,
-      selectedColor: this.props.parentState.bgStyle.bgColor,
+      selectedId: this.props.parentState.bg.color.id,
+      selectedColor: this.props.parentState.bg.color.value,
     }
   }
   
@@ -150,7 +150,13 @@ export default class ModalBg extends Component {
         });
     });
 
-    this.props.handleBg(id, color);
+    this.props.handleBg({
+      photo : null,
+      color : {
+        id: this.state.radioItems[index].id, 
+        value: this.state.radioItems[index].color
+      }
+    });
   }
 
   

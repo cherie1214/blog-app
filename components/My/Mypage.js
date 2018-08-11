@@ -95,7 +95,11 @@ class Mypage extends Component {
                 }
               </NicknameBox>
               <BtnEdit onPressOut={() => this._handleChangeNickname(isEditing)}>
-                <Foundation name="pencil" color="#666" size={20} />
+                {!isEditing ? (
+                  <Foundation name="pencil" color="#666" size={20} />
+                ) : (
+                  <Feather name="check" color="#666" size={23} />
+                )}
               </BtnEdit>
             </ProfileBox>
             <BorderBox></BorderBox>
@@ -234,7 +238,7 @@ const Input = styled.TextInput`
 
 const BtnEdit = styled.TouchableOpacity`
   position:absolute;
-  right:15px; 
+  right:20px; 
   bottom:0;
 `;
 

@@ -24,7 +24,7 @@ class Notify extends Component {
             </BtnIcon>
             <H1>알림</H1>
           </HeaderBox>
-          <ScrollView style={height - 50}>
+          <ScrollView>
             <ConBox>
               <NotifyItem />
               <NotifyItem />
