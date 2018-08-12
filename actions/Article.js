@@ -18,9 +18,10 @@ export function articleGetting() {
     };
   }
   
-  export function articleGetSuccess() {
+  export function articleGetSuccess(_id) {
     return {
         type: ARTICLE_GET_SUCCESS,
+        _id
     };
   }
   
@@ -53,13 +54,12 @@ export function requestSaveArticle(article, token){
             if(res.data.status === "ARTICLE_SAVE_FAILED"){
                 // alert("ERROR\n"+res.data.message);
                 dispatch(articleGetFailure());
-            }else if(res.data.status === "ARTICLE_SAVE_SUCCESSED"){
-                // alert(JSON.stringify(article,0,2))
+            }else if(res.data.status === "ARTICLE_SAVE_SUCCESSED" || res.data.status === "ARTICLE_UPDATE_SUCCESSED"){
+                console.log(res.data.status)
                 // alert("저장되었습니다.")
-                dispatch(articleGetSuccess());
+                dispatch(articleGetSuccess(res.data._id));
+                console.log(JSON.stringify(res.data,0,2))
             }
-            dispatch(articleInit());
-
         }).catch((error) => {
             // FAILED
             dispatch(articleGetFailure());
@@ -67,34 +67,3 @@ export function requestSaveArticle(article, token){
     }
 }
 
-
-//get article
-export function requestGetArticle(article, token){
-    return (dispatch) => {
-        dispatch(articleGetting());
-
-        const header = {
-            headers : {
-                'x-access-token' : token
-            }
-        }
-
-        // API REQUEST
-        return axios.post('http://localhost:8000/api/article/write', article, header)
-        .then((res) => {
-            if(res.data.status === "ARTICLE_SAVE_FAILED"){
-                // alert("ERROR\n"+res.data.message);
-                dispatch(articleGetFailure());
-            }else if(res.data.status === "ARTICLE_SAVE_SUCCESSED"){
-                // alert(JSON.stringify(article,0,2))
-                // alert("저장되었습니다.")
-                dispatch(articleGetSuccess());
-            }
-            dispatch(articleInit());
-
-        }).catch((error) => {
-            // FAILED
-            dispatch(articleGetFailure());
-        });
-    }
-}

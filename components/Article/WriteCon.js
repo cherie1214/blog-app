@@ -13,12 +13,14 @@ export default class WriteCon extends Component {
   constructor(props){
     super(props);
     this.state = {
+      _id: this.props._id,
       isModalVisible: false,
       modalType: "",
       switchOneday: false,
       startDate: "",
       finishDate: "",
-      b: "",
+      title: null,
+      text: null,
       weather: {
         id: 1,
         name: "",
@@ -30,7 +32,6 @@ export default class WriteCon extends Component {
           value : "#6B5ED1"
         }
       },
-      contents: "",
     };
     this._toggleModal = this._toggleModal.bind(this);
     this._rednerModalType = this._rednerModalType.bind(this);
@@ -38,6 +39,12 @@ export default class WriteCon extends Component {
   }
 
   componentDidUpdate( prevProps, prevState) {
+    if(prevProps._id !== this.state._id) {
+      this.setState({
+        ...this.state, 
+        _id : this.props._id
+      })
+    }
     if(JSON.stringify(prevState) !== JSON.stringify(this.state)) this.props.handleState(this.state);
     // alert(JSON.stringify(prevState,0,2))    
   }
@@ -111,7 +118,7 @@ export default class WriteCon extends Component {
   );
   
   render(){
-    const { isModalVisible, startDate, finishDate, title, weather, bg, contents } = this.state;
+    const { isModalVisible, startDate, finishDate, title, weather, bg, text } = this.state;
 
     return (
       <Wrap>
@@ -159,7 +166,7 @@ export default class WriteCon extends Component {
         <TextareaBox>
           <Textarea
             multiline={true}
-            onChangeText={(contents) => this.setState({contents})}
+            onChangeText={(text) => this.setState({text})}
             placeholder="당신의 여행은 어땠나요?"
             placeholderStyle={{color:"#999", fontSize:15}}
             value={this.state.text}/>

@@ -3,7 +3,7 @@ import { Dimensions, StatusBar, ScrollView, Text } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
-import { requestSaveArticle } from '../../actions';
+import { requestSaveArticle, articleInit } from '../../actions';
 import { ConfirmDialog } from 'react-native-simple-dialogs';
 
 import WriteCon from './WriteCon';
@@ -15,10 +15,14 @@ class Write extends Component {
   constructor(props){
     super(props);
     this.state = {
-        article: null,
-        dialogVisible: false,
+        article: {
+          _id : null
+        },
+        saveConfirmVisible: false,
+        backConfirmVisible: false,        
     };
   }
+
   _handleState = (article) => {
       this.setState({
           article
@@ -27,25 +31,54 @@ class Write extends Component {
 
   componentDidUpdate(prevProps){
     const http = this.props.http;
+
     if(prevProps.http !== http){  
+
       if(http.status === "SUCCESS"){
-        this.setState({dialogVisible: true})
+        this.props.articleInit();
+
+        this.setState({ 
+          saveConfirmVisible: true,
+          article : {
+            ...this.state.article,
+            _id: this.props.http.result,
+          }
+         })
       }
     }    
+  }
+
+  handleBack = () => {
+    this.setState({ backConfirmVisible: true })
   }
 
   render(){  
     const article = this.state.article; 
     const token = this.props.login.token;
     const http = this.props.http.status;
+    const backConfirmMsg = `작성 중인 내용을` + String.fromCharCode(13) + `저장하지 않고 나가시겠습니까?`;
 
     return(
         <Wrap>
-          <StatusBar hidden={true} />
+          <StatusBar hidden={false} />
           <HeaderBox>
-            <BtnIcon onPress={() => this.props.navigation.navigate('Home')}>
+            <BtnIcon onPress={() => this.handleBack()}>
               <Ionicons name="ios-arrow-round-back" color="#333" size={45}/>
             </BtnIcon>
+            <ConfirmDialog
+              title="글 쓰기를 취소합니다."
+              message={backConfirmMsg}
+              visible={this.state.backConfirmVisible}
+              // onTouchOutside={() => this.setState({backConfirmVisible: false})}
+              positiveButton={{
+                  title: "네",
+                  onPress: () => this.props.navigation.navigate('Home') 
+              }}
+              negativeButton={{
+                  title: "아니오",
+                  onPress: () => this.setState({backConfirmVisible: false}) 
+              }}
+              />    
             <H1>글 쓰기</H1>
             <BtnSave 
               title="저장" 
@@ -54,22 +87,23 @@ class Write extends Component {
             <ConfirmDialog
               title="글이 저장 되었습니다."
               message="글 목록에서 확인하시겠습니까?"
-              visible={this.state.dialogVisible}
-              onTouchOutside={() => this.setState({dialogVisible: false})}
+              visible={this.state.saveConfirmVisible}
+              // onTouchOutside={() => this.setState({saveConfirmVisible: false})}
               positiveButton={{
-                  title: "YES",
-                  onPress: () => this.props.navigation.navigate('Edit')
+                  title: "네",
+                  onPress: () => this.props.navigation.navigate('Edit') 
               }}
               negativeButton={{
-                  title: "NO",
-                  onPress: () => this.setState({dialogVisible: false}) 
+                  title: "아니오",
+                  onPress: () => this.setState({saveConfirmVisible: false}) 
               }}
               />    
           </HeaderBox>
           {/* <ScrollView> */}
             <ConBox>           
-              {/* <Text>{http}</Text> */}
-              <WriteCon handleState={this._handleState} />
+              <Text>{http}</Text>
+              <Text>{JSON.stringify(article,0,2)}</Text>
+              <WriteCon handleState={this._handleState} _id={this.state.article._id}/>
             </ConBox>
           {/* </ScrollView> */}
         </Wrap>
@@ -87,11 +121,22 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
       requestSaveArticle : (article, token) => {
-          if(article === null) {
-            alert("내용을 입력해 주세요.")
-            return false;
-          }
+          // if(article === null) {
+          //   alert("내용을 입력해 주세요.")
+          //   return false;
+          // }
+          // if(article.startDate === null || article.startDate === "") {
+          //   alert("날짜를 입력해 주세요.")
+          //   return false;
+          // }
+          // if(article.title === null || article.title === "") {
+          //   alert("제목을 입력해 주세요.")
+          //   return false;
+          // }          
           return dispatch(requestSaveArticle(article, token));
+      },
+      articleInit: () => {
+        return dispatch(articleInit());
       }
   };
 };

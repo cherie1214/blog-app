@@ -7,12 +7,8 @@ const initialState = {
         //FAILED: 요청 실패
         //SUCCESS: 요청 성공
         status: 'INIT',
-        result: 'INIT',
+        result: null,
     },
-    article: {
-
-        token: "",
-    }
 };
 
 export default function article(state = initialState, action) {
@@ -32,6 +28,7 @@ export default function article(state = initialState, action) {
             http: {
                 ...state.http,
                 status: "SUCCESS",
+                result: action._id,
             },
         };
         case types.ARTICLE_GET_FAILURE:

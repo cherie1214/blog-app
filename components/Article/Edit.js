@@ -3,7 +3,8 @@ import { Dimensions, ScrollView, Text } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
-import { requestSaveArticle } from '../../actions';
+import { requestGetArticle } from '../../actions';
+import axios from 'axios';
 
 
 import EditItem from './EditItem';
@@ -14,16 +15,42 @@ class Edit extends Component {
   constructor(props){
     super(props);
     this.state = {
+      status: "",
     }
   }
 
   componentDidMount(){
+    const obj = {
+      id: this.props.login.id,
+      includePublish: true
+    };
 
+    axios.post('http://localhost:8000/api/article/getArticles', obj)
+      .then((res) => {
+          if(res.data.status === "ARTICLE_GET_FAILED"){
+              alert("ERROR\n"+res.data.message);
+          }else if(res.data.status === "ARTICLE_GET_SUCCESSED"){  
+            // alert(JSON.stringify(res.data,0,2))
+          }
+      }).catch((error) => {
+        alert(error)
+      });
+  }
+
+  componentDidUpdate(prevProps){
+    const http = this.props.http;
+    if(prevProps.http !== http){  
+      if(http.status === "SUCCESS"){
+        this.setState({ status: "SUCCESS" })
+      }
+    }    
   }
 
   render(){
 
     const http = this.props.http.status;
+    const objArr = this.state.obj;
+    const obj = JSON.stringify(objArr,0,2)
 
     return(
         <Wrap>
@@ -35,7 +62,7 @@ class Edit extends Component {
           </HeaderBox>
           <ScrollView>
             <ConBox>
-              <Text>{http}</Text>
+              <Text>http: {http} / status:{this.state.status}</Text>
               <EditItem />
               <EditItem />
             </ConBox>
@@ -54,15 +81,7 @@ const mapStateToProps = (state) => {
   };
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-      requestSaveArticle : (article, token) => {
-          return dispatch(requestSaveArticle(article, token));
-      }
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Edit);
+export default connect(mapStateToProps)(Edit);
 
 
 const Wrap = styled.View`
