@@ -9,6 +9,7 @@ const initialState = {
         status: 'INIT',
         result: null,
     },
+    items: [],
 };
 
 export default function article(state = initialState, action) {

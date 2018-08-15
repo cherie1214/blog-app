@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Dimensions } from 'react-native';
+import { Dimensions, Text, View } from 'react-native';
 import styled from 'styled-components';
 import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 
@@ -9,65 +9,65 @@ export default class EditItem extends Component {
   constructor(props){
     super(props);
     this.state = {
-      conText: `봄바람이다 풀밭에 속잎나고 가지에 싹이 트고 꽃 피고 새 우는 봄날의 천지는 얼마나 기쁘며 얼마나 아름다우냐`,
-      isPulished: false,
-      writtenDate: "9시간 전",
+      published: false,
     }
   }
 
-  _handlePublishing(isPulished){
-    this.setState(function(prevState){
-      if(isPulished) {
-        return {isPulished:false}
-      } else {
-        return {isPulished:true}
-      }
-    });
+  _handlePublishing = (published) => {
+    this.setState({
+      published: !published,
+    })
   }
   
   
   render(){
-    const { isPulished, conText, writtenDate } = this.state;
-    
+    const { text, updatedDate, title, bgStyle, startDate, finishDate, weather } = this.props;
+    const published = this.state.published;
+
     return (
-      <Wrap>  
-        <ControlBox>
-          <BtnPublishing onPressOut={() => this._handlePublishing(isPulished)} visual={isPulished}>
-            <TextPublishing visual={isPulished}>{!isPulished ? ("발행") : ("발행 취소")}</TextPublishing>
-          </BtnPublishing>
-          <BtnEdit>
-            <Entypo name="dots-three-vertical" color="#fff" size={20} />
-          </BtnEdit>
-        </ControlBox>
-        <FirstRow>
-          <DateBox>
-            <DateText>2018.01.01 - 2018.01.01</DateText>
-          </DateBox>
-          <WeatherBox>
-            <MaterialCommunityIcons name="weather-sunny" color="#fff" size={20} style={{marginLeft:3}}/>
-            <MaterialCommunityIcons name="weather-partlycloudy" color="#fff" size={20} style={{marginLeft:3}} />
-          </WeatherBox>
-        </FirstRow>
-        <TitBox>
-          <TitText>45일동안 서유럽 한바퀴, 45days in Wetern Europe</TitText>
-          <BorderBox></BorderBox>
-        </TitBox>
-        <TextBox>
-          <ConText numberOfLines={3}>{conText}</ConText>
-        </TextBox>
-        <WrittenDate>{writtenDate}</WrittenDate>
+      <Wrap background={!bgStyle.photoUrl ? bgStyle.backgroundColor : "transparent"}> 
+        <Wrapper>
+          <ControlBox>
+            <BtnPublishing onPressOut={() => this._handlePublishing(published)} visual={published}>
+              <TextPublishing visual={published} color={bgStyle.backgroundColor}>{!published ? ("발행") : ("발행 취소")}</TextPublishing>
+            </BtnPublishing>
+            <BtnEdit>
+              <Entypo name="dots-three-vertical" color="#fff" size={20} />
+            </BtnEdit>
+          </ControlBox>
+          <FirstRow>
+            <DateBox>
+              <DateText>{startDate ? startDate : ''} {finishDate ? '- ' + finishDate : ''}</DateText>
+            </DateBox>
+            <WeatherBox>
+              <MaterialCommunityIcons name={weather} color="#fff" size={20} style={{marginLeft:3}}/>
+            </WeatherBox>
+          </FirstRow>
+          <TitBox>
+            <TitText>{title}</TitText>
+            <BorderBox></BorderBox>
+          </TitBox>
+          <TextBox>
+            <ConText numberOfLines={3} autoCorrect={false}>{text}</ConText>
+          </TextBox>
+          <WrittenDate>{updatedDate}</WrittenDate>
+        </Wrapper>
       </Wrap>
     )
   }
 }
     
-const Wrap = styled.View`
-  padding: 7% 10%;
+const Wrap = styled.View`  
   margin-bottom:7%;
-  background:#5ED9FF;
   border-radius: 10px;
+  background:${prop => prop.background}; 
 `;
 
+const Wrapper = styled.View`
+  padding:7% 10%;
+  flex-direction: column;
+  justify-content: flex-start;
+`;
 
 const ControlBox = styled.View`
   flex-direction: row;
@@ -87,15 +87,13 @@ const BtnPublishing = styled.TouchableOpacity`
 `
 const TextPublishing = styled.Text`
   font-family: 'hd-regular';
-  color:#fff;
   font-size:14px;
-  ${props => { if(!props.visual) return `color:#5ED9FF;` } }
+  color:${props => props.visual ? "#fff" : props.color } }
 `;
 
 const BtnEdit = styled.TouchableOpacity`
   margin-right:-10px;
 `
-
 const FirstRow = styled.View`
   margin: 10% 0 5%;
   flex-direction: row;

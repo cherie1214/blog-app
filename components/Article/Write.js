@@ -101,8 +101,7 @@ class Write extends Component {
           </HeaderBox>
           {/* <ScrollView> */}
             <ConBox>           
-              <Text>{http}</Text>
-              <Text>{JSON.stringify(article,0,2)}</Text>
+              {/* <Text>{JSON.stringify(article,0,2)}</Text> */}
               <WriteCon handleState={this._handleState} _id={this.state.article._id}/>
             </ConBox>
           {/* </ScrollView> */}
