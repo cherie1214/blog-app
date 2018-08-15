@@ -5,6 +5,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { requestSaveArticle, articleInit } from '../../actions';
 import { ConfirmDialog } from 'react-native-simple-dialogs';
+import { withNavigation } from 'react-navigation';
+import axios from 'axios';
 
 import WriteCon from './WriteCon';
 
@@ -19,14 +21,33 @@ class Write extends Component {
           _id : null
         },
         saveConfirmVisible: false,
-        backConfirmVisible: false,        
+        backConfirmVisible: false,
+        _editId: this.props.navigation.getParam('itemId','new'),
     };
+    this._handleState = this._handleState.bind(this);
   }
 
   _handleState = (article) => {
       this.setState({
           article
       });
+  }
+
+  componentDidMount(){
+    const _editId = this.state._editId;
+
+    if(_editId !== "new"){
+      axios.post('http://localhost:8000/api/article/getEditArticle', {_editId})
+      .then((res) => {
+          if(res.data.status === "ARTICLE_GET_FAILED"){
+              alert("ERROR\n"+res.data.message);
+          }else if(res.data.status === "ARTICLE_GET_SUCCESSED"){  
+            this.setState({article: res.data.data})
+          }
+      }).catch((error) => {
+        alert("ERROR\n"+res.data.message);
+      });
+    }
   }
 
   componentDidUpdate(prevProps){
@@ -43,7 +64,7 @@ class Write extends Component {
             ...this.state.article,
             _id: this.props.http.result,
           }
-         })
+        })
       }
     }    
   }
@@ -51,11 +72,16 @@ class Write extends Component {
   handleBack = () => {
     this.setState({ backConfirmVisible: true })
   }
+  handleBackYes = (_editId) => {
+    _editId === "new" 
+    ? this.props.navigation.navigate('Home') 
+    : this.props.navigation.navigate('Edit')
+  }
 
   render(){  
     const article = this.state.article; 
-    const token = this.props.login.token;
-    const http = this.props.http.status;
+    const token = this.props.login.token;   
+    const _editId = this.state._editId; 
     const backConfirmMsg = `작성 중인 내용을` + String.fromCharCode(13) + `저장하지 않고 나가시겠습니까?`;
 
     return(
@@ -72,14 +98,14 @@ class Write extends Component {
               // onTouchOutside={() => this.setState({backConfirmVisible: false})}
               positiveButton={{
                   title: "네",
-                  onPress: () => this.props.navigation.navigate('Home') 
+                  onPress: () => this.handleBackYes(_editId)
               }}
               negativeButton={{
                   title: "아니오",
                   onPress: () => this.setState({backConfirmVisible: false}) 
               }}
-              />    
-            <H1>글 쓰기</H1>
+              />     
+            <H1>{_editId === "new" ? "글 쓰기" : "글 수정"}</H1>
             <BtnSave 
               title="저장" 
               onPress={()=>{this.props.requestSaveArticle(article, token)}}
@@ -101,8 +127,13 @@ class Write extends Component {
           </HeaderBox>
           {/* <ScrollView> */}
             <ConBox>           
-              {/* <Text>{JSON.stringify(article,0,2)}</Text> */}
-              <WriteCon handleState={this._handleState} _id={this.state.article._id}/>
+              {/* <Text>{JSON.stringify(_editId,0,2)}</Text>
+              <Text>{JSON.stringify(article,0,2)}</Text> */}
+              <WriteCon 
+                handleState={this._handleState} 
+                _id={this.state.article._id}
+                article={article}
+                _editId={this.state._editId} />
             </ConBox>
           {/* </ScrollView> */}
         </Wrap>
@@ -140,7 +171,8 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Write);
+const WriteWithNavigation = withNavigation(Write)
+export default connect(mapStateToProps, mapDispatchToProps)(WriteWithNavigation);
 
 const Wrap = styled.View`
   flex: 1;

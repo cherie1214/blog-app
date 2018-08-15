@@ -126,7 +126,6 @@ export default class ModalBg extends Component {
           color: '#333',
           selected: false
         }
-
       ], 
       selectedId: this.props.parentState.bg.color.id,
       selectedColor: this.props.parentState.bg.color.value,

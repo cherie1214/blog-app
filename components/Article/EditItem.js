@@ -2,14 +2,17 @@ import React, { Component } from 'react';
 import { Dimensions, Text, View } from 'react-native';
 import styled from 'styled-components';
 import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
+import { withNavigation } from 'react-navigation';
+import Modal from "react-native-modal";
 
 const { height, width } = Dimensions.get("window");
 
-export default class EditItem extends Component {
+class EditItem extends Component {
   constructor(props){
     super(props);
     this.state = {
       published: false,
+      isModalVisible: false,
     }
   }
 
@@ -18,20 +21,45 @@ export default class EditItem extends Component {
       published: !published,
     })
   }
+
+  _handleItemDelete = () => {
+    
+  }
   
+  _renderModalContent = (_id) => (
+    <ModalWrap>    
+      <ModalSelect>
+        <ModalOption first onPress={() => this.props.navigation.navigate("Write", {'itemId': _id})}>
+          <ModalBtnText>수정</ModalBtnText>
+        </ModalOption>
+        <ModalOption>
+          <ModalBtnText red>삭제</ModalBtnText>
+        </ModalOption>        
+      </ModalSelect>
+      <ModalCancle onPress={() => this.setState({ isModalVisible: false })}>  
+        <ModalBtnText>취소</ModalBtnText>
+      </ModalCancle>
+    </ModalWrap>
+  );
   
   render(){
-    const { text, updatedDate, title, bgStyle, startDate, finishDate, weather } = this.props;
-    const published = this.state.published;
+    const { _id, text, updatedDate, title, bgStyle, startDate, finishDate, weather } = this.props;
+    const { published, isModalVisible } = this.state;
 
     return (
       <Wrap background={!bgStyle.photoUrl ? bgStyle.backgroundColor : "transparent"}> 
+        <Modal 
+          isVisible={isModalVisible} 
+          style={{ justifyContent: 'flex-end', margin:0 }}>
+          {this._renderModalContent(_id)}
+        </Modal>
+
         <Wrapper>
           <ControlBox>
             <BtnPublishing onPressOut={() => this._handlePublishing(published)} visual={published}>
               <TextPublishing visual={published} color={bgStyle.backgroundColor}>{!published ? ("발행") : ("발행 취소")}</TextPublishing>
             </BtnPublishing>
-            <BtnEdit>
+            <BtnEdit onPress={() => this.setState({ isModalVisible: true })}>
               <Entypo name="dots-three-vertical" color="#fff" size={20} />
             </BtnEdit>
           </ControlBox>
@@ -40,7 +68,11 @@ export default class EditItem extends Component {
               <DateText>{startDate ? startDate : ''} {finishDate ? '- ' + finishDate : ''}</DateText>
             </DateBox>
             <WeatherBox>
-              <MaterialCommunityIcons name={weather} color="#fff" size={20} style={{marginLeft:3}}/>
+              {weather ? 
+                <MaterialCommunityIcons name={weather} color="#fff" size={20} style={{marginLeft:3}}/>
+                :
+                <MaterialCommunityIcons name="weather-sunny" color="transparent" size={20} style={{marginLeft:3}}/>
+              }
             </WeatherBox>
           </FirstRow>
           <TitBox>
@@ -57,6 +89,8 @@ export default class EditItem extends Component {
   }
 }
     
+export default withNavigation(EditItem);
+
 const Wrap = styled.View`  
   margin-bottom:7%;
   border-radius: 10px;
@@ -157,4 +191,33 @@ const WrittenDate = styled.Text`
   font-family: 'hd-regular';
   color:#fff;
   font-size:12px;
+`;
+
+const ModalWrap = styled.View`
+  padding: 30px;
+`;
+
+const ModalSelect = styled.View`
+  background: #fff;
+  border-radius:15px;
+`;
+
+const ModalCancle = styled.TouchableOpacity`
+  margin-top:15px;
+  padding: 20px 0;
+  align-items: center;
+  background: #fff;
+  border-radius:15px;
+`;
+
+const ModalOption = styled.TouchableOpacity`
+  padding: 20px 0;
+  align-items: center;
+  border-top-color:#ccc;
+  border-top-width: ${props => props.first ? "0" : "1px"}
+`;
+
+const ModalBtnText = styled.Text`
+  font-size:18px;
+  color: ${props => props.red ? "red" : "blue"}
 `;

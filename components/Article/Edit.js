@@ -3,9 +3,7 @@ import { Dimensions, ScrollView, Text, View } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
-import { requestGetArticle } from '../../actions';
 import axios from 'axios';
-
 
 import EditItem from './EditItem';
 
@@ -15,8 +13,9 @@ class Edit extends Component {
   constructor(props){
     super(props);
     this.state = {
-      status: "",
       items: [],
+      loading: true,
+      message: "로딩 중..."
     }
   }
 
@@ -32,9 +31,18 @@ class Edit extends Component {
               alert("ERROR\n"+res.data.message);
           }else if(res.data.status === "ARTICLE_GET_SUCCESSED"){  
             // alert(JSON.stringify(res.data,0,2))
-            this.setState({
+            let newState = {
               items: res.data.data,
-            })
+            }
+
+            if(res.data.data.length === 0){
+              newState.message = "저장한 글이 없습니다.";
+              newState.loading = false;
+            } else {
+              newState.message = ""; 
+            }
+
+            this.setState(newState)
           }
       }).catch((error) => {
         alert("ERROR\n"+res.data.message);
@@ -52,13 +60,14 @@ class Edit extends Component {
 
   render(){
 
-    const http = this.props.http.status;
+    const { message, loading } = this.state;
     const items = this.state.items;
     const list = items.map(
       ( item, index ) => {      
        return <EditItem key={index} {...item} />
       }
     );
+
 
     return(
       <Wrap>
@@ -72,15 +81,16 @@ class Edit extends Component {
           <ConBox>
             {items.length === 0 ? 
               (<NoDataBox>              
-                <NoDataText>저장한 글이 없습니다.</NoDataText>
-                <BtnText noData onPressOut={() => this.props.navigation.navigate('Write')}>
-                  <LinkText>글 쓰러 가기</LinkText>
-                  <Ionicons name="ios-arrow-round-forward" color="#6093E3" size={24} style={{marginLeft:10}}/>
-                </BtnText>
+                <NoDataText>{message}</NoDataText>
+                {loading ? "" : (
+                  <BtnText noData onPressOut={() => this.props.navigation.navigate('Write')}>
+                    <LinkText>글 쓰러 가기</LinkText>
+                    <Ionicons name="ios-arrow-round-forward" color="#6093E3" size={24} style={{marginLeft:10}}/>
+                  </BtnText>
+                ) }
               </NoDataBox>) 
               : list
-            }
-            
+            }            
           </ConBox>
         </ScrollView>
       </Wrap>

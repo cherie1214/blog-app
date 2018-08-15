@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Dimensions, Button } from 'react-native';
+import { View, Dimensions, Button, Text } from 'react-native';
 import styled from 'styled-components';
 import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import Modal from "react-native-modal";
@@ -32,6 +32,7 @@ export default class WriteCon extends Component {
           value : "#6B5ED1"
         }
       },
+      loaded : false
     };
     this._toggleModal = this._toggleModal.bind(this);
     this._rednerModalType = this._rednerModalType.bind(this);
@@ -46,7 +47,29 @@ export default class WriteCon extends Component {
       })
     }
     if(JSON.stringify(prevState) !== JSON.stringify(this.state)) this.props.handleState(this.state);
-    // alert(JSON.stringify(prevState,0,2))    
+    // alert(JSON.stringify(prevState,0,2))
+    if(this.props._editId !== "new" && !this.state.loaded){
+      this.setState({
+        ...this.state,
+        _id: this.props._editId,
+        startDate: this.props.article.startDate,
+        finishDate: this.props.article.finishDate,
+        title: this.props.article.title,
+        text: this.props.article.text,
+        weather: {
+          ...this.state.weather,
+          name: this.props.article.weather,
+        },
+        bg: {
+          // photo : this.props.bgStyle.photoUrl,
+          color : {
+            ...this.state.bg.color,
+            // value : this.props.bgStyle.backgroundColor,
+          }
+        },
+        loaded : true
+      });
+    }    
   }
 
   _handleDate = (startDate, finishDate, switchOneday) => {
@@ -164,12 +187,14 @@ export default class WriteCon extends Component {
           </Row>
         </HeaderConBox>
         <TextareaBox>
+          {/* <Text>{JSON.stringify(this.props.article,0,2)}</Text>
+          <Text>{JSON.stringify(this.state,0,2)}</Text> */}
           <Textarea
             multiline={true}
             onChangeText={(text) => this.setState({text})}
             placeholder="당신의 여행은 어땠나요?"
             placeholderStyle={{color:"#999", fontSize:15}}
-            value={this.state.text}/>
+            value={text}/>
         </TextareaBox>
       </Wrap>
     )
