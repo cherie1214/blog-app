@@ -7,6 +7,7 @@ import { requestSaveArticle, articleInit } from '../../actions';
 import { ConfirmDialog } from 'react-native-simple-dialogs';
 import { withNavigation } from 'react-navigation';
 import axios from 'axios';
+import { domain } from '../../config';
 
 import WriteCon from './WriteCon';
 
@@ -18,7 +19,7 @@ class Write extends Component {
     super(props);
     this.state = {
         article: {
-          _id : null
+          _id : null,
         },
         saveConfirmVisible: false,
         backConfirmVisible: false,
@@ -37,7 +38,7 @@ class Write extends Component {
     const _editId = this.state._editId;
 
     if(_editId !== "new"){
-      axios.post('http://localhost:8000/api/article/getEditArticle', {_editId})
+      axios.post(domain + '/api/article/getEditArticle', {_editId})
       .then((res) => {
           if(res.data.status === "ARTICLE_GET_FAILED"){
               alert("ERROR\n"+res.data.message);

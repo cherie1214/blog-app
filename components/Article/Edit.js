@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import { Ionicons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import Modal from "react-native-modal";
+import { domain } from '../../config';
 
 import EditItem from './EditItem';
 
@@ -13,10 +15,16 @@ class Edit extends Component {
   constructor(props){
     super(props);
     this.state = {
-      items: [],
+      items: {},
       loading: true,
-      message: "로딩 중..."
-    }
+      message: "로딩 중...",
+      buttonShow: false,
+      isModalVisible: false,
+      _id: null,
+    };
+    this._handleUpdate = this._handleUpdate.bind(this);
+    this._handleModal = this._handleModal.bind(this);
+    this._renderModalContent = this._renderModalContent.bind(this);
   }
 
   componentDidMount(){
@@ -25,22 +33,23 @@ class Edit extends Component {
       includePublish: true
     };
 
-    axios.post('http://localhost:8000/api/article/getArticles', obj)
+    axios.post(domain + '/api/article/getArticles', obj)
       .then((res) => {
           if(res.data.status === "ARTICLE_GET_FAILED"){
               alert("ERROR\n"+res.data.message);
           }else if(res.data.status === "ARTICLE_GET_SUCCESSED"){  
-            // alert(JSON.stringify(res.data,0,2))
+            
+            const items = res.data.data;
+
             let newState = {
-              items: res.data.data,
+              items
             }
 
-            if(res.data.data.length === 0){
+            if(Object.keys(items).length === 0){
               newState.message = "저장한 글이 없습니다.";
               newState.loading = false;
-            } else {
-              newState.message = ""; 
-            }
+              newState.buttonShow = true;
+            } else newState.message = ""; 
 
             this.setState(newState)
           }
@@ -49,28 +58,98 @@ class Edit extends Component {
       });
   }
 
-  componentDidUpdate(prevProps){
-    const http = this.props.http;
-    if(prevProps.http !== http){  
-      if(http.status === "SUCCESS"){
-        this.setState({ status: "SUCCESS" })
+  _handleUpdate(_id, obj, target){
+    const token = this.props.login.token;  
+    const ObjToUpdate = {
+      ...obj,
+      _id
+    }
+
+    const header = {
+      headers : {
+          'x-access-token' : token
       }
-    }    
+    }
+
+    axios.post('http://localhost:8000/api/article/write', ObjToUpdate, header)
+      .then((res) => {
+          if(res.data.status === "ARTICLE_SAVE_FAILED"){
+              alert("ERROR\n"+"세이브 실패");
+          }else if(res.data.status === "ARTICLE_SAVE_SUCCESSED"){ 
+            
+            let newArticle = Object.assign({}, this.state.items)
+            let newState = {};
+
+            if (target === "published"){
+              newArticle[res.data.article._id].published = res.data.article.published;
+            } else if(target === "delYn"){              
+              delete newArticle[res.data.article._id];
+              if(Object.keys(newArticle).length === 0){
+                newState.message = "저장한 글이 없습니다.";
+                newState.buttonShow = true;
+              }
+            } 
+
+            this.setState({
+              ...this.state,
+              items: newArticle,
+              ...newState,
+            })
+          }
+      }).catch((error) => {
+        alert("ERROR\n"+"캐치에러");
+      });
+  }
+
+  _getItemList () {
+    if(Object.keys(this.state.items).length === 0) return '';
+    var indents = [];
+    Object.values(this.state.items).forEach((e, i) => {
+      indents.push(<EditItem key={i} {...e}  handleUpdate={this._handleUpdate} handleModal={this._handleModal}/>);
+    })
+
+    return indents;
+  }
+
+  _renderModalContent = (_id) => (
+    <ModalWrap>    
+      <ModalSelect>
+        <ModalOption first onPress={() => this.props.navigation.navigate("Write", {'itemId': _id})}>
+          <ModalBtnText>수정</ModalBtnText>
+        </ModalOption>
+        <ModalOption onPress={() => {
+          this._handleUpdate(_id, {delYn : true}, "delYn");
+          this.setState({ isModalVisible: false });
+         }}>
+          <ModalBtnText red>삭제</ModalBtnText>
+        </ModalOption>        
+      </ModalSelect>
+      <ModalCancle onPress={() => this.setState({ isModalVisible: false })}>  
+        <ModalBtnText>취소</ModalBtnText>
+      </ModalCancle>
+    </ModalWrap>
+  );
+
+  _handleModal = (_id) => {
+    this.setState({
+        ...this.state,
+        _id,
+        isModalVisible : !this.state.isModalVisible
+    });
   }
 
   render(){
-
-    const { message, loading } = this.state;
-    const items = this.state.items;
-    const list = items.map(
-      ( item, index ) => {      
-       return <EditItem key={index} {...item} />
-      }
-    );
-
-
+    const { _id, items, message, buttonShow, isModalVisible} = this.state;
+ 
     return(
       <Wrap>
+        <Modal 
+          isVisible={isModalVisible} 
+          onBackdropPress={() => this.setState({ isModalVisible: false })}
+          style={{ justifyContent: 'flex-end', margin:0 }}>
+          {this._renderModalContent(_id)}
+        </Modal>
+
         <HeaderBox>
           <BtnIcon onPressOut={() => this.props.navigation.navigate('Home')}>
             <Ionicons name="ios-arrow-round-back" color="#333" size={45}/>
@@ -79,18 +158,20 @@ class Edit extends Component {
         </HeaderBox>
         <ScrollView>
           <ConBox>
-            {items.length === 0 ? 
-              (<NoDataBox>              
-                <NoDataText>{message}</NoDataText>
-                {loading ? "" : (
-                  <BtnText noData onPressOut={() => this.props.navigation.navigate('Write')}>
-                    <LinkText>글 쓰러 가기</LinkText>
-                    <Ionicons name="ios-arrow-round-forward" color="#6093E3" size={24} style={{marginLeft:10}}/>
-                  </BtnText>
-                ) }
-              </NoDataBox>) 
-              : list
-            }            
+            {/* <Text>{JSON.stringify(items)}</Text> */}
+            {/* <Text>{JSON.stringify(this.state._id)}</Text> */}
+            {Object.keys(items).length === 0 
+              ? (<NoDataBox><NoDataText>{message}</NoDataText></NoDataBox>)
+              : this._getItemList()
+            }
+            {buttonShow ? 
+              <NoDataBox>
+                <BtnText noData onPressOut={() => this.props.navigation.navigate('Write')}>
+                  <LinkText>글 쓰러 가기</LinkText>
+                  <Ionicons name="ios-arrow-round-forward" color="#6093E3" size={24} style={{marginLeft:10}}/>
+                </BtnText>
+              </NoDataBox>
+            : ''}     
           </ConBox>
         </ScrollView>
       </Wrap>
@@ -169,4 +250,33 @@ const LinkText = styled.Text`
   font-size:14px;
   color:#6093E3;
   font-family: 'hd-regular';
+`;
+
+const ModalWrap = styled.View`
+  padding: 30px;
+`;
+
+const ModalSelect = styled.View`
+  background: #fff;
+  border-radius:15px;
+`;
+
+const ModalCancle = styled.TouchableOpacity`
+  margin-top:15px;
+  padding: 20px 0;
+  align-items: center;
+  background: #fff;
+  border-radius:15px;
+`;
+
+const ModalOption = styled.TouchableOpacity`
+  padding: 20px 0;
+  align-items: center;
+  border-top-color:#ccc;
+  border-top-width: ${props => props.first ? "0" : "1px"}
+`;
+
+const ModalBtnText = styled.Text`
+  font-size:18px;
+  color: ${props => props.red ? "red" : "blue"}
 `;

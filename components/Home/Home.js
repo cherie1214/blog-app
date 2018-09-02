@@ -5,6 +5,7 @@ import { SimpleLineIcons, Ionicons } from '@expo/vector-icons';
 import { withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { getStorage } from '../../actions';
+import { ConfirmDialog } from 'react-native-simple-dialogs';
 
 // components
 import SearchBox from './SearchBox';
@@ -13,6 +14,12 @@ import Card from './Card';
 const { height, width } = Dimensions.get("window");
 
 class Home extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      confirmVisible: false,
+    }
+  }
   
   componentDidMount(){
     if(!this.props.auth.login.loggedIn){
@@ -20,7 +27,23 @@ class Home extends Component {
     }
   }
 
+  handleGoWrite = () => {
+    const auth = this.props.auth;
+
+    if(auth.login.loggedIn){
+      this.props.navigation.navigate("Write")
+    } else {
+      this.setState({ confirmVisible: true })
+    }
+  }
+  
+
+
+
+
   render() {
+    const confirmMsg = `글쓰기는 로그인 후에 이용 가능합니다.` + String.fromCharCode(13) + `로그인 페이지로 이동하시겠습니까?`;
+
     return (
       <Container>
         <HomeMenu>
@@ -35,9 +58,23 @@ class Home extends Component {
           <Card />
         </HomeBody>
         <HomeFooter>
-          <Button onPressOut={() => this.props.navigation.navigate('Write')}>
+          <Button onPressOut={() => this.handleGoWrite()}>
             <SimpleLineIcons name="plus" color="#333" size={30} />
           </Button>
+          <ConfirmDialog
+              // title=""
+              message={confirmMsg}
+              visible={this.state.confirmVisible}
+              // onTouchOutside={() => this.setState({backConfirmVisible: false})}
+              positiveButton={{
+                  title: "네",
+                  onPress: () => this.props.navigation.navigate("SignIn")
+              }}
+              negativeButton={{
+                  title: "아니오",
+                  onPress: () => this.setState({confirmVisible: false}) 
+              }}
+              />  
         </HomeFooter>
         
       </Container>

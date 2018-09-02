@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
-import { Dimensions, ScrollView } from 'react-native';
+import { Dimensions, ScrollView, Text } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons } from '@expo/vector-icons';
+import { connect } from 'react-redux';
+import axios from 'axios';
 import { withNavigation } from 'react-navigation';
+import { domain } from '../../config'
 
 import NotifyItem from './NotifyItem'
 
@@ -12,10 +15,53 @@ class Notify extends Component {
   constructor(props){
     super(props);
     this.state = {
+      items: {},
+      loading: true,
+      message: "로딩 중...",
     }
+  }
+
+  componentDidMount(){
+    const obj = {
+      id: this.props.login.id,
+    };
+    
+    axios.post(domain + '/api/notification/getNotifications', obj)
+    .then((res) => {
+      if(res.data.status === "NOTIFICATION_GET_FAILED"){
+        alert("ERROR\n"+res.data.message);
+      }else if(res.data.status === "NOTIFICATION_GET_SUCCESSED"){ 
+          const items = res.data.data;
+
+          let newState = {
+            items
+          }
+
+          if(Object.keys(items).length === 0){
+            newState.message = "저장한 글이 없습니다.";
+            newState.loading = false;
+          } else newState.message = ""; 
+
+          this.setState(newState)
+        }
+      }).catch((error) => {
+        alert("ERROR\n"+res.data.message);
+      });
+  }
+
+  _getItemList () {
+    if(Object.keys(this.state.items).length === 0) return '';
+    var indents = [];
+    Object.values(this.state.items).forEach((e, i) => {
+      indents.push(<NotifyItem key={i} {...e} />);
+    })
+
+    return indents;
   }
   
   render(){
+    const { items, message } = this.state;
+
     return(
         <Wrap>
           <HeaderBox>
@@ -26,16 +72,28 @@ class Notify extends Component {
           </HeaderBox>
           <ScrollView>
             <ConBox>
-              <NotifyItem />
-              <NotifyItem />
-              <NotifyItem />
-              <NotifyItem />
+              {/* <Text>{JSON.stringify(this.state.items,0,2)}</Text> */}
+              {Object.keys(items).length === 0 
+                ? (<NoDataBox><NoDataText>{message}</NoDataText></NoDataBox>)
+                : this._getItemList()
+              }
             </ConBox>
           </ScrollView>  
         </Wrap>
       )
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    login: state.redux.auth.login,
+    items: state.redux.article.items,
+    http: state.redux.article.http,
+  };
+}
+
+const notifyWithNavigation = withNavigation(Notify)
+export default connect(mapStateToProps)(notifyWithNavigation);
 
 const Wrap = styled.View`
   flex: 1;
@@ -71,4 +129,13 @@ const ConBox = styled.View`
   flex: 8.8;
 `;
 
-export default withNavigation(Notify);
+const NoDataBox = styled.View`
+  align-items: center;
+  justify-content: center;
+`;
+
+const NoDataText = styled.Text`
+  color:#666;
+  font-size:16px;
+  font-family: 'hd-regular';
+`;

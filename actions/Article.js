@@ -8,7 +8,8 @@ import {
 } from './ActionTypes';
 
 import axios from 'axios';
-import { AsyncStorage } from 'react-native';
+import { domain } from '../config';
+import getNotify from '../lib/getNotify';
 
 
 //action creators
@@ -38,7 +39,7 @@ export function articleGetting() {
 }
 
 //save article
-export function requestSaveArticle(article, token){
+export function requestSaveArticle(oriArticle, token){
     return (dispatch) => {
         dispatch(articleGetting());
 
@@ -48,8 +49,16 @@ export function requestSaveArticle(article, token){
             }
         }
 
+        let article = Object.assign({},oriArticle);
+        article.bgStyle = {};
+        article.bgStyle.backgroundColor = article.bg ? article.bg.color.value : article.bgStyle.backgroundColor || "#6B5ED1";
+        article.bgStyle.photoUrl = article.bg ?  article.bg.photo : (article.bgStyle ? article.bgStyle.photoUrl : null) || null;
+        article.weather = article.weather && article.weather.name ? article.weather.name : null;
+
+        let notification = Object.assign({},article)         
+
         // API REQUEST
-        return axios.post('http://localhost:8000/api/article/write', article, header)
+        return axios.post(domain + '/api/article/write', article, header)
         .then((res) => {
             if(res.data.status === "ARTICLE_SAVE_FAILED"){
                 // alert("ERROR\n"+res.data.message);
@@ -58,7 +67,7 @@ export function requestSaveArticle(article, token){
                 console.log(res.data.status)
                 // alert("저장되었습니다.")
                 dispatch(articleGetSuccess(res.data._id));
-                console.log(JSON.stringify(res.data,0,2))
+                getNotify(notification, token);
             }
         }).catch((error) => {
             // FAILED

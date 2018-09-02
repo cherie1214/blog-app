@@ -35,7 +35,7 @@ export default class WriteCon extends Component {
       loaded : false
     };
     this._toggleModal = this._toggleModal.bind(this);
-    this._rednerModalType = this._rednerModalType.bind(this);
+    this._renderModalType = this._renderModalType.bind(this);
     this._renderModalContent = this._renderModalContent.bind(this);
   }
 
@@ -61,13 +61,15 @@ export default class WriteCon extends Component {
           name: this.props.article.weather,
         },
         bg: {
-          // photo : this.props.bgStyle.photoUrl,
+          photo : this.props.article.bgStyle.photoUrl,
           color : {
             ...this.state.bg.color,
-            // value : this.props.bgStyle.backgroundColor,
+            value : this.props.article.bgStyle.backgroundColor,
           }
         },
-        loaded : true
+        loaded : true,
+        published: this.props.article.published,
+        delYn: this.props.article.delYn,
       });
     }    
   }
@@ -116,7 +118,7 @@ export default class WriteCon extends Component {
     });
   };
 
-  _rednerModalType(date, weather, bg){
+  _renderModalType(date, weather, bg){
       switch (this.state.modalType) {
         case "date":   return date;
         case "weather": return weather;
@@ -128,11 +130,11 @@ export default class WriteCon extends Component {
     <View>    
       <ModalHeader>
         <ModalTit>
-          {this._rednerModalType("날짜", "날씨", "카드 배경")} 선택하기
+          {this._renderModalType("날짜", "날씨", "카드 배경")} 선택하기
         </ModalTit>
         <Button value="cancle" title="닫기" onPress={() => this._toggleModal('')}/>
       </ModalHeader>
-      {this._rednerModalType(
+      {this._renderModalType(
         <ModalDate parentState={this.state} handleDate={this._handleDate} />, 
         <ModalWeather parentState={this.state} handleWeather={this._handleWeather}/>,
         <ModalBg parentState={this.state} handleBg={this._handleBg}/>
@@ -147,6 +149,7 @@ export default class WriteCon extends Component {
       <Wrap>
         <Modal 
           isVisible={isModalVisible} 
+          onBackdropPress={() => this.setState({ isModalVisible: false })}
           style={{ justifyContent: 'flex-end', margin:0 }}>
           {this._renderModalContent()}
         </Modal>

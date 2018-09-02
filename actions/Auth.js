@@ -23,6 +23,7 @@ import {
 } from './ActionTypes';
 
 import axios from 'axios';
+import { domain } from '../config';
 import { AsyncStorage } from 'react-native';
 
 //action creators
@@ -139,7 +140,7 @@ export function userSignIn(userInfo) {
         dispatch(getting());
 
         // API REQUEST
-        return axios.post('http://localhost:8000/api/auth/signIn', userInfo)
+        return axios.post(domain + '/api/auth/signIn', userInfo)
         .then((res) => {
             // SUCCEED
             const status = res.data.status;
@@ -185,7 +186,7 @@ export function userSignUp(userInfo) {
         dispatch(getting());
 
         // API REQUEST
-        return axios.post('http://localhost:8000/api/auth/signUp', userInfo)
+        return axios.post(domain + '/api/auth/signUp', userInfo)
         .then((res) => {
             // alert(res)
             if(res.data.status === "SIGNUP_SUCCESS"){
@@ -220,7 +221,7 @@ export function userChangePw(userInfo, token) {
   
 
         // API REQUEST
-        return axios.post('http://localhost:8000/api/auth/changePw', userInfo, header)
+        return axios.post(domain + '/api/auth/changePw', userInfo, header)
         .then((res) => {
             alert(JSON.stringify(res.data,0,2))
             const id = res.data.id;
@@ -279,7 +280,7 @@ export function changeNicknameRequest (userInfo, token) {
         // alert(userInfo + token)
 
         // API REQUEST
-        return axios.post('http://localhost:8000/api/auth/changeNickname', userInfo, header)
+        return axios.post(domain + '/api/auth/changeNickname', userInfo, header)
         .then((res) => {
             if(res.data.status === "CHANGE_NICKNAME_ERROR"){
                 alert("ERORR");

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Dimensions } from 'react-native';
 import styled from 'styled-components';
+import timeAgo from '../../lib/timeAgo';
 
 const { height, width } = Dimensions.get("window");
 
@@ -8,25 +9,33 @@ export default class NotifyItem extends Component {
   constructor(props){
     super(props);
     this.state = {
+      articleStatus: this.props.articleStatus,
     }
+    this._renderStatusType = this._renderStatusType.bind(this);
   }
   
+  _renderStatusType(){
+    switch (this.state.articleStatus) {
+      case "new":   return "새로 저장";
+      case "modify": return "수정";
+      case "delete":  return "삭제";
+      case "pulish":  return "발행";
+      case "canclePublish":  return "발행 취소";
+  }
+}
+
   render(){
+
+    const { title, updatedDate, checkedYn } = this.props;
+
     return(
         <Wrap>
           <ConBox>
-            <Tit>45days in Western Europe</Tit>
-            <Con>이 발행 되었습니다.</Con>
+            <Tit>{title}</Tit>
+            <Con>이 {this._renderStatusType()} 되었습니다.</Con>
             <TimeBox>
-              <New></New>
-              <Time>5초 전</Time>
-            </TimeBox>
-          </ConBox>
-          <ConBox>
-            <Tit>임시저장한 글 임시저장한 글</Tit>
-            <Con>이 수정 되었습니다.</Con>
-            <TimeBox>
-              <Time>5시간 전</Time>
+              {checkedYn ? null : <New></New>}
+              <Time>{timeAgo(updatedDate, true)}</Time>
             </TimeBox>
           </ConBox>
         </Wrap>
