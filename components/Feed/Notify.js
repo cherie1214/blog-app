@@ -26,11 +26,11 @@ class Notify extends Component {
       id: this.props.login.id,
     };
     
-    axios.post(domain + '/api/notification/getNotifications', obj)
+    axios.post(domain + '/api/feed/getFeeds', obj)
     .then((res) => {
-      if(res.data.status === "NOTIFICATION_GET_FAILED"){
+      if(res.data.status === "FEED_GET_FAILED"){
         alert("ERROR\n"+res.data.message);
-      }else if(res.data.status === "NOTIFICATION_GET_SUCCESSED"){ 
+      }else if(res.data.status === "FEED_GET_SUCCESSED"){ 
           const items = res.data.data;
 
           let newState = {
@@ -130,6 +130,7 @@ const ConBox = styled.View`
 `;
 
 const NoDataBox = styled.View`
+  padding-top:7%;
   align-items: center;
   justify-content: center;
 `;

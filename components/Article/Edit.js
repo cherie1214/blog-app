@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import Modal from "react-native-modal";
 import { domain } from '../../config';
+import saveFeed from '../../lib/saveFeed';
 
 import EditItem from './EditItem';
 
@@ -60,9 +61,10 @@ class Edit extends Component {
 
   _handleUpdate(_id, obj, target){
     const token = this.props.login.token;  
-    const ObjToUpdate = {
+    const objToUpdate = {
       ...obj,
-      _id
+      _id,
+      changed: target,
     }
 
     const header = {
@@ -71,19 +73,21 @@ class Edit extends Component {
       }
     }
 
-    axios.post('http://localhost:8000/api/article/write', ObjToUpdate, header)
+    axios.post(domain + '/api/article/write', objToUpdate, header)
       .then((res) => {
-          if(res.data.status === "ARTICLE_SAVE_FAILED"){
+          if(res.data.status === "ARTICLE_UPDATE_FAILED"){
               alert("ERROR\n"+"세이브 실패");
-          }else if(res.data.status === "ARTICLE_SAVE_SUCCESSED"){ 
+          }else if(res.data.status === "ARTICLE_UPDATE_SUCCESSED"){ 
             
             let newArticle = Object.assign({}, this.state.items)
             let newState = {};
 
             if (target === "published"){
               newArticle[res.data.article._id].published = res.data.article.published;
+
             } else if(target === "delYn"){              
               delete newArticle[res.data.article._id];
+
               if(Object.keys(newArticle).length === 0){
                 newState.message = "저장한 글이 없습니다.";
                 newState.buttonShow = true;

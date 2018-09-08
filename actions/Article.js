@@ -9,7 +9,7 @@ import {
 
 import axios from 'axios';
 import { domain } from '../config';
-import getNotify from '../lib/getNotify';
+import saveFeed from '../lib/saveFeed';
 
 
 //action creators
@@ -55,7 +55,7 @@ export function requestSaveArticle(oriArticle, token){
         article.bgStyle.photoUrl = article.bg ?  article.bg.photo : (article.bgStyle ? article.bgStyle.photoUrl : null) || null;
         article.weather = article.weather && article.weather.name ? article.weather.name : null;
 
-        let notification = Object.assign({},article)         
+        let feed = Object.assign({},article)         
 
         // API REQUEST
         return axios.post(domain + '/api/article/write', article, header)
@@ -66,8 +66,7 @@ export function requestSaveArticle(oriArticle, token){
             }else if(res.data.status === "ARTICLE_SAVE_SUCCESSED" || res.data.status === "ARTICLE_UPDATE_SUCCESSED"){
                 console.log(res.data.status)
                 // alert("저장되었습니다.")
-                dispatch(articleGetSuccess(res.data._id));
-                getNotify(notification, token);
+                dispatch(articleGetSuccess(res.data._id));  
             }
         }).catch((error) => {
             // FAILED

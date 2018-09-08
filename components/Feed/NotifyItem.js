@@ -9,33 +9,34 @@ export default class NotifyItem extends Component {
   constructor(props){
     super(props);
     this.state = {
-      articleStatus: this.props.articleStatus,
+      notifyType: this.props.notifyType,
     }
     this._renderStatusType = this._renderStatusType.bind(this);
   }
   
   _renderStatusType(){
-    switch (this.state.articleStatus) {
+    switch (this.state.notifyType) {
       case "new":   return "새로 저장";
-      case "modify": return "수정";
+      case "update": return "수정";
       case "delete":  return "삭제";
-      case "pulish":  return "발행";
-      case "canclePublish":  return "발행 취소";
+      case "publish":  return "발행";
+      case "unpublish":  return "발행 취소";
   }
 }
 
   render(){
 
-    const { title, updatedDate, checkedYn } = this.props;
+    const { title, registedDate, confirmed } = this.props;
 
     return(
         <Wrap>
           <ConBox>
             <Tit>{title}</Tit>
-            <Con>이 {this._renderStatusType()} 되었습니다.</Con>
+            <Con>글이 {this._renderStatusType()} 되었습니다.</Con>
+            {/* <Con>{this.state.notifyType}</Con> */}
             <TimeBox>
-              {checkedYn ? null : <New></New>}
-              <Time>{timeAgo(updatedDate, true)}</Time>
+              {confirmed ? null : <New></New>}
+              <Time>{timeAgo(registedDate, true)}</Time>
             </TimeBox>
           </ConBox>
         </Wrap>
