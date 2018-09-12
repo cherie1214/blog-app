@@ -12,6 +12,7 @@ class SignedMenu extends Component {
   
   render() {
     const auth = this.props.auth;
+    const notifyIcon = this.props.notifyIcon;
 
     return (
       <Wrap>
@@ -46,7 +47,7 @@ class SignedMenu extends Component {
         <IconBox>
           <IconBtn
             onPressOut={() => this.props.navigation.navigate('Notify')}>
-            <IconNew yellow />
+            {notifyIcon ? <IconNew yellow /> : ''}
             <MaterialCommunityIcons
               name="bell-outline"
               color="#fff"

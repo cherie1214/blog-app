@@ -3,10 +3,11 @@ import { Dimensions, ScrollView, Text, View } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
+import { setNotifyIcon } from '../../actions';
 import axios from 'axios';
 import Modal from "react-native-modal";
 import { domain } from '../../config';
-import saveFeed from '../../lib/saveFeed';
+// import saveFeed from '../../lib/saveFeed';
 
 import EditItem from './EditItem';
 
@@ -84,14 +85,14 @@ class Edit extends Component {
 
             if (target === "published"){
               newArticle[res.data.article._id].published = res.data.article.published;
-
+              this.props.setNotifyIcon(true);
             } else if(target === "delYn"){              
               delete newArticle[res.data.article._id];
-
               if(Object.keys(newArticle).length === 0){
                 newState.message = "저장한 글이 없습니다.";
                 newState.buttonShow = true;
               }
+              this.props.setNotifyIcon(true);
             } 
 
             this.setState({
@@ -192,7 +193,15 @@ const mapStateToProps = (state) => {
   };
 }
 
-export default connect(mapStateToProps)(Edit);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setNotifyIcon : (bool) => {
+      return dispatch(setNotifyIcon(bool));
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Edit);
 
 
 const Wrap = styled.View`

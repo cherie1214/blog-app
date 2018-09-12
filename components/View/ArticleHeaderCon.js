@@ -36,8 +36,7 @@ export default class ArticleHeaderCon extends Component {
             <WriterBox>
               <ProfileImgBox source={require('../../assets/bonobono.jpg')}/>
               <WriterNickname>bonobono</WriterNickname>
-            </WriterBox>  
-            
+            </WriterBox>              
           </Row>       
         </Wrap>
       )
@@ -46,7 +45,7 @@ export default class ArticleHeaderCon extends Component {
 
 const Wrap = styled.View`
   flex: 1;
-  background: #5ED9FF;
+  background-color: transparent;
 `;
 
 const ConBox = styled.View`

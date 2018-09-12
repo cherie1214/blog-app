@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Dimensions, ScrollView, View, Text } from 'react-native';
+import { Dimensions } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons } from '@expo/vector-icons';
-import ReactNativeParallaxHeader from 'react-native-parallax-header';
+import ParallaxScrollView from 'react-native-parallax-scroll-view';
 
 import WriterViewItem from './WriterViewItem';
 
@@ -14,71 +14,59 @@ export default class WriterView extends Component {
     this.state = {
       writerNickname: "bonobono",
       articleNum: 3,
-      navColor: "#333",
     }
-    this.renderNavBar = this.renderNavBar.bind(this);
-    this.renderContent = this.renderContent.bind(this);
   }
 
-  renderNavBar = () => {
-    <View>
-      <Nickname>{this.state.writerNickname}</Nickname>
-      <ProfileBox>
-        <ProfileImgBox source={require('../../assets/bonobono.jpg')}/>
-        <Nickname>{this.state.writerNickname}</Nickname>
-        <ArticleNum>글수 {this.state.articleNum}</ArticleNum>
-      </ProfileBox>
-    </View>
-  }
-  
-  renderContent(){
-    <Wrap>
-      <Text>content</Text>
-      {/* <ConBox>
-        <WriterViewItem />
-        <WriterViewItem />
-        <WriterViewItem />
-      </ConBox> */}
-    </Wrap>
-  }
-
-  render(){
-    const viewImages = {
-      background: require('../../assets/bonobono.jpg'),
-    };
-    
-    const { navColor, writerNickname, articleNum } = this.state;
-
+  renderHeaderContent(){
     return(
-        <Wrap>          
-          <ReactNativeParallaxHeader
-            headerMinHeight={120}
-            headerMaxHeight={170}
-            extraScrollHeight={20}
-            navbarColor="#fff"
-            backgroundColor="#ccc"
-            title={writerNickname}
-            // titleStyle={{fontSize:15}}
-            // backgroundImage={viewImages.background}
-            // backgroundImageScale={1.2}
-            renderNavBar={() => this.renderNavBar()}
-            renderContent={() => this.renderContent()}
-          />
-          {/* <HeaderBox>
-            <BtnIcon onPressOut={() => this.props.navigation.navigate('Home')}>
-              <Ionicons name="ios-arrow-round-back" color="#333" size={45}/>
-            </BtnIcon>
-            <ProfileBox>
-              <ProfileImgBox source={require('../../assets/bonobono.jpg')}/>
-              <Nickname>{writerNickname}</Nickname>
-              <ArticleNum>글수 {articleNum}</ArticleNum>
-            </ProfileBox> 
-          </HeaderBox> */}
-          {/* <ConBox>
-            <WriterViewItem />
-            <WriterViewItem />
-            <WriterViewItem />
-          </ConBox> */}
+      <HeaderBox>
+        <ProfileBox>
+          <ProfileImgBox source={require('../../assets/bonobono.jpg')}/>
+          <Nickname>{this.state.writerNickname}</Nickname>
+          <ArticleNum>글수 {this.state.articleNum}</ArticleNum>
+        </ProfileBox> 
+      </HeaderBox>
+    )
+  }
+
+  renderSticky(){
+    return(
+      <StickyBox>
+        <Nickname>{this.state.writerNickname}</Nickname>
+      </StickyBox>
+    )
+  }
+
+  renderFixedHeader() {
+    return(
+      <FixedHeaderBox>
+        <BtnIcon onPressOut={() => this.props.navigation.navigate('Home')}>
+          <Ionicons name="ios-arrow-round-back" color="#333" size={45} />
+        </BtnIcon> 
+      </FixedHeaderBox>
+    )
+  }
+
+  render(){    
+    return(
+        <Wrap>         
+          <ParallaxScrollView
+            style={{ flex: 1}}
+            backgroundColor="#fff"
+            contentBackgroundColor="#f7f7f7"
+            parallaxHeaderHeight={290}
+            stickyHeaderHeight={90}
+            // onChangeHeaderVisibility={() => {this.setState({headerVisibility: false})}}
+            renderForeground={() => this.renderHeaderContent()}
+            // renderStickyHeader={() => this.renderSticky()}
+            renderFixedHeader={() => this.renderFixedHeader()}
+            >
+            <ConBox>
+              <WriterViewItem />
+              <WriterViewItem />
+              <WriterViewItem />
+            </ConBox>
+          </ParallaxScrollView> 
         </Wrap>
       )
   }
@@ -91,21 +79,41 @@ const Wrap = styled.View`
 const HeaderBox = styled.View`
   position:relative;
   z-index:100;
-  padding: 15px 0 20px;
+  padding: 100px 0 20px;
+  height:290px;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  border-bottom-width: 1px;
-  border-bottom-color: #dedede;
   background: #fff;
-  box-shadow: 0px 3px 2px rgba(0,0,0,0.05);
 `;
 
-const BtnIcon = styled.TouchableOpacity`
-  z-index:1;
-  position:absolute;
-  top:7%;
-  left: 15px;
+const StickyBox = styled.View`
+  position: relative;
+  margin-top:7%;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+`;
+
+const FixedHeaderBox = styled.View`
+  z-index:100;
+  width: 100%;
+  height: 90px;
+  flex-direction: row;
+  align-items: flex-end;
+  background: #fff;
+  border-bottom-width:1px;
+  border-bottom-color: #dedede;
+  box-shadow: 0px 3px 2px rgba(0,0,0,0.5);
+`;
+// position:absolute;
+// z-index:100;
+// top:0;
+// left: 0;
+
+const BtnIcon = styled.TouchableOpacity`  
+  margin-left:15px;
+  height:50px;
 `;
 
 const ProfileBox = styled.View`

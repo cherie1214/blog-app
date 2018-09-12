@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Dimensions, StatusBar, ScrollView } from 'react-native';
+import { Dimensions, StatusBar, ScrollView, Text } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons } from '@expo/vector-icons';
+import ParallaxScrollView from 'react-native-parallax-scroll-view';
 
 import ArticleHeaderCon from './ArticleHeaderCon'
 
@@ -19,52 +20,67 @@ export default class ArticleView extends Component {
       likeCount: 120,
       lastScrollPos: 0,
       writtenDate: "9시간 전",
+      headerVisibility: false,
+      bgStyle : {
+            backgroundColor : "#5ED9FF",
+            photoUrl : null
+      },
     }
   }
 
-  _handleLikeStatus(isLiked){
-    this.setState(function(prevState){
-      if(isLiked) {
-        return {isLiked:false, likeCount: prevState.likeCount -1}
-      } else {
-        return {isLiked:true, likeCount: prevState.likeCount +1}
-      }
-    });
+  renderFixedHeader(){
+    const { isLiked, headerVisibility, writtenDate } = this.state;
+
+    return(
+      <HeaderBox visual={headerVisibility}>
+        <BtnIcon onPressOut={() => this.props.navigation.navigate('Home')}>
+          <Ionicons name="ios-arrow-round-back" color={headerVisibility ? ("#333") : ("#fff")} size={45}/>
+        </BtnIcon>
+        <Row>
+          <BtnLike onPressOut={() => this._handleLikeStatus(isLiked)}>
+            {isLiked ? (
+              <Ionicons name="md-heart" color="#EC4568" size={13} />
+              ) : (
+              <Ionicons name="md-heart-outline" color={headerVisibility ? ("#333") : ("#fff")} size={13} />
+              )
+            }
+            <LikeNum visual={headerVisibility}>{this.state.lastScrollPos}</LikeNum>
+          </BtnLike>
+          <WrittenDate visual={headerVisibility}> · {writtenDate}</WrittenDate>   
+        </Row> 
+      </HeaderBox>
+    )
+  }
+
+  renderHeaderContent(){
+    return(
+      <HeaderConBox>
+        <ArticleHeaderCon />
+      </HeaderConBox>
+    )
   }
   
 
   render(){
     
-    const { isLiked, likeCount, conText, isScrolling, writtenDate } = this.state;
+    const { conText, bgStyle } = this.state;
 
     return(
         <Wrap>
           <StatusBar hidden={true} />
-          <HeaderBox visual={isScrolling}>
-              <BtnIcon onPressOut={() => this.props.navigation.navigate('Home')}>
-                <Ionicons name="ios-arrow-round-back" color={isScrolling ? ("#333") : ("#fff")} size={45}/>
-              </BtnIcon>
-              <Row>
-                <BtnLike onPressOut={() => this._handleLikeStatus(isLiked)}>
-                  {isLiked ? (
-                    <Ionicons name="md-heart" color="#EC4568" size={13} />
-                    ) : (
-                    <Ionicons name="md-heart-outline" color={isScrolling ? ("#333") : ("#fff")} size={13} />
-                    )
-                  }
-                  <LikeNum visual={isScrolling}>{this.state.lastScrollPos}</LikeNum>
-                </BtnLike>
-                <WrittenDate> · {writtenDate}</WrittenDate>   
-             </Row> 
-          </HeaderBox>
-          <ScrollView>  
-            <HeaderConBox>
-              <ArticleHeaderCon />
-            </HeaderConBox>  
-            <TextBox>
-              <ConText>{conText}</ConText>
-            </TextBox>
-          </ScrollView>
+
+          <ParallaxScrollView
+            style={{ flex: 1}}
+            backgroundColor={bgStyle.backgroundColor}
+            contentBackgroundColor="#fff"
+            parallaxHeaderHeight={320}
+            stickyHeaderHeight={90}
+            onChangeHeaderVisibility={() => {this.setState({headerVisibility: true})}}
+            renderFixedHeader={() => this.renderFixedHeader()}
+            renderForeground={() => this.renderHeaderContent()}
+            >
+            <ConText>{conText}{conText}</ConText>
+          </ParallaxScrollView>                
         </Wrap>
       )
   }
@@ -84,7 +100,7 @@ const HeaderBox = styled.View`
   justify-content: space-between;
   border-bottom-width: 1px;
   border-bottom-color: transparent;
-  background: #5ED9FF;
+  background-color: transparent;
   ${props => {
     if(props.visual){
       return `
@@ -124,17 +140,13 @@ const LikeNum = styled.Text`
 
 const WrittenDate = styled.Text`
   font-family: 'hd-regular';
-  color:#fff;
+  color: ${props => props.visual ? ('#333;') : ('#fff;')}
   font-size:13px;
 `;
 
 const HeaderConBox = styled.View`
-  flex: 5;
-`;
-
-const TextBox = styled.View`
-  flex: 6;
-  background: #fff;
+  flex: 1;
+  margin-top:70px;
 `;
 
 const ConText = styled.Text`

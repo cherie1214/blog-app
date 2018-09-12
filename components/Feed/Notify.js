@@ -3,6 +3,7 @@ import { Dimensions, ScrollView, Text } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
+import { setNotifyIcon } from '../../actions';
 import axios from 'axios';
 import { withNavigation } from 'react-navigation';
 import { domain } from '../../config'
@@ -22,11 +23,14 @@ class Notify extends Component {
   }
 
   componentDidMount(){
-    const obj = {
-      id: this.props.login.id,
-    };
-    
-    axios.post(domain + '/api/feed/getFeeds', obj)
+    const token = this.props.login.token;
+    const header = {
+      headers: {
+        'x-access-token': token
+      }
+    }
+        
+    axios.post(domain + '/api/feed/getFeeds', {}, header)
     .then((res) => {
       if(res.data.status === "FEED_GET_FAILED"){
         alert("ERROR\n"+res.data.message);
@@ -44,6 +48,27 @@ class Notify extends Component {
 
           this.setState(newState)
         }
+      }).catch((error) => {
+        alert("ERROR\n"+res.data.message);
+      });
+  }
+
+  componentWillUnmount(){
+    const token = this.props.login.token;
+    const header = {
+      headers: {
+        'x-access-token': token
+      }
+    }
+        
+    axios.post(domain + '/api/feed/confirmNotify', {}, header)
+    .then((res) => {
+
+      if(res.data.status === "NOTIFY_CONFIRM_FAILED"){
+        alert("ERROR\n"+res.data.message);
+      }else if(res.data.status === "NOTIFY_CONFIRM_SUCCESSED"){ 
+        this.props.setNotifyIcon(false);
+      }
       }).catch((error) => {
         alert("ERROR\n"+res.data.message);
       });
@@ -92,8 +117,16 @@ const mapStateToProps = (state) => {
   };
 }
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setNotifyIcon : (bool) => {
+      return dispatch(setNotifyIcon(bool));
+    },
+  };
+}
+
 const notifyWithNavigation = withNavigation(Notify)
-export default connect(mapStateToProps)(notifyWithNavigation);
+export default connect(mapStateToProps, mapDispatchToProps)(notifyWithNavigation);
 
 const Wrap = styled.View`
   flex: 1;
