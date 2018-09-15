@@ -29,7 +29,7 @@ class ListItem extends Component {
   }
   
   render(){
-    const { title, text, startDate, finishDate, weather, bgStyle, updatedDate, profileImg, nickname } = this.state;
+    const { title, text, startDate, finishDate, weather, bgStyle, updatedDate, profileImg, nickname, isLiked, likeCount } = this.state;
     
     return (
       <Wrap background={bgStyle.backgroundColor}> 
@@ -52,7 +52,20 @@ class ListItem extends Component {
         <TextBox>
           <ConText numberOfLines={3}>{text}</ConText>
         </TextBox>
-        <WrittenDate>{updatedDate}</WrittenDate>
+        <Row>
+          <LikeBox>
+            <BtnLike>
+              {isLiked ? (
+                <Ionicons name="md-heart" color="#EC4568" size={13} />
+                ) : (
+                <Ionicons name="md-heart-outline" color="#fff" size={13} />
+                )
+              }
+              <LikeNum>{likeCount}</LikeNum>
+            </BtnLike>
+          </LikeBox>
+          <UpdatedDate> · {updatedDate}</UpdatedDate>
+        </Row>
       </Wrap>
     )
   }
@@ -144,39 +157,33 @@ const ConText = styled.Text`
   line-height:22px;
 `;
 
-const WrittenDate = styled.Text`
+const Row = styled.View`
   margin-top:15px;
-  text-align:right;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+`;
+
+const LikeBox = styled.View`
+  flex-direction: row;
+  justify-content: flex-end;
+`;
+
+const BtnLike = styled.TouchableOpacity`
+  align-items: center;
+  flex-direction: row;
+`;
+
+const LikeNum = styled.Text`
+  font-family: 'hd-regular';
+  margin-left:3px;
+  color:#fff;
+  font-size:13px;
+  font-weight:500;
+`;
+
+const UpdatedDate = styled.Text`
   font-family: 'hd-regular';
   color:#fff;
-  font-size:12px;
-`;
-
-const ModalWrap = styled.View`
-  padding: 30px;
-`;
-
-const ModalSelect = styled.View`
-  background: #fff;
-  border-radius:15px;
-`;
-
-const ModalCancle = styled.TouchableOpacity`
-  margin-top:15px;
-  padding: 20px 0;
-  align-items: center;
-  background: #fff;
-  border-radius:15px;
-`;
-
-const ModalOption = styled.TouchableOpacity`
-  padding: 20px 0;
-  align-items: center;
-  border-top-color:#ccc;
-  border-top-width: ${props => props.first ? "0" : "1px"}
-`;
-
-const ModalBtnText = styled.Text`
-  font-size:18px;
-  color: ${props => props.red ? "red" : "blue"}
+  font-size:13px;
 `;
