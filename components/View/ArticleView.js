@@ -155,12 +155,12 @@ const FixedHeaderBox = styled.View`
   ${props => {
     if(props.visual){
       return `
-        border-bottom-color: #dedede;
-        box-shadow: 0px 3px 2px rgba(0,0,0,0.08);
+      border-bottom-color: #dedede;
+      box-shadow: 0px 3px 2px rgba(0,0,0,0.08);
       `
     }
   }}
-`;
+  `;
 
 const BtnIcon = styled.TouchableOpacity`
 `;

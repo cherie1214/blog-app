@@ -206,11 +206,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(Edit);
 
 const Wrap = styled.View`
   flex: 1;
-  margin-top:7%;
-  margin-bottom:-7%;
+  margin:8% 0 -8%;
 `;
 
 const HeaderBox = styled.View`
+  z-index:1;
   padding: 0 15px;
   height:50px;
   flex-direction: row;
@@ -218,7 +218,9 @@ const HeaderBox = styled.View`
   justify-content: space-between;
   border-bottom-color:#ccc;
   border-bottom-width: 1px;
-`;
+  background:#fff;
+  `;
+  // box-shadow: 0px 3px 2px rgba(0,0,0,0.05);
 
 
 const BtnIcon = styled.TouchableOpacity`

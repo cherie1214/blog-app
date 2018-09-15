@@ -56,7 +56,7 @@ class SignIn extends Component {
             <Ionicons name="ios-close" color="#fff" size={60} style={{marginLeft:15}}/>
           </BtnClose>
         </CloseBox>
-         <LogoBox>
+        <LogoBox>
           <Logo>Travel</Logo>
           <BorderBox></BorderBox>
           {/* <Text style={{height:210}}>{authState}</Text> */}
@@ -152,6 +152,12 @@ const LogoBox = styled.View`
   justify-content: flex-end;
 `;
 
+const Logo = styled.Text`
+  font-family: 'hd-black';
+  font-size: 50px;
+  color:#fff;
+`;
+
 const BorderBox = styled.View`
   height:8px;
   border-bottom-width: 8px;
@@ -181,12 +187,6 @@ const InputText = styled.TextInput`
   width: 150px;
   font-family: 'hd-regular';
   font-size: 15px;
-`;
-
-const Logo = styled.Text`
-  font-family: 'hd-black';
-  font-size: 50px;
-  color:#fff;
 `;
 
 const BtnText = styled.Text`

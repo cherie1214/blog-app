@@ -92,8 +92,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(ChangePw);
 
 const Wrap = styled.View`
   flex: 1;
-  padding-top: 7%;
-  padding-bottom:-7%;
+  margin:8% 0 -8%;
 `;
 
 const HeaderBox = styled.View`

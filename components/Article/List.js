@@ -64,19 +64,19 @@ export default connect(mapStateToProps)(List);
 
 const Wrap = styled.View`
   flex: 1;
-  margin-top:7%;
-  margin-bottom:-7%;
+  margin:8% 0 -8%;
 `;
 
 const HeaderBox = styled.View`
+  z-index:1;
   position: relative;
   flex-direction: row;
   align-items: center;
-  height:60px;
-  background:#fff;
+  height:85px;
   border-bottom-width: 1px;
   border-bottom-color: #dedede;
-  box-shadow: 0px 3px 2px rgba(0,0,0,0.08);
+  background:#fff;
+  box-shadow: 0px 3px 2px rgba(0,0,0,0.06);
 `;
 
 const BtnBox = styled.View`
@@ -101,15 +101,13 @@ const LogoBox = styled.View`
 
 const Logo = styled.Text`
   font-family: 'hd-black';
-  font-size: 40px;
+  font-size: 45px;
   color:#999;
 `;
 
 const ConBox = styled.View`
   flex:10;
-  margin-top:7%;
-  margin-bottom: -7%;
-  padding: 0 7% 7%;
+  padding: 7%;
 `;
 
 const NoDataBox = styled.View`

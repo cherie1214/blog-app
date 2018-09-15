@@ -78,8 +78,7 @@ export default class WriterView extends Component {
 
 const Wrap = styled.View`
   flex: 1;
-  margin-top:7%;
-  margin-bottom: -7%;
+  margin:8% 0 -8%;
 `;
 
 const StickyBox = styled.View`
