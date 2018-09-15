@@ -13,6 +13,7 @@ class SignedMenu extends Component {
   render() {
     const auth = this.props.auth;
     const notifyIcon = this.props.notifyIcon;
+    const likeIcon = this.props.likeIcon;
 
     return (
       <Wrap>
@@ -56,7 +57,7 @@ class SignedMenu extends Component {
           </IconBtn>
           <IconBtn
             onPressOut={() => this.props.navigation.navigate('Like')}>
-            <IconNew pink />
+            {likeIcon ? <IconNew pink /> : ''}
             <MaterialCommunityIcons
               name="heart-outline"
               color="#fff"

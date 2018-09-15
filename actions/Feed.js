@@ -5,6 +5,8 @@ import {
 import axios from 'axios';
 import { domain } from '../config';
 
+const getLikeRepeat = null;
+
 //action creator
 export const setNotifyIcon = (bool) => {
   return {
@@ -21,42 +23,43 @@ export const setLikeIcon = (bool) => {
 }
 
 //action consts
-//Notify Icons check
-export const notifyIconRepeat = (token) => {
+//Like Icons check
+export const likeIconRepeat = (token) => {
   return (dispatch) => {
       //한번하고
-      getNotifyFn(token, dispatch);
+      getLikeFn(token, dispatch);
       //10초마다 하기
-      getNotifyRepeat = setInterval(()=>{
-          getNotifyFn(token, dispatch);
-      }, 10000);
+      getLikeRepeat = setInterval(()=>{
+          getLikeFn(token, dispatch);
+      }, 3000);
   }
 }
 
-export const clearNotifyIconRepeat = (token) => {
+export const clearLikeIconRepeat = (token) => {
   return (dispatch) => {
-      clearInterval(getNotifyRepeat);
+      clearInterval(getLikeRepeat);
   }
 }
 
 //ext
-function getNotifyFn(token, dispatch) {
+function getLikeFn(token, dispatch) {
   const header = {
       headers : {
           'x-access-token' : token
       }
   }
-  axios.post(domain + '/api/feed/getOneNotify', {}, header)
+  axios.post(domain + '/api/feed/getOneLike', {}, header)
   .then((res) => {
-      if(res.data.status === "NOTIFY_GET_FAILED"){
+      if(res.data.status === "LIKE_GET_FAILED"){
           // alert("ERROR\n"+res.data.message);
-          dispatch(setNotifyIcon(false));
-      }else if(res.data.status === "NOTIFY_GET_SUCCESSED"){
-          dispatch(setNotifyIcon(res.data.notify && !res.data.notify.confirmed ? true : false));
+          dispatch(setLikeIcon(false));
+      }else if(res.data.status === "LIKE_GET_SUCCESSED"){
+        //   alert(res.data.like.confirmed)
+          dispatch(setLikeIcon(res.data.like && !res.data.like.confirmed ? true : false));
       }
   }).catch((error) => {
       // alert("ERROR\n"+error.message);
-      dispatch(setNotifyIcon(false));
+      dispatch(setLikeIcon(false));
   });
 }
 

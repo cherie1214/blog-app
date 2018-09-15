@@ -30,7 +30,7 @@ class Notify extends Component {
       }
     }
         
-    axios.post(domain + '/api/feed/getFeeds', {}, header)
+    axios.post(domain + '/api/feed/getFeeds', {feedType: "notify"}, header)
     .then((res) => {
       if(res.data.status === "FEED_GET_FAILED"){
         alert("ERROR\n"+res.data.message);
@@ -61,12 +61,12 @@ class Notify extends Component {
       }
     }
         
-    axios.post(domain + '/api/feed/confirmNotify', {}, header)
+    axios.post(domain + '/api/feed/confirmFeed', {feedType: "notify"}, header)
     .then((res) => {
 
-      if(res.data.status === "NOTIFY_CONFIRM_FAILED"){
+      if(res.data.status === "FEED_CONFIRM_FAILED"){
         alert("ERROR\n"+res.data.message);
-      }else if(res.data.status === "NOTIFY_CONFIRM_SUCCESSED"){ 
+      }else if(res.data.status === "FEED_CONFIRM_SUCCESSED"){ 
         this.props.setNotifyIcon(false);
       }
       }).catch((error) => {

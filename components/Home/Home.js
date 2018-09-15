@@ -58,11 +58,11 @@ class Home extends Component {
           <Card />
         </HomeBody>
         <HomeFooter>
-          <Button onPressOut={() => this.handleGoWrite()}>
-            <SimpleLineIcons name="plus" color="#333" size={30} />
+          <Button footerBtn onPressOut={() => this.handleGoWrite()}>
+            <SimpleLineIcons name="pencil" color="#fff" size={20} />
           </Button>
-          <Button onPressOut={() => this.props.navigation.navigate("List")}>
-            <SimpleLineIcons name="list" color="#333" size={30} />
+          <Button footerBtn onPressOut={() => this.props.navigation.navigate("List")}>
+            <SimpleLineIcons name="list" color="#fff" size={25} />
           </Button>
           <ConfirmDialog
               // title=""
@@ -128,7 +128,7 @@ const HomeBody = styled.View`
 `;
 
 const HomeFooter = styled.View`
-    flex : 1.3;
+    flex : 1.5;
     flex-direction:row;
     align-items: center;
     justify-content: center;
@@ -136,6 +136,14 @@ const HomeFooter = styled.View`
 
 const Button = styled.TouchableOpacity`
   margin: 0 10px;
+  ${prop => prop.footerBtn ? `
+    align-items: center;
+    justify-content: center;
+    width: 50px; 
+    height: 50px;
+    border-radius: 25px;
+    background:#bbb;
+  ` : null}
 `;
 
 

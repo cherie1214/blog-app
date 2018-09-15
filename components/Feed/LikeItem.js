@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { Dimensions } from 'react-native';
+import { Dimensions, View } from 'react-native';
 import styled from 'styled-components';
+import timeAgo from '../../lib/timeAgo';
 
 const { height, width } = Dimensions.get("window");
 
@@ -8,25 +9,29 @@ export default class LikeItem extends Component {
   constructor(props){
     super(props);
     this.state = {
+      item: this.props.likes,
     }
   }
   
   render(){
+    const { title, registedDate, confirmed, likePersonName, likeLength } = this.props;
+
     return(
         <Wrap>
           <ConBox>
-            <Tit>45days in Western Europe</Tit>
-            <Con>을 <Strong>Nickname2</Strong> 회원님 <Strong>외 7명</Strong>이 좋아합니다.</Con>
+            <Tit>{title}</Tit>
+            {likeLength === 1 ? (
+              <View>
+                <Con>을 <Strong>{likePersonName}</Strong> 회원님이 좋아합니다.</Con>
+              </View>
+            ) : (
+              <View>
+                <Con>을 <Strong>{likePersonName}</Strong> 회원님 <Strong>외 {likeLength}명</Strong>이 좋아합니다.</Con>
+              </View>
+            ) }
             <TimeBox>
-              <New></New>
-              <Time>10분 전</Time>
-            </TimeBox>
-          </ConBox>
-          <ConBox>
-            <Tit>45days in Western Europe</Tit>
-            <Con>을 <Strong>Nickname2</Strong> 회원님이 좋아합니다.</Con>
-            <TimeBox>
-              <Time>5시간 전</Time>
+            {confirmed ? null : <New></New>}
+              <Time>{timeAgo(registedDate, true)}</Time>
             </TimeBox>
           </ConBox>
         </Wrap>
