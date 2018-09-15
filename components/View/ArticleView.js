@@ -20,7 +20,6 @@ export default class ArticleView extends Component {
       likeCount: 120,
       lastScrollPos: 0,
       writtenDate: "9시간 전",
-      headerVisibility: false,
       bgStyle : {
             backgroundColor : "#5ED9FF",
             photoUrl : null
@@ -29,26 +28,26 @@ export default class ArticleView extends Component {
   }
 
   renderFixedHeader(){
-    const { isLiked, headerVisibility, writtenDate } = this.state;
+    const { isLiked, writtenDate, bgStyle, isScrolling } = this.state;
 
     return(
-      <HeaderBox visual={headerVisibility}>
+      <FixedHeaderBox visual={isScrolling} backgroundColor={isScrolling ? ('#fff') : (bgStyle.backgroundColor)}>
         <BtnIcon onPressOut={() => this.props.navigation.navigate('Home')}>
-          <Ionicons name="ios-arrow-round-back" color={headerVisibility ? ("#333") : ("#fff")} size={45}/>
+          <Ionicons name="ios-arrow-round-back" color={isScrolling ? ("#333") : ("#fff")} size={45}/>
         </BtnIcon>
         <Row>
           <BtnLike onPressOut={() => this._handleLikeStatus(isLiked)}>
             {isLiked ? (
               <Ionicons name="md-heart" color="#EC4568" size={13} />
               ) : (
-              <Ionicons name="md-heart-outline" color={headerVisibility ? ("#333") : ("#fff")} size={13} />
+              <Ionicons name="md-heart-outline" color={isScrolling ? ("#333") : ("#fff")} size={13} />
               )
             }
-            <LikeNum visual={headerVisibility}>{this.state.lastScrollPos}</LikeNum>
+            <LikeNum visual={isScrolling}>{this.state.lastScrollPos}</LikeNum>
           </BtnLike>
-          <WrittenDate visual={headerVisibility}> · {writtenDate}</WrittenDate>   
+          <WrittenDate visual={isScrolling}> · {writtenDate}</WrittenDate>   
         </Row> 
-      </HeaderBox>
+      </FixedHeaderBox>
     )
   }
 
@@ -59,7 +58,16 @@ export default class ArticleView extends Component {
       </HeaderConBox>
     )
   }
-  
+
+  handleScrolling(bool){
+    this.setState(function(prevState){
+      if(!bool) {
+        return {isScrolling:true}
+      } else {
+        return {isScrolling:false}
+      }
+    });
+  }
 
   render(){
     
@@ -75,7 +83,8 @@ export default class ArticleView extends Component {
             contentBackgroundColor="#fff"
             parallaxHeaderHeight={320}
             stickyHeaderHeight={90}
-            onChangeHeaderVisibility={() => {this.setState({headerVisibility: true})}}
+            fadeOutForeground={false}
+            onChangeHeaderVisibility={(bool)=> this.handleScrolling(bool)}
             renderFixedHeader={() => this.renderFixedHeader()}
             renderForeground={() => this.renderHeaderContent()}
             >
@@ -91,7 +100,7 @@ const Wrap = styled.View`
   position:relative;
 `;
 
-const HeaderBox = styled.View`
+const FixedHeaderBox = styled.View`
   z-index:100;
   padding: 20px 15px 0;
   height:70px;
@@ -100,13 +109,11 @@ const HeaderBox = styled.View`
   justify-content: space-between;
   border-bottom-width: 1px;
   border-bottom-color: transparent;
-  background-color: transparent;
   ${props => {
     if(props.visual){
       return `
         border-bottom-color: #dedede;
-        background: #fff;
-        box-shadow: 0px 3px 2px rgba(0,0,0,0.05);
+        box-shadow: 0px 3px 2px rgba(0,0,0,0.08);
       `
     }
   }}

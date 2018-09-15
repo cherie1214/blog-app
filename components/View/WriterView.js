@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Dimensions } from 'react-native';
+import { Dimensions, StatusBar } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons } from '@expo/vector-icons';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
@@ -12,29 +12,9 @@ export default class WriterView extends Component {
   constructor(props){
     super(props);
     this.state = {
-      writerNickname: "bonobono",
+      writerNickname: "bonobono 보노보노",
       articleNum: 3,
     }
-  }
-
-  renderHeaderContent(){
-    return(
-      <HeaderBox>
-        <ProfileBox>
-          <ProfileImgBox source={require('../../assets/bonobono.jpg')}/>
-          <Nickname>{this.state.writerNickname}</Nickname>
-          <ArticleNum>글수 {this.state.articleNum}</ArticleNum>
-        </ProfileBox> 
-      </HeaderBox>
-    )
-  }
-
-  renderSticky(){
-    return(
-      <StickyBox>
-        <Nickname>{this.state.writerNickname}</Nickname>
-      </StickyBox>
-    )
   }
 
   renderFixedHeader() {
@@ -47,19 +27,43 @@ export default class WriterView extends Component {
     )
   }
 
+  renderSticky(){
+    return(
+      <StickyBox>
+        <Nickname style={{marginTop: 5}}>{this.state.writerNickname}</Nickname>
+      </StickyBox>
+    )
+  }
+
+  renderHeaderContent(){
+    return(
+      <HeaderConBox>
+        <ProfileBox>
+          <ProfileImgBox source={require('../../assets/bonobono.jpg')}/>
+          <Nickname>{this.state.writerNickname}</Nickname>
+          <ArticleNum>글수 {this.state.articleNum}</ArticleNum>
+        </ProfileBox> 
+      </HeaderConBox>
+    )
+  }
+
+ 
+
   render(){    
     return(
         <Wrap>         
+          <StatusBar hidden={false} />
           <ParallaxScrollView
             style={{ flex: 1}}
-            backgroundColor="#fff"
-            contentBackgroundColor="#f7f7f7"
+            backgroundColor="transparent"
+            contentBackgroundColor="#fff"
+            stickyHeaderHeight={60}
             parallaxHeaderHeight={290}
-            stickyHeaderHeight={90}
-            // onChangeHeaderVisibility={() => {this.setState({headerVisibility: false})}}
-            renderForeground={() => this.renderHeaderContent()}
-            // renderStickyHeader={() => this.renderSticky()}
+            fadeOutForeground={true}
+            // onChangeHeaderVisibility={() => {this.setState({headerVisibility})}}
             renderFixedHeader={() => this.renderFixedHeader()}
+            renderStickyHeader={() => this.renderSticky()}
+            renderForeground={() => this.renderHeaderContent()}
             >
             <ConBox>
               <WriterViewItem />
@@ -74,9 +78,35 @@ export default class WriterView extends Component {
 
 const Wrap = styled.View`
   flex: 1;
+  margin-top:7%;
+  margin-bottom: -7%;
 `;
 
-const HeaderBox = styled.View`
+const StickyBox = styled.View`
+  position: relative;
+  height:50px;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  border-bottom-width:1px;
+  border-bottom-color: #dedede;
+  box-shadow: 0px 3px 2px rgba(0,0,0,0.08);
+`;
+
+const FixedHeaderBox = styled.View`
+  position:absolute;
+  left: 0;
+  z-index:100;
+  padding: 0 15px;
+  height:50px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;  
+`;
+
+
+const HeaderConBox = styled.View`
   position:relative;
   z-index:100;
   padding: 100px 0 20px;
@@ -87,33 +117,7 @@ const HeaderBox = styled.View`
   background: #fff;
 `;
 
-const StickyBox = styled.View`
-  position: relative;
-  margin-top:7%;
-  align-items: center;
-  justify-content: center;
-  background-color: transparent;
-`;
-
-const FixedHeaderBox = styled.View`
-  z-index:100;
-  width: 100%;
-  height: 90px;
-  flex-direction: row;
-  align-items: flex-end;
-  background: #fff;
-  border-bottom-width:1px;
-  border-bottom-color: #dedede;
-  box-shadow: 0px 3px 2px rgba(0,0,0,0.5);
-`;
-// position:absolute;
-// z-index:100;
-// top:0;
-// left: 0;
-
 const BtnIcon = styled.TouchableOpacity`  
-  margin-left:15px;
-  height:50px;
 `;
 
 const ProfileBox = styled.View`
