@@ -61,6 +61,9 @@ class Home extends Component {
           <Button onPressOut={() => this.handleGoWrite()}>
             <SimpleLineIcons name="plus" color="#333" size={30} />
           </Button>
+          <Button onPressOut={() => this.props.navigation.navigate("List")}>
+            <SimpleLineIcons name="list" color="#333" size={30} />
+          </Button>
           <ConfirmDialog
               // title=""
               message={confirmMsg}
@@ -126,11 +129,13 @@ const HomeBody = styled.View`
 
 const HomeFooter = styled.View`
     flex : 1.3;
+    flex-direction:row;
     align-items: center;
     justify-content: center;
 `;
 
 const Button = styled.TouchableOpacity`
+  margin: 0 10px;
 `;
 
 

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { Dimensions } from 'react-native';
+import { Dimensions, Image } from 'react-native';
 import styled from 'styled-components';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { withNavigation } from 'react-navigation';
-import Carousel from 'react-native-snap-carousel';
+import Carousel, { ParallaxImage } from 'react-native-snap-carousel';
 
 const { height, width } = Dimensions.get("window");
 
@@ -25,37 +25,40 @@ class CardItem extends Component {
         {
           bgStyle : {
             backgroundColor: "#1adeb8",
+            photoUrl: "http://img.insight.co.kr/static/2018/04/26/700/2mj61hb3b5kz181s70qd.jpg",
           },
           weather: "weather-sunny",
           travelDate: "2018.01.01 - 2018.01.01",
           title: "45일동안 서유럽 한바퀴, 45days in Wetern Europe",
           isLiked: false,
           likeCount: 120,
-          writtenDate: "9시간 전",
+          updatedDate: "9시간 전",
           profileImg: "https://image.fmkorea.com/files/attach/new/20180501/486616/909844983/1039257189/2761aa3169424351e01076f85b61ba45.jpeg",
           nickname: "bonobono"
         }, {
           bgStyle : {
-            backgroundColor: "#5ED9FF",
+            backgroundColor: null,
+            photoUrl: "http://img.insight.co.kr/static/2018/04/26/700/2mj61hb3b5kz181s70qd.jpg",
           },
           weather: "weather-sunny",
           travelDate: "2018.01.01 - 2018.01.01",
           title: "자전거 여행의 매력, 느림보 제주 여행",
           isLiked: false,
           likeCount: 80,
-          writtenDate: "12시간 전",
+          updatedDate: "12시간 전",
           profileImg: "http://t1.daumcdn.net/friends/prod/editor/fe1fbe7c-4c82-446e-bc5c-f571d90b0ba9.jpg",
           nickname: "어피치"
         }, {
           bgStyle : {
-            backgroundColor: "#ffd021",
+            backgroundColor: null,
+            photoUrl: "http://image.yes24.com/momo/TopCate1899/MidCate004/122998193.jpg",
           },
           weather: "weather-sunny",
           travelDate: "2018.01.01 - 2018.01.01",
           title: "단 기간 여행이 만족스러웠던 아담한 동네, 블라디보스톡",
           isLiked: false,
           likeCount: 102,
-          writtenDate: "18시간 전",
+          updatedDate: "18시간 전",
           profileImg: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2KYrEEV1hf0hBxY-N7XqOK-8Csx-z0Wa_oZ9WcJEp9xVKVsgx",
           nickname: "바바파파"
         }, 
@@ -63,13 +66,19 @@ class CardItem extends Component {
     };
   }
 
-
   handleSnapToItem(index){
   }
 
-  _renderItem = ( {item, index} ) => {
+   _renderItem = ( {item, index}, parallaxProps ) => {
     return (
-      <ItemBox style={item.bgStyle}>
+      <ItemBox backgroundColor={item.bgStyle.backgroundColor}>
+        {/* <ParallaxImage 
+          source={{ uri: item.bgStyle.photoUrl }} 
+          // containerStyle={styles.imageContainer}
+          // style={styles.image}
+          // parallaxFactor={0.4}
+          // {...parallaxProps}
+          /> */}
         <FlexBox flex2>
           <ViewLinkBox onPressOut={() => this.props.navigation.navigate('ArticleView')}>
             <WeatherBox>
@@ -94,7 +103,7 @@ class CardItem extends Component {
                 <LikeNum>{item.likeCount}</LikeNum>
               </BtnLike>
             </LikeBox>
-            <WrittenDate> · {item.writtenDate}</WrittenDate>
+            <UpdatedDate> · {item.updatedDate}</UpdatedDate>
           </Row>
         </FlexBox>
         <FlexBox flexEnd>
@@ -108,14 +117,14 @@ class CardItem extends Component {
   }
 
   
-  render() {
-    
+  render() {  
     
     return (
       <Wrap>
         <Carousel
           ref={ (c) => { this._carousel = c; } }
           data={this.state.cardCon}
+          hasParallaxImages={true}
           inactiveSlideOpacity={0.3}
           inactiveSlideScale={0.75}
           renderItem={this._renderItem.bind(this)}
@@ -150,6 +159,7 @@ const Wrap = styled.View`
 `;
 
 const ItemBox = styled.View`
+  position:relative;
   flex-direction: column;
   justify-content: space-between;
   margin-top:15px;
@@ -157,6 +167,7 @@ const ItemBox = styled.View`
   flex: 0.95;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.16)
+  ${prop => prop.bg}
 `;
 
 const FlexBox = styled.View`
@@ -220,7 +231,7 @@ const LikeNum = styled.Text`
   font-weight:500;
 `;
 
-const WrittenDate = styled.Text`
+const UpdatedDate = styled.Text`
   font-family: 'hd-regular';
   color:#fff;
   font-size:13px;

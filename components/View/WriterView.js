@@ -56,9 +56,9 @@ export default class WriterView extends Component {
           <ParallaxScrollView
             style={{ flex: 1}}
             backgroundColor="transparent"
-            contentBackgroundColor="#fff"
+            contentBackgroundColor="#f7f7f7"
             stickyHeaderHeight={60}
-            parallaxHeaderHeight={290}
+            parallaxHeaderHeight={220}
             fadeOutForeground={true}
             // onChangeHeaderVisibility={() => {this.setState({headerVisibility})}}
             renderFixedHeader={() => this.renderFixedHeader()}
@@ -108,9 +108,9 @@ const FixedHeaderBox = styled.View`
 
 const HeaderConBox = styled.View`
   position:relative;
-  z-index:100;
-  padding: 100px 0 20px;
-  height:290px;
+  z-index:5;
+  padding: 30px 0 20px;
+  height:220px;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
