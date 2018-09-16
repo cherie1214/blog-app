@@ -20,8 +20,8 @@ class ListItem extends Component {
     // bgStyle.backgroundColor = ""
     // bgStyle.photoUrl = "http://holotrip.co.kr/wp-content/uploads/2017/05/%EC%97%90%ED%8E%A01.jpg";
     // bgStyle.backgroundColor = "#ccc"
-    bgStyle.photoUrl = ""
-    __id.profileImg = "http://t1.daumcdn.net/friends/prod/editor/fe1fbe7c-4c82-446e-bc5c-f571d90b0ba9.jpg";
+    // bgStyle.photoUrl = ""
+    // __id.profileImg = "http://t1.daumcdn.net/friends/prod/editor/fe1fbe7c-4c82-446e-bc5c-f571d90b0ba9.jpg";
 
     return (
       <Wrap>
@@ -77,11 +77,10 @@ class ListItem extends Component {
 export default withNavigation(ListItem);
     
 const Wrap = styled.View`
-  margin-bottom:7%;
-  border-radius: 10px;
+  margin-bottom:8%;
 `;
   
-  const Wrapper = styled.View`
+const Wrapper = styled.View`
   position: relative;
   padding:7% 10%;
   flex-direction: column;

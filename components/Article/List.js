@@ -81,7 +81,7 @@ class List extends Component {
         token={this.props.login.token} 
         nickname={this.props.login.nickname} 
         setLikeIcon={this.props.setLikeIcon} 
-        _handleLike={(_id)=>{this.handleLike(_id)}}
+        _handleLike={(_id) => {this.handleLike(_id)}}
         />);
     })
 

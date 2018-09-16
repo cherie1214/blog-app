@@ -9,33 +9,31 @@ export default class ArticleHeaderCon extends Component {
   constructor(props){
     super(props);
     this.state = {
-      writtenDate: "2018.05.06 15:11",
     }
   }
 
   render(){
 
-    const { writtenDate } = this.state;
+    const { weather, startDate, finishDate, title, __id } = this.props.state;
 
     return(
         <Wrap>
           <ConBox>
             <WeatherBox>
-              <MaterialCommunityIcons name="weather-sunny" color="#fff" size={22} style={{marginLeft:3, marginRight:3}}/>
-              <MaterialCommunityIcons name="weather-partlycloudy" color="#fff" size={22} style={{marginLeft:3, marginRight:3}} />
+              <MaterialCommunityIcons name={weather} color="#fff" size={22} style={{marginLeft:3, marginRight:3}}/>
             </WeatherBox>
             <DateBox>
-              <DateText>2018.01.01 - 2018.01.01</DateText>
+            <DateText>{startDate ? startDate : ''} {finishDate ? '- ' + finishDate : ''}</DateText>
             </DateBox>
             <TitBox>
-              <TitText>45일동안 서유럽 한바퀴, 45days in Wetern Europe</TitText>
+              <TitText>{title}</TitText>
               <BorderBox></BorderBox>
             </TitBox>
           </ConBox>
           <Row>
             <WriterBox>
-              <ProfileImgBox source={require('../../assets/bonobono.jpg')}/>
-              <WriterNickname>bonobono</WriterNickname>
+              <ProfileImgBox source={{ uri: __id.profileImg }} />
+              <WriterNickname>{__id.nickname}</WriterNickname> 
             </WriterBox>              
           </Row>       
         </Wrap>

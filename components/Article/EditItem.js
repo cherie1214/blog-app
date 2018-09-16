@@ -33,13 +33,24 @@ class EditItem extends Component {
   render(){
     const { _id, text, updatedDate, title, bgStyle, startDate, finishDate, weather, published, handleModal } = this.props;
 
+    // bgStyle.backgroundColor = ""
+    // bgStyle.photoUrl = "http://holotrip.co.kr/wp-content/uploads/2017/05/%EC%97%90%ED%8E%A01.jpg";
+    // bgStyle.backgroundColor = "#ccc"
+    // bgStyle.photoUrl = ""
+
     return (
-      <Wrap background={!bgStyle.photoUrl ? bgStyle.backgroundColor : "transparent"}>
-        <Wrapper>
-          {/* <Text>{JSON.stringify(published,0,2)}</Text> */}
+      <Wrap>
+        <Wrapper bg={!bgStyle.photoUrl ? 
+          ( "background-color:" + bgStyle.backgroundColor) : null }>
+          {!bgStyle.backgroundColor ? (
+            <BgBox>
+              <BgImage source={{ uri: bgStyle.photoUrl }} />
+              <BgMask></BgMask>
+            </BgBox>
+          ) : null }
           <ControlBox>
           <BtnPublishing onPressOut={() => this._handleUpdate({published : !published})} visual={published}>
-              <TextPublishing visual={published} color={bgStyle.backgroundColor}>{!published ? ("발행") : ("발행 취소")}</TextPublishing>
+              <TextPublishing visual={published} color={!bgStyle.photoUrl ? bgStyle.backgroundColor : "#444"}>{!published ? ("발행") : ("발행 취소")}</TextPublishing>
             </BtnPublishing>
             <BtnEdit onPress={() => handleModal(_id)}>
               <Entypo name="dots-three-vertical" color="#fff" size={20} />
@@ -77,13 +88,38 @@ export default withNavigation(EditItem);
 const Wrap = styled.View`  
   margin-bottom:7%;
   border-radius: 10px;
-  background:${prop => prop.background}; 
+  
 `;
 
 const Wrapper = styled.View`
   padding:7% 10%;
   flex-direction: column;
   justify-content: flex-start;
+  border-radius: 10px;
+  ${prop => prop.bg}; 
+`;
+
+const BgBox = styled.View`
+  flex: 1;
+  overflow:hidden;
+  position:absolute;
+  top:0;
+  bottom: 0;
+  left:0;
+  right:0;
+  border-radius: 10px;
+`;
+
+const BgImage = styled.Image`
+  width: 100%;
+  height:100%;
+`;
+
+const BgMask = styled.View`
+  position:absolute;
+  width: 100%;
+  height:100%;
+  backgroundColor: rgba(0,0,0,0.5);
 `;
 
 const ControlBox = styled.View`
@@ -105,7 +141,7 @@ const BtnPublishing = styled.TouchableOpacity`
 const TextPublishing = styled.Text`
   font-family: 'hd-regular';
   font-size:14px;
-  color:${props => props.visual ? "#fff" : props.color } }
+  color: ${props => props.visual ? "#fff" : props.color };
 `;
 
 const BtnEdit = styled.TouchableOpacity`

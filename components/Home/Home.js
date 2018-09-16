@@ -6,9 +6,6 @@ import { withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { getStorage } from '../../actions';
 import { ConfirmDialog } from 'react-native-simple-dialogs';
-import axios from 'axios';
-import { domain } from '../../config';
-import timeAgo from '../../lib/timeAgo';
 
 // components
 import SearchBox from './SearchBox';
@@ -22,27 +19,12 @@ class Home extends Component {
     this.state = {
       confirmVisible: false,
     }
-    this.getList = this.getList.bind(this);
   }
   
   componentDidMount(){
-    this.getList();
-
     if(!this.props.auth.login.loggedIn){
       this.props.getStorage();
     }
-  }
-
-  getList() {
-    axios.get(domain + '/api/article/getMainList')
-    .then((res)=>{
-        if(res.data.status === 'SUCCESS'){
-            this.setState({
-                ...this.state,
-                cardCon : res.data.list
-            });
-        }
-    })
   }
 
   handleGoWrite = () => {
@@ -55,10 +37,6 @@ class Home extends Component {
     }
   }
   
-
-
-
-
   render() {
     const confirmMsg = `글쓰기는 로그인 후에 이용 가능합니다.` + String.fromCharCode(13) + `로그인 페이지로 이동하시겠습니까?`;
 

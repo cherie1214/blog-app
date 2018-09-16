@@ -75,11 +75,11 @@ class CardItem extends Component {
   }
 
    _renderItem = ( {item, index} ) => {
-    item.bgStyle.backgroundColor = ""
-    item.bgStyle.photoUrl = "http://holotrip.co.kr/wp-content/uploads/2017/05/%EC%97%90%ED%8E%A01.jpg";
+    // item.bgStyle.backgroundColor = ""
+    // item.bgStyle.photoUrl = "http://holotrip.co.kr/wp-content/uploads/2017/05/%EC%97%90%ED%8E%A01.jpg";
     // item.bgStyle.backgroundColor = "#ccc"
     // item.bgStyle.photoUrl = ""
-    item.__id.profileImg = "http://t1.daumcdn.net/friends/prod/editor/fe1fbe7c-4c82-446e-bc5c-f571d90b0ba9.jpg";
+    // item.__id.profileImg = "http://t1.daumcdn.net/friends/prod/editor/fe1fbe7c-4c82-446e-bc5c-f571d90b0ba9.jpg";
 
     return (
       <ItemBox bg={!item.bgStyle.photoUrl ? 
@@ -92,7 +92,7 @@ class CardItem extends Component {
           </BgBox>
         ) : null }
         <FlexBox flex2>
-          <ViewLinkBox onPressOut={() => this.props.navigation.navigate('ArticleView')}>
+          <ViewLinkBox onPressOut={() => this.props.navigation.navigate('ArticleView', {item})}>
             <WeatherBox>
               <MaterialCommunityIcons name={item.weather} color="#fff" size={24} style={{marginLeft:3, marginRight:3}}/>
             </WeatherBox>
@@ -123,7 +123,7 @@ class CardItem extends Component {
           </Row>
         </FlexBox>
         <FlexBox flexEnd>
-          <WriterBox onPressOut={() => this.props.navigation.navigate('WriterView')}>
+          <WriterBox onPressOut={() => this.props.navigation.navigate('WriterView', {item})}>
             <ProfileImgBox source={{ uri: item.__id.profileImg }} />
             <WriterNickname>{item.__id.nickname}</WriterNickname>
           </WriterBox>
