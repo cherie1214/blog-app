@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-import { Dimensions } from 'react-native';
-import styled from 'styled-components';
+import { Dimensions, Text } from 'react-native';
+import styled, { css } from 'styled-components';
 import { SimpleLineIcons, Ionicons } from '@expo/vector-icons';
 import { withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { getStorage } from '../../actions';
 import { ConfirmDialog } from 'react-native-simple-dialogs';
+import axios from 'axios';
+import { domain } from '../../config';
+import timeAgo from '../../lib/timeAgo';
 
 // components
 import SearchBox from './SearchBox';
@@ -19,12 +22,27 @@ class Home extends Component {
     this.state = {
       confirmVisible: false,
     }
+    this.getList = this.getList.bind(this);
   }
   
   componentDidMount(){
+    this.getList();
+
     if(!this.props.auth.login.loggedIn){
       this.props.getStorage();
     }
+  }
+
+  getList() {
+    axios.get(domain + '/api/article/getMainList')
+    .then((res)=>{
+        if(res.data.status === 'SUCCESS'){
+            this.setState({
+                ...this.state,
+                cardCon : res.data.list
+            });
+        }
+    })
   }
 
   handleGoWrite = () => {
@@ -101,7 +119,6 @@ const mapDispatchToProps = (dispatch) => {
 
 const HomeWithNavigation = withNavigation(Home);
 export default connect(mapStateToProps, mapDispatchToProps)(HomeWithNavigation);
-
 
 const Container = styled.View`
     flex: 1;

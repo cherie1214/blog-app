@@ -52,10 +52,11 @@ export function signInError() {
 
     };
 }
-export function signInSuccess(id, nickname, token) {
+export function signInSuccess(id, _id, nickname, token) {
     return {
         type: AUTH_SIGNIN_SUCCESS,
         id,
+        _id,
         nickname,
         token
     };
@@ -146,6 +147,7 @@ export function userSignIn(userInfo) {
             const status = res.data.status;
             const nickname = res.data.nickname;
             const id = res.data.id;
+            const _id = res.data._id;
             const token = res.data.token;
 
             // alert(token);
@@ -160,13 +162,14 @@ export function userSignIn(userInfo) {
                     try {
                         AsyncStorage.setItem('@BlogApp.Auth', JSON.stringify({
                             id, 
+                            _id,
                             nickname,
                             token
                         }))
                     } catch(error) {
                         alert("Storage Error: " + error)
                     } finally {
-                        dispatch(signInSuccess(id, nickname, token));
+                        dispatch(signInSuccess(id, _id, nickname, token));
                         break;       
 
                     }
@@ -250,7 +253,7 @@ export function getStorage(){
             if(_storedData){
                 _storedData = JSON.parse(_storedData);
                 // alert(_storedData.token)
-                dispatch(signInSuccess(_storedData.id, _storedData.nickname, _storedData.token));
+                dispatch(signInSuccess(_storedData.id, _storedData._id, _storedData.nickname, _storedData.token));
             }
         } catch(error) {
             alert("ERROR RETRIEVEING data: " + error);

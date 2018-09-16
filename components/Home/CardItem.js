@@ -5,6 +5,9 @@ import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { withNavigation } from 'react-navigation';
 import Carousel from 'react-native-snap-carousel';
+import axios from 'axios';
+import { domain } from '../../config';
+import timeAgo from '../../lib/timeAgo';
 
 const { height, width } = Dimensions.get("window");
 
@@ -12,86 +15,77 @@ class CardItem extends Component {
   constructor(props){
     super(props);
     this.state = {
+      cardCon: [],
       errors: [],
     }
     this.props = props;
     this._carousel = {};
-    this.init();
+    this.handleLike = this.handleLike.bind(this);
   }
 
-  init(){
-    this.state = {
-      cardCon: [
-        {
-          bgStyle : {
-            backgroundColor: "",
-            photoUrl: "http://holotrip.co.kr/wp-content/uploads/2017/05/%EC%97%90%ED%8E%A01.jpg",
-          },
-          weather: "weather-sunny",
-          travelDate: "2018.01.01 - 2018.01.01",
-          title: "45일동안 서유럽 한바퀴, 45days in Wetern Europe",
-          text: "봄바람이다 풀밭에 속잎나고 가지에 싹이 트고 꽃 피고 새 봄바람이다 풀밭에 속잎나고 가지에 싹이 트고 꽃 피고 새",
-          isLiked: false,
-          likeCount: 120,
-          updatedDate: "9시간 전",
-          profileImg: "https://image.fmkorea.com/files/attach/new/20180501/486616/909844983/1039257189/2761aa3169424351e01076f85b61ba45.jpeg",
-          nickname: "bonobono"
-        }, {
-          bgStyle : {
-            backgroundColor: "#5CC5FA",
-            photoUrl: "",
-          },
-          weather: "weather-sunny",
-          travelDate: "2018.01.01 - 2018.01.01",
-          title: "자전거 여행의 매력, 느림보 제주 여행",
-          text: "봄바람이다 풀밭에 속잎나고 가지에 싹이 트고 꽃 피고 새 봄바람이다 풀밭에 속잎나고 가지에 싹이 트고 꽃 피고 새",
-          isLiked: false,
-          likeCount: 80,
-          updatedDate: "12시간 전",
-          profileImg: "http://t1.daumcdn.net/friends/prod/editor/fe1fbe7c-4c82-446e-bc5c-f571d90b0ba9.jpg",
-          nickname: "어피치"
-        }, {
-          bgStyle : {
-            backgroundColor: "#ccc",
-            photoUrl: null,
-          },
-          weather: "weather-sunny",
-          travelDate: "2018.01.01 - 2018.01.01",
-          title: "단 기간 여행이 만족스러웠던 아담한 동네, 블라디보스톡",
-          text: "봄바람이다 풀밭에 속잎나고 가지에 싹이 트고 꽃 피고 새 봄바람이다 풀밭에 속잎나고 가지에 싹이 트고 꽃 피고 새",
-          isLiked: false,
-          likeCount: 102,
-          updatedDate: "18시간 전",
-          profileImg: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2KYrEEV1hf0hBxY-N7XqOK-8Csx-z0Wa_oZ9WcJEp9xVKVsgx",
-          nickname: "바바파파"
-        }, {
-          bgStyle : {
-            backgroundColor: null,
-            photoUrl: "https://travelblog.expedia.co.kr/wp-content/uploads/2017/01/170131_TBR.jpg",
-          },
-          weather: "weather-sunny",
-          travelDate: "2018.01.01 - 2018.01.01",
-          title: "단 기간 여행이 만족스러웠던 아담한 동네, 블라디보스톡",
-          text: "봄바람이다 풀밭에 속잎나고 가지에 싹이 트고 꽃 피고 새 봄바람이다 풀밭에 속잎나고 가지에 싹이 트고 꽃 피고 새",
-          isLiked: false,
-          likeCount: 102,
-          updatedDate: "18시간 전",
-          profileImg: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2KYrEEV1hf0hBxY-N7XqOK-8Csx-z0Wa_oZ9WcJEp9xVKVsgx",
-          nickname: "바바파파"
-        }, 
-      ]
-    };
+  componentDidMount(){
+    this.getList();
+  }
+
+  getList() {
+    const _this = this;
+    axios.get(domain + '/api/article/getMainList')
+    .then((res)=>{
+        if(res.data.status === 'MAIN_ARTICLE_GET_SUCCESSED'){
+            this.setState({
+                ...this.state,
+                cardCon : res.data.list
+            },()=>{
+              // alert(JSON.stringify(_this.state.cardCon))
+            });
+        }
+    })
+    .catch((err)=>{})
+  }
+
+
+  handleLike(_id) {
+    const header = {
+        headers : {
+            'x-access-token' : this.props.token
+        }
+    }
+    axios.post(domain + '/api/article/toggleLike', {_id}, header)
+    .then((res) => {
+        if(res.data.status === 'LIKE_TOGGLE_SUCCESSED'){
+            let list = this.state.cardCon;
+            for(i=0;i<list.length;i++){
+                if(list[i]._id === _id){ 
+                    list[i].isLiked = res.data.like;
+                    break;
+                }
+            }
+            if(res.data.addAction){
+                this.props.setLikeIcon(true);
+            }
+            this.setState({
+                ...this.state,
+                cardCon : list
+            })
+        }
+    });
   }
 
   handleSnapToItem(index){
   }
 
    _renderItem = ( {item, index} ) => {
+    item.bgStyle.backgroundColor = ""
+    item.bgStyle.photoUrl = "http://holotrip.co.kr/wp-content/uploads/2017/05/%EC%97%90%ED%8E%A01.jpg";
+    // item.bgStyle.backgroundColor = "#ccc"
+    // item.bgStyle.photoUrl = ""
+    item.__id.profileImg = "http://t1.daumcdn.net/friends/prod/editor/fe1fbe7c-4c82-446e-bc5c-f571d90b0ba9.jpg";
+
     return (
-      <ItemBox bg={item.bgStyle.photoUrl === null || item.bgStyle.photoUrl === "" ? 
+      <ItemBox bg={!item.bgStyle.photoUrl ? 
         ( "background-color:" + item.bgStyle.backgroundColor) : null
         }>
-        {item.bgStyle.backgroundColor === null || item.bgStyle.backgroundColor === "" ? (
+        {!item.bgStyle.backgroundColor ? (
           <BgBox>
             <BgImage source={{ uri: item.bgStyle.photoUrl }} />
             <BgMask></BgMask>
@@ -103,7 +97,7 @@ class CardItem extends Component {
               <MaterialCommunityIcons name={item.weather} color="#fff" size={24} style={{marginLeft:3, marginRight:3}}/>
             </WeatherBox>
             <DateBox>
-              <DateText>{item.travelDate}</DateText>
+              <DateText>{item.startDate ? item.startDate : ''} {item.finishDate ? '- ' + item.finishDate : ''}</DateText>
             </DateBox>
             <TxtBox>
               <TitText>{item.title}</TitText>
@@ -113,23 +107,25 @@ class CardItem extends Component {
           </ViewLinkBox>
           <Row>
             <LikeBox>
-              <BtnLike>
-                {item.isLiked ? (
+              {item.isLiked && item.isLiked.indexOf(item.__id.nickname) != -1 ? (
+                <BtnLike onPress={()=>{this.handleLike(item._id)}}>
                   <Ionicons name="md-heart" color="#EC4568" size={15} />
-                  ) : (
-                  <Ionicons name="md-heart-outline" color="#fff" size={15} />
-                  )
-                }
-                <LikeNum>{item.likeCount}</LikeNum>
-              </BtnLike>
+                  <LikeNum>{item.isLiked.length}</LikeNum>
+                </BtnLike>
+                ) : (
+                <BtnLike onPress={()=>{this.handleLike(item._id)}}>
+                  <Ionicons name="md-heart-outline" color="#fff" size={15}/>
+                  <LikeNum>{item.isLiked.length}</LikeNum>
+                </BtnLike>
+              )}
             </LikeBox>
-            <UpdatedDate> · {item.updatedDate}</UpdatedDate>
+            <UpdatedDate> · {item.updatedDate ? timeAgo(item.updatedDate, true) : timeAgo(item.writtenDate, true)}</UpdatedDate>
           </Row>
         </FlexBox>
         <FlexBox flexEnd>
           <WriterBox onPressOut={() => this.props.navigation.navigate('WriterView')}>
-            <ProfileImgBox source={{ uri: item.profileImg }} />
-            <WriterNickname>{item.nickname}</WriterNickname>
+            <ProfileImgBox source={{ uri: item.__id.profileImg }} />
+            <WriterNickname>{item.__id.nickname}</WriterNickname>
           </WriterBox>
         </FlexBox>
       </ItemBox>
@@ -177,15 +173,15 @@ const Wrap = styled.View`
 `;
 
 const ItemBox = styled.View`
-position:relative;
-flex-direction: column;
-justify-content: space-between;
-margin-top:15px;
-padding:20px 15px;
-flex: 0.95;
-border-radius: 10px;
-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.16)
-${prop => prop.bg}
+  position:relative;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top:15px;
+  padding:20px 15px;
+  flex: 0.95;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.16)
+  ${prop => prop.bg}
 `;
 
 const BgBox = styled.View`

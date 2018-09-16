@@ -27,7 +27,7 @@ class Menu extends Component {
     
     return (
       <Wrap>
-        {/* <Text>{this.props.login.token}</Text> */}
+        {/* <Text>{this.props.login._id}</Text> */}
         {login.loggedIn ? (<SignedMenu notifyIcon={notifyIcon} likeIcon={likeIcon} />) : (<UnSignedMenu />)}
       </Wrap>
     );

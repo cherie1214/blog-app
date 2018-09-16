@@ -12,6 +12,7 @@ const initialState = {
     login: {
         loggedIn: false,
         id: "",
+        _id: "",
         nickname: "",
         token: "",
     }
@@ -76,6 +77,7 @@ export default function auth(state = initialState, action) {
                 ...state.login,
                 loggedIn: true,
                 id: action.id,
+                _id: action._id,
                 nickname: action.nickname,
                 token: action.token,
             }
@@ -128,6 +130,7 @@ export default function auth(state = initialState, action) {
                 login: {
                     loggedIn: false,
                     id: "",
+                    _id: "",
                     nickname: "",
                 }
             }
