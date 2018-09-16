@@ -43,7 +43,7 @@ export default class ArticleView extends Component {
     const { bgStyle } = this.state;
     return (
       <View key="background">
-        {bgStyle.photoUrl === null || bgStyle.photoUrl === "" ? (
+        {!bgStyle.photoUrl ? (
           <View style={{
             width: width,
             height: 320,

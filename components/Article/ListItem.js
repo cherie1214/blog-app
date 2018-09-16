@@ -17,10 +17,10 @@ class ListItem extends Component {
   render(){
     const { _id, title, text, startDate, finishDate, weather, bgStyle, updatedDate, __id, isLiked } = this.props;
     
-    bgStyle.backgroundColor = ""
-    bgStyle.photoUrl = "http://holotrip.co.kr/wp-content/uploads/2017/05/%EC%97%90%ED%8E%A01.jpg";
+    // bgStyle.backgroundColor = ""
+    // bgStyle.photoUrl = "http://holotrip.co.kr/wp-content/uploads/2017/05/%EC%97%90%ED%8E%A01.jpg";
     // bgStyle.backgroundColor = "#ccc"
-    // bgStyle.photoUrl = ""
+    bgStyle.photoUrl = ""
     __id.profileImg = "http://t1.daumcdn.net/friends/prod/editor/fe1fbe7c-4c82-446e-bc5c-f571d90b0ba9.jpg";
 
     return (
@@ -79,14 +79,15 @@ export default withNavigation(ListItem);
 const Wrap = styled.View`
   margin-bottom:7%;
   border-radius: 10px;
-  ${prop => prop.bg}; 
 `;
-
-const Wrapper = styled.View`
+  
+  const Wrapper = styled.View`
   position: relative;
   padding:7% 10%;
   flex-direction: column;
   justify-content: flex-start;
+  border-radius: 10px;
+  ${prop => prop.bg}; 
 `;
 
 const BgBox = styled.View`

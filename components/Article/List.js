@@ -30,9 +30,9 @@ class List extends Component {
 
   getList() {
     const _this = this;
-    axios.get(domain + '/api/article/getMainList')
+    axios.get(domain + '/api/article/getAllList')
     .then((res)=>{
-        if(res.data.status === 'MAIN_ARTICLE_GET_SUCCESSED'){
+        if(res.data.status === 'ALL_ARTICLE_GET_SUCCESSED'){
             this.setState({
                 ...this.state,
                 items : res.data.list
