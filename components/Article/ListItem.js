@@ -50,7 +50,7 @@ class ListItem extends Component {
           <BorderBox></BorderBox>
         </TitBox>
         <TextBox>
-          <ConText numberOfLines={3}>{text}</ConText>
+          <ConText numberOfLines={2}>{text}</ConText>
         </TextBox>
         <Row>
           <LikeBox>

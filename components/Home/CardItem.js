@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { Dimensions, Image } from 'react-native';
+import { Dimensions, Image, View } from 'react-native';
 import styled from 'styled-components';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { withNavigation } from 'react-navigation';
-import Carousel, { ParallaxImage } from 'react-native-snap-carousel';
+import Carousel from 'react-native-snap-carousel';
 
 const { height, width } = Dimensions.get("window");
 
@@ -24,12 +24,13 @@ class CardItem extends Component {
       cardCon: [
         {
           bgStyle : {
-            backgroundColor: "#1adeb8",
-            photoUrl: "http://img.insight.co.kr/static/2018/04/26/700/2mj61hb3b5kz181s70qd.jpg",
+            backgroundColor: "",
+            photoUrl: "http://holotrip.co.kr/wp-content/uploads/2017/05/%EC%97%90%ED%8E%A01.jpg",
           },
           weather: "weather-sunny",
           travelDate: "2018.01.01 - 2018.01.01",
           title: "45일동안 서유럽 한바퀴, 45days in Wetern Europe",
+          text: "봄바람이다 풀밭에 속잎나고 가지에 싹이 트고 꽃 피고 새 봄바람이다 풀밭에 속잎나고 가지에 싹이 트고 꽃 피고 새",
           isLiked: false,
           likeCount: 120,
           updatedDate: "9시간 전",
@@ -37,12 +38,13 @@ class CardItem extends Component {
           nickname: "bonobono"
         }, {
           bgStyle : {
-            backgroundColor: null,
-            photoUrl: "http://img.insight.co.kr/static/2018/04/26/700/2mj61hb3b5kz181s70qd.jpg",
+            backgroundColor: "#5CC5FA",
+            photoUrl: "",
           },
           weather: "weather-sunny",
           travelDate: "2018.01.01 - 2018.01.01",
           title: "자전거 여행의 매력, 느림보 제주 여행",
+          text: "봄바람이다 풀밭에 속잎나고 가지에 싹이 트고 꽃 피고 새 봄바람이다 풀밭에 속잎나고 가지에 싹이 트고 꽃 피고 새",
           isLiked: false,
           likeCount: 80,
           updatedDate: "12시간 전",
@@ -50,12 +52,27 @@ class CardItem extends Component {
           nickname: "어피치"
         }, {
           bgStyle : {
-            backgroundColor: null,
-            photoUrl: "http://image.yes24.com/momo/TopCate1899/MidCate004/122998193.jpg",
+            backgroundColor: "#ccc",
+            photoUrl: null,
           },
           weather: "weather-sunny",
           travelDate: "2018.01.01 - 2018.01.01",
           title: "단 기간 여행이 만족스러웠던 아담한 동네, 블라디보스톡",
+          text: "봄바람이다 풀밭에 속잎나고 가지에 싹이 트고 꽃 피고 새 봄바람이다 풀밭에 속잎나고 가지에 싹이 트고 꽃 피고 새",
+          isLiked: false,
+          likeCount: 102,
+          updatedDate: "18시간 전",
+          profileImg: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2KYrEEV1hf0hBxY-N7XqOK-8Csx-z0Wa_oZ9WcJEp9xVKVsgx",
+          nickname: "바바파파"
+        }, {
+          bgStyle : {
+            backgroundColor: null,
+            photoUrl: "https://travelblog.expedia.co.kr/wp-content/uploads/2017/01/170131_TBR.jpg",
+          },
+          weather: "weather-sunny",
+          travelDate: "2018.01.01 - 2018.01.01",
+          title: "단 기간 여행이 만족스러웠던 아담한 동네, 블라디보스톡",
+          text: "봄바람이다 풀밭에 속잎나고 가지에 싹이 트고 꽃 피고 새 봄바람이다 풀밭에 속잎나고 가지에 싹이 트고 꽃 피고 새",
           isLiked: false,
           likeCount: 102,
           updatedDate: "18시간 전",
@@ -69,35 +86,38 @@ class CardItem extends Component {
   handleSnapToItem(index){
   }
 
-   _renderItem = ( {item, index}, parallaxProps ) => {
+   _renderItem = ( {item, index} ) => {
     return (
-      <ItemBox backgroundColor={item.bgStyle.backgroundColor}>
-        {/* <ParallaxImage 
-          source={{ uri: item.bgStyle.photoUrl }} 
-          // containerStyle={styles.imageContainer}
-          // style={styles.image}
-          // parallaxFactor={0.4}
-          // {...parallaxProps}
-          /> */}
+      <ItemBox bg={item.bgStyle.photoUrl === null || item.bgStyle.photoUrl === "" ? 
+        ( "background-color:" + item.bgStyle.backgroundColor) : null
+        }>
+        {item.bgStyle.backgroundColor === null || item.bgStyle.backgroundColor === "" ? (
+          <BgBox>
+            <BgImage source={{ uri: item.bgStyle.photoUrl }} />
+            <BgMask></BgMask>
+          </BgBox>
+        ) : null }
         <FlexBox flex2>
           <ViewLinkBox onPressOut={() => this.props.navigation.navigate('ArticleView')}>
             <WeatherBox>
-              <MaterialCommunityIcons name={item.weather} color="#fff" size={22} style={{marginLeft:3, marginRight:3}}/>
+              <MaterialCommunityIcons name={item.weather} color="#fff" size={24} style={{marginLeft:3, marginRight:3}}/>
             </WeatherBox>
             <DateBox>
               <DateText>{item.travelDate}</DateText>
             </DateBox>
-            <TitBox>
+            <TxtBox>
               <TitText>{item.title}</TitText>
-            </TitBox>
+              <Border></Border>
+              <ConText numberOfLines={2}>{item.text}</ConText>
+            </TxtBox>
           </ViewLinkBox>
           <Row>
             <LikeBox>
               <BtnLike>
                 {item.isLiked ? (
-                  <Ionicons name="md-heart" color="#EC4568" size={13} />
+                  <Ionicons name="md-heart" color="#EC4568" size={15} />
                   ) : (
-                  <Ionicons name="md-heart-outline" color="#fff" size={13} />
+                  <Ionicons name="md-heart-outline" color="#fff" size={15} />
                   )
                 }
                 <LikeNum>{item.likeCount}</LikeNum>
@@ -124,11 +144,9 @@ class CardItem extends Component {
         <Carousel
           ref={ (c) => { this._carousel = c; } }
           data={this.state.cardCon}
-          hasParallaxImages={true}
           inactiveSlideOpacity={0.3}
           inactiveSlideScale={0.75}
-          renderItem={this._renderItem.bind(this)}
-          onSnapToItem={this.handleSnapToItem.bind(this)}
+          renderItem={this._renderItem.bind(this)}          
           sliderWidth={width}
           itemWidth={width * 0.7}
           layout={'default'}
@@ -159,15 +177,37 @@ const Wrap = styled.View`
 `;
 
 const ItemBox = styled.View`
-  position:relative;
-  flex-direction: column;
-  justify-content: space-between;
-  margin-top:15px;
-  padding:15px;
-  flex: 0.95;
+position:relative;
+flex-direction: column;
+justify-content: space-between;
+margin-top:15px;
+padding:20px 15px;
+flex: 0.95;
+border-radius: 10px;
+box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.16)
+${prop => prop.bg}
+`;
+
+const BgBox = styled.View`
+  flex: 1;
+  overflow:hidden;
+  position:absolute;
+  top:0;
+  bottom: 0;
+  width: ${width * 0.7};
   border-radius: 10px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.16)
-  ${prop => prop.bg}
+`;
+
+const BgImage = styled.Image`
+  width: 100%;
+  height:100%;
+`;
+
+const BgMask = styled.View`
+  position:absolute;
+  width: 100%;
+  height:100%;
+  backgroundColor: rgba(0,0,0,0.5);
 `;
 
 const FlexBox = styled.View`
@@ -195,7 +235,14 @@ const DateText = styled.Text`
   font-weight:500;
 `;
 
-const TitBox = styled.View`
+const TxtBox = styled.View`
+`;
+
+const Border = styled.View`
+  margin: 6% 0;
+  width:20px;
+  height:5px;
+  background-color: rgba(255, 255, 255, 0.5);
 `;
 
 const TitText = styled.Text`
@@ -204,6 +251,13 @@ const TitText = styled.Text`
   font-size:20px;
   line-height:23px;
   font-weight:600;
+`;
+
+const ConText = styled.Text`
+  font-family: 'hd-bold';
+  color:#fff;
+  font-size:15px;
+  line-height:18px;
 `;
 
 const Row = styled.View`
@@ -227,14 +281,14 @@ const LikeNum = styled.Text`
   font-family: 'hd-regular';
   margin-left:3px;
   color:#fff;
-  font-size:13px;
+  font-size:14px;
   font-weight:500;
 `;
 
 const UpdatedDate = styled.Text`
   font-family: 'hd-regular';
   color:#fff;
-  font-size:13px;
+  font-size:14px;
 `;
 
 const WriterBox = styled.TouchableOpacity`
@@ -245,7 +299,7 @@ const WriterBox = styled.TouchableOpacity`
 const WriterNickname = styled.Text`
   font-family: 'hd-bold';
   color:#fff;
-  font-size:15px;
+  font-size:16px;
   font-weight:500;
 `;
 
