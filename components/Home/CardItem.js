@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import { Dimensions, Image, View } from 'react-native';
+import { Dimensions, Image, View, Text } from 'react-native';
 import styled from 'styled-components';
-import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, EvilIcons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { withNavigation } from 'react-navigation';
-import Carousel from 'react-native-snap-carousel';
+import Carousel, { Pagination } from 'react-native-snap-carousel';
 import axios from 'axios';
 import { domain } from '../../config';
 import timeAgo from '../../lib/timeAgo';
+import ToggleLike from '../Common/ToggleLike';
 
 const { height, width } = Dimensions.get("window");
 
@@ -17,70 +18,54 @@ class CardItem extends Component {
     this.state = {
       cardCon: [],
       errors: [],
+      activeSlide: 0,
     }
     this.props = props;
     this._carousel = {};
-    this.handleLike = this.handleLike.bind(this);
+    this.getList = this.getList.bind(this);
   }
 
   componentDidMount(){
     this.getList();
+    
   }
 
   getList() {
-    const _this = this;
+    // const _this = this;
     axios.get(domain + '/api/article/getMainList')
     .then((res)=>{
         if(res.data.status === 'MAIN_ARTICLE_GET_SUCCESSED'){
+          let arr = res.data.list;
+          arr.push({})
             this.setState({
                 ...this.state,
-                cardCon : res.data.list
+                cardCon : arr,
             },()=>{
-              // alert(JSON.stringify(_this.state.cardCon))
             });
         }
     })
     .catch((err)=>{})
   }
 
-
-  handleLike(_id) {
-    const header = {
-        headers : {
-            'x-access-token' : this.props.token
-        }
-    }
-    axios.post(domain + '/api/article/toggleLike', {_id}, header)
-    .then((res) => {
-        if(res.data.status === 'LIKE_TOGGLE_SUCCESSED'){
-            let list = this.state.cardCon;
-            for(i=0;i<list.length;i++){
-                if(list[i]._id === _id){ 
-                    list[i].isLiked = res.data.like;
-                    break;
-                }
-            }
-            if(res.data.addAction){
-                this.props.setLikeIcon(true);
-            }
-            this.setState({
-                ...this.state,
-                cardCon : list
-            })
-        }
-    });
-  }
-
   handleSnapToItem(index){
   }
 
-   _renderItem = ( {item, index} ) => {
-    // item.bgStyle.backgroundColor = ""
-    // item.bgStyle.photoUrl = "http://holotrip.co.kr/wp-content/uploads/2017/05/%EC%97%90%ED%8E%A01.jpg";
-    // item.bgStyle.backgroundColor = "#ccc"
-    // item.bgStyle.photoUrl = ""
-    // item.__id.profileImg = "http://t1.daumcdn.net/friends/prod/editor/fe1fbe7c-4c82-446e-bc5c-f571d90b0ba9.jpg";
-
+  _renderItem = ( {item, index} ) => {
+    const lastText = `더 다양한 Travel을\n만나보세요.`;
+    if(this.state.cardCon.length -1 == index){
+      return (
+        <ItemBox last>
+          <LastBox onPressOut={() => this.props.navigation.navigate("List")}>
+            <EvilIcons name="plus" size={90} color="#fff" />
+            <LastTextBox>
+              {/* <Ionicons name="ios-quote-outline" size={30} color="#fff" style={{marginRight:5}}/> */}
+              <LastText>{lastText}</LastText>
+            </LastTextBox>
+          </LastBox>
+        </ItemBox>
+      )
+    }
+    
     return (
       <ItemBox bg={!item.bgStyle.photoUrl ? 
         ( "background-color:" + item.bgStyle.backgroundColor) : null
@@ -106,19 +91,7 @@ class CardItem extends Component {
             </TxtBox>
           </ViewLinkBox>
           <Row>
-            <LikeBox>
-              {item.isLiked && item.isLiked.indexOf(item.__id.nickname) != -1 ? (
-                <BtnLike onPress={()=>{this.handleLike(item._id)}}>
-                  <Ionicons name="md-heart" color="#EC4568" size={15} />
-                  <LikeNum>{item.isLiked.length}</LikeNum>
-                </BtnLike>
-                ) : (
-                <BtnLike onPress={()=>{this.handleLike(item._id)}}>
-                  <Ionicons name="md-heart-outline" color="#fff" size={15}/>
-                  <LikeNum>{item.isLiked.length}</LikeNum>
-                </BtnLike>
-              )}
-            </LikeBox>
+            <ToggleLike iconSiz={15} numSize={14} isLiked={item.isLiked} _id={item._id} />
             <UpdatedDate> · {item.updatedDate ? timeAgo(item.updatedDate, true) : timeAgo(item.writtenDate, true)}</UpdatedDate>
           </Row>
         </FlexBox>
@@ -132,9 +105,32 @@ class CardItem extends Component {
     );
   }
 
+  get pagination () {
+    const { cardCon, activeSlide } = this.state;
+    return (
+        <Pagination
+          dotsLength={cardCon.length}
+          activeDotIndex={activeSlide}
+          containerStyle={{ 
+            position: 'absolute',
+            bottom:-5,
+            backgroundColor: 'transparent' 
+          }}
+          dotStyle={{
+              width: 10,
+              height: 10,
+              borderRadius: 5,
+              backgroundColor: 'rgba(155, 155, 155, 0.92)'
+          }}
+          // inactiveDotStyle={{}}
+          inactiveDotOpacity={0.3}
+          inactiveDotScale={0.5}
+        />
+    );
+}
+
   
-  render() {  
-    
+  render() {      
     return (
       <Wrap>
         <Carousel
@@ -147,7 +143,9 @@ class CardItem extends Component {
           itemWidth={width * 0.7}
           layout={'default'}
           firstItem={0}
+          onSnapToItem={(index) => this.setState({ activeSlide: index }) }
         />
+        { this.pagination }
       </Wrap>  
     );
   }
@@ -182,6 +180,7 @@ const ItemBox = styled.View`
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.16)
   ${prop => prop.bg}
+  ${prop => prop.last ? "background: #ccc; align-items: center" : ""}
 `;
 
 const BgBox = styled.View`
@@ -263,24 +262,6 @@ const Row = styled.View`
   align-items: center;
 `;
 
-const LikeBox = styled.View`
-  flex-direction: row;
-  justify-content: flex-end;
-`;
-
-const BtnLike = styled.TouchableOpacity`
-  align-items: center;
-  flex-direction: row;
-`;
-
-const LikeNum = styled.Text`
-  font-family: 'hd-regular';
-  margin-left:3px;
-  color:#fff;
-  font-size:14px;
-  font-weight:500;
-`;
-
 const UpdatedDate = styled.Text`
   font-family: 'hd-regular';
   color:#fff;
@@ -307,4 +288,21 @@ const ProfileImgBox = styled.Image`
     background-color : transparent;
 `;
 
+const LastBox = styled.TouchableOpacity`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+`;
 
+const LastTextBox = styled.View`
+  margin:15px 0;
+`;
+
+const LastText = styled.Text`  
+  font-family: 'hd-bold';
+  color:#fff;
+  font-size:20px;
+  font-weight:400;
+  text-align:center;
+  line-height: 28px;
+`;

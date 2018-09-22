@@ -17,9 +17,9 @@ class WriterView extends Component {
     super(props);
     this.state = {
       items: {},
+      data: [],
       message: "로딩 중...",
       itemParam: this.props.navigation.getParam('item'),
-      articleLen: null,
     }
   }
   
@@ -35,44 +35,17 @@ class WriterView extends Component {
 
     axios.post(domain + '/api/article/getWriterList', obj)
     .then((res)=>{
-        if(res.data.status === 'WRITER_LIST_GET_SUCCESSED'){
+        if(res.data.status === 'WRITER_GET_SUCCESSED'){
           this.setState({
               ...this.state,
-              items : res.data.list,
-              articleLen: res.data.list.length,
+              items: res.data.list,
+              data: res.data.data,
           },()=>{
-            // alert(JSON.stringify(_this.state.items))
+            // alert(JSON.stringify(_this.state.data))
           });
         }
     })
     .catch((err)=>{})
-  }
-
-  handleLike(_id) {
-    const header = {
-        headers : {
-            'x-access-token' : this.props.login.token
-        }
-    }
-    axios.post(domain + '/api/article/toggleLike', {_id}, header)
-    .then((res) => {
-        if(res.data.status === 'LIKE_TOGGLE_SUCCESSED'){
-            let list = this.state.items;
-            for(i=0;i<list.length;i++){
-                if(list[i]._id === _id){ 
-                    list[i].isLiked = res.data.like;
-                    break;
-                }
-            }
-            if(res.data.addAction){
-                this.props.setLikeIcon(true);
-            }
-            this.setState({
-                ...this.state,
-                items : list
-            })
-        }
-    });
   }
 
   renderFixedHeader() {
@@ -97,9 +70,9 @@ class WriterView extends Component {
     return(
       <HeaderConBox>
         <ProfileBox>
-          <ProfileImgBox source={{uri: this.state.itemParam.__id.profileImg}} />
-          <Nickname>{this.state.itemParam.__id.nickname}</Nickname>
-          <ArticleNum>글수 {this.state.articleLen}</ArticleNum>
+          <ProfileImgBox source={{uri: this.state.data.profileImg}} />
+          <Nickname>{this.state.data.nickname}</Nickname>
+          <ArticleNum>글수 {this.state.data.articleLength}</ArticleNum>
         </ProfileBox> 
       </HeaderConBox>
     )
@@ -114,8 +87,8 @@ class WriterView extends Component {
           key={i} {...e} 
           token={this.props.login.token} 
           nickname={this.props.login.nickname} 
-          setLikeIcon={this.props.setLikeIcon} 
-          _handleLike={(_id) => {this.handleLike(_id)}} 
+          // setLikeIcon={this.props.setLikeIcon} 
+          // _handleLike={(_id) => {this.handleLike(_id)}} 
           />);
     })
 

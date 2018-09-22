@@ -24,6 +24,8 @@
     "react-native-checkbox": "^2.0.0",
     "react-native-datepicker": "^1.7.2",
     "react-native-elements": "^0.19.1",
+    "react-native-infinite": "^1.1.8",
+    "react-native-infinite-scroll-view": "^0.4.5",
     "react-native-modal": "^6.5.0",
     "react-native-modal-picker": "^0.0.16",
     "react-native-parallax-scroll-view": "^0.21.3",

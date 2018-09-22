@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { withNavigation } from 'react-navigation';
 import timeAgo from '../../lib/timeAgo';
+import ToggleLike from '../Common/ToggleLike';
 
 const { height, width } = Dimensions.get("window");
 
@@ -53,19 +54,7 @@ class ListItem extends Component {
             <ConText numberOfLines={2}>{text}</ConText>
           </TextBox>
           <Row>
-            <LikeBox>
-              {isLiked && isLiked.indexOf(__id.nickname) != -1 ? (
-                <BtnLike onPress={()=>{this.props._handleLike(_id)}}>
-                  <Ionicons name="md-heart" color="#EC4568" size={13} />
-                  <LikeNum>{isLiked.length}</LikeNum>
-                </BtnLike>
-                ) : (
-                <BtnLike onPress={()=>{this.props._handleLike(_id)}}>
-                  <Ionicons name="md-heart-outline" color="#fff" size={13}/>
-                  <LikeNum>{isLiked.length}</LikeNum>
-                </BtnLike>
-              )}
-            </LikeBox>
+          <ToggleLike iconSiz={13} numSize={13} isLiked={isLiked} _id={_id} />
             <UpdatedDate> · {updatedDate ? timeAgo(updatedDate, true) : timeAgo(writtenDate, true)}</UpdatedDate>
           </Row>
         </Wrapper>
@@ -194,24 +183,6 @@ const Row = styled.View`
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
-`;
-
-const LikeBox = styled.View`
-  flex-direction: row;
-  justify-content: flex-end;
-`;
-
-const BtnLike = styled.TouchableOpacity`
-  align-items: center;
-  flex-direction: row;
-`;
-
-const LikeNum = styled.Text`
-  font-family: 'hd-regular';
-  margin-left:3px;
-  color:#fff;
-  font-size:13px;
-  font-weight:500;
 `;
 
 const UpdatedDate = styled.Text`

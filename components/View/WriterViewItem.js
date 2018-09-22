@@ -3,6 +3,7 @@ import { Dimensions } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import timeAgo from '../../lib/timeAgo';
+import ToggleLike from '../Common/ToggleLike';
 
 const { height, width } = Dimensions.get("window");
 
@@ -16,7 +17,8 @@ export default class WriterViewItem extends Component {
 
   render(){
     const { _id, startDate, finishDate, weather, title, text, writtenDate, updatedDate, bgStyle, isLiked, __id } = this.props;
-    
+    const token = this.props.token;
+
     return (
       <Wrap>  
         <Wrapper bg={!bgStyle.photoUrl ? 
@@ -43,19 +45,8 @@ export default class WriterViewItem extends Component {
             <ConText numberOfLines={2}>{text}</ConText>
           </TextBox>
           <LastRow>
-            <LikeBox>
-              {isLiked && isLiked.indexOf(__id.nickname) != -1 ? (
-                <BtnLike onPress={()=>{this.props._handleLike(_id)}}>
-                  <Ionicons name="md-heart" color="#EC4568" size={13} />
-                  <LikeNum>{isLiked.length}</LikeNum>
-                </BtnLike>
-                ) : (
-                <BtnLike onPress={()=>{this.props._handleLike(_id)}}>
-                  <Ionicons name="md-heart-outline" color="#fff" size={13}/>
-                  <LikeNum>{isLiked.length}</LikeNum>
-                </BtnLike>
-              )}
-              </LikeBox>
+            <ToggleLike iconSiz={13} numSize={12} isLiked={isLiked} _id={_id} />
+            {/* <UpdatedDate>{JSON.stringify(_id)}</UpdatedDate> */}
             <UpdatedDate> · {updatedDate ? timeAgo(updatedDate, true) : timeAgo(writtenDate, true)}</UpdatedDate>
           </LastRow>
         </Wrapper>  
@@ -162,24 +153,6 @@ const LastRow = styled.View`
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
-`;
-
-
-const LikeBox = styled.View`
-  flex-direction: row;
-`;
-
-const BtnLike = styled.TouchableOpacity`
-  align-items: center;
-  flex-direction: row;
-`;
-
-const LikeNum = styled.Text`
-  font-family: 'hd-regular';
-  margin-left:3px;
-  color:#fff;
-  font-size:12px;
-  font-weight:500;
 `;
 
 const UpdatedDate = styled.Text`

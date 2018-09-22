@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Animated, View, Text, TouchableOpacity, Dimensions, StatusBar, ScrollView, StyleSheet } from 'react-native';
+import { Dimensions, ScrollView, ListView, RefreshControl } from 'react-native';
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { setLikeIcon } from '../../actions'  
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import axios from 'axios';
 import { domain } from '../../config';
+// import InfiniteScrollView from 'react-native-infinite-scroll-view';
 
 import ListItem from './ListItem';
 
@@ -43,34 +44,7 @@ class List extends Component {
     })
     .catch((err)=>{})
   }
-
-  handleLike(_id) {
-    const header = {
-        headers : {
-            'x-access-token' : this.props.login.token
-        }
-    }
-    axios.post(domain + '/api/article/toggleLike', {_id}, header)
-    .then((res) => {
-        if(res.data.status === 'LIKE_TOGGLE_SUCCESSED'){
-            let list = this.state.items;
-            for(i=0;i<list.length;i++){
-                if(list[i]._id === _id){ 
-                    list[i].isLiked = res.data.like;
-                    break;
-                }
-            }
-            if(res.data.addAction){
-                this.props.setLikeIcon(true);
-            }
-            this.setState({
-                ...this.state,
-                items : list
-            })
-        }
-    });
-  }
-
+  
   _getItemList () {
     if(Object.keys(this.state.items).length === 0) return '';
     var indents = [];

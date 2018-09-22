@@ -111,7 +111,7 @@ const HomeMenu = styled.View`
 `;
 
 const HomeHeader = styled.View`
-  flex: 1.4;
+  flex: 1.3;
   padding-bottom:5%;
   align-items: flex-end;
   flex-direction: row;
@@ -119,11 +119,11 @@ const HomeHeader = styled.View`
 `;
 
 const HomeBody = styled.View`
-    flex : 6;
+    flex : 6.3;
 `;
 
 const HomeFooter = styled.View`
-    flex : 1.5;
+    flex : 1.8;
     flex-direction:row;
     align-items: center;
     justify-content: center;

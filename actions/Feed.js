@@ -62,4 +62,3 @@ function getLikeFn(token, dispatch) {
       dispatch(setLikeIcon(false));
   });
 }
-
