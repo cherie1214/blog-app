@@ -26,106 +26,26 @@ export default class ModalBg extends Component {
     super(props);
     this.state = { 
       radioItems: [
-        {
-          id: 1,
-          color: '#6B5ED1',
-          selected: true
-        }, 
-        {
-          id: 2,
-          color: '#6093E3',
-          selected: false,
-        },
-        {
-          id: 3,
-          color: '#5CC5FA',
-          selected: false
-        },
-        {
-          id: 4,
-          color: '#53DEA3',
-          selected: false
-        },
-        {
-          id: 5,
-          color: '#72DE6A',
-          selected: false
-        },
-        {
-          id: 6,
-          color: '#FF754A',
-          selected: false
-        }, 
-        {
-          id: 7,
-          color: '#F8A72D',
-          selected: false,
-        },
-        {
-          id: 8,
-          color: '#FFC040',
-          selected: false
-        },
-        {
-          id: 9,
-          color: '#FFD747',
-          selected: false
-        },
-        {
-          id: 10,
-          color: '#C1DB59',
-          selected: false
-        },
-        {
-          id: 11,
-          color: '#F25A6E',
-          selected: false
-        }, 
-        {
-          id: 12,
-          color: '#E878AA',
-          selected: false,
-        },
-        {
-          id: 13,
-          color: '#FF98C6',
-          selected: false
-        },
-        {
-          id: 14,
-          color: '#D287E8',
-          selected: false
-        },
-        {
-          id: 15,
-          color: '#9964D5',
-          selected: false
-        },
-        {
-          id: 16,
-          color: '#bbb',
-          selected: false
-        }, 
-        {
-          id: 17,
-          color: '#999',
-          selected: false,
-        },
-        {
-          id: 18,
-          color: '#777',
-          selected: false
-        },
-        {
-          id: 19,
-          color: '#555',
-          selected: false
-        },
-        {
-          id: 20,
-          color: '#333',
-          selected: false
-        }
+        { id: 1, color: '#6B5ED1', selected: true }, 
+        { id: 2, color: '#6093E3', selected: false },
+        { id: 3, color: '#5CC5FA', selected: false },
+        { id: 4, color: '#53DEA3', selected: false },
+        { id: 5, color: '#72DE6A', selected: false },
+        { id: 6, color: '#FF754A', selected: false }, 
+        { id: 7, color: '#F8A72D', selected: false },
+        { id: 8, color: '#FFC040', selected: false },
+        { id: 9, color: '#FFD747', selected: false },
+        { id: 10, color: '#C1DB59', selected: false },
+        { id: 11, color: '#F25A6E', selected: false }, 
+        { id: 12, color: '#E878AA', selected: false },
+        { id: 13, color: '#FF98C6', selected: false },
+        { id: 14, color: '#D287E8', selected: false },
+        { id: 15, color: '#9964D5', selected: false },
+        { id: 16, color: '#bbb', selected: false }, 
+        { id: 17, color: '#999', selected: false },
+        { id: 18, color: '#777', selected: false },
+        { id: 19, color: '#555', selected: false },
+        { id: 20, color: '#333', selected: false },
       ], 
       selectedId: this.props.parentState.bg.color.id,
       selectedColor: this.props.parentState.bg.color.value,
