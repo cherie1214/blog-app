@@ -32,7 +32,7 @@ class ToggleLike extends Component {
     .then((res) => {
         if(res.data.status === 'LIKE_TOGGLE_SUCCESSED'){
           if(res.data.addAction){
-            this.props.setLikeIcon(true);
+            // this.props.setLikeIcon(true);
           }
           this.setState({
             ...this.state,

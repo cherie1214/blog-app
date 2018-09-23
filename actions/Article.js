@@ -9,7 +9,7 @@ import {
 
 import axios from 'axios';
 import { domain } from '../config';
-import { setNotifyIcon } from './Feed'
+// import { setNotifyIcon } from './Feed'
 
 
 //action creators
@@ -67,7 +67,7 @@ export function requestSaveArticle(oriArticle, token){
                 console.log(res.data.status)
                 // alert("저장되었습니다.")
                 dispatch(articleGetSuccess(res.data._id));  
-                setNotifyIcon(true);
+                // setNotifyIcon(true);
             }
         }).catch((error) => {
             // FAILED

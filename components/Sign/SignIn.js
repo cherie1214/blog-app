@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Dimensions } from 'react-native';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { userSignIn, signInInit } from '../../actions';
+import { userSignIn, signInInit, likeIconRepeat } from '../../actions';
 import { Ionicons, Feather } from '@expo/vector-icons';
 import { AsyncStorage } from 'react-native';
 
@@ -26,6 +26,7 @@ class SignIn extends Component {
       if(auth.http.result === "SUCCESS"){
         this.props.signInInit();
         // alert("로그인 되었습니다.");
+        this.props.likeIconRepeat(this.props.login.token);
         this.props.navigation.navigate('Home');
       } else if(auth.http.result === "FAILED"){
         this.props.signInInit();
@@ -101,6 +102,7 @@ class SignIn extends Component {
 const mapStateToProps = (state) => {
   return {
     auth: state.redux.auth,
+    login: state.redux.auth.login,
   }
 }
 
@@ -112,6 +114,9 @@ const mapDispatchToProps = (dispatch) => {
     signInInit: () => {
       return dispatch(signInInit());
     },
+    likeIconRepeat: (token) => {
+      return dispatch(likeIconRepeat(token));
+    }
   }
 }
 

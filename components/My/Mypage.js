@@ -3,7 +3,7 @@ import { CameraRoll, Dimensions } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons, Feather, Foundation } from '@expo/vector-icons';
 import { connect } from 'react-redux';
-import { signOut, changeNicknameRequest } from '../../actions';
+import { signOut, changeNicknameRequest, setNotifyIcon, setLikeIcon, clearLikeIconRepeat } from '../../actions';
 // import CameraRollPicker from 'react-native-camera-roll-picker';
 // import { userInfo } from 'os';
 // import Camera from 'react-native-camera';
@@ -52,7 +52,11 @@ class Mypage extends Component {
     if(prevProps.auth !== auth){  
       if(auth.login.loggedIn === false){
         alert("로그아웃 되었습니다.");
+        this.props.setNotifyIcon(false);
+        this.props.setLikeIcon(false);
+        this.props.clearLikeIconRepeat(this.props.login.token);
         this.props.navigation.navigate('Home');
+
       }
     }    
   }
@@ -130,6 +134,7 @@ class Mypage extends Component {
 const mapStateToProps = (state) => {
   return {
     auth: state.redux.auth,
+    login: state.redux.auth.login,
   }
 }
 
@@ -141,6 +146,15 @@ const mapDispatchToProps = (dispatch) => {
     changeNicknameRequest: (userInfo, token) => {
       return dispatch(changeNicknameRequest(userInfo, token));
     },
+    setNotifyIcon: (bool) => {
+      return dispatch(setNotifyIcon(bool));
+    },
+    setLikeIcon: (bool) => {
+      return dispatch(setLikeIcon(bool));
+    },
+    clearLikeIconRepeat: (token) => {
+      return dispatch(clearLikeIconRepeat(token));
+    }
   }
 }
 

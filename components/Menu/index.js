@@ -14,7 +14,7 @@ class Menu extends Component {
       this.props.likeIconRepeat(this.props.login.token);
     }
     if(prevProps.feed.likeIcon !== this.props.feed.likeIcon && !this.props.feed.likeIcon) {
-      this.props.likeIconRepeat();
+      this.props.likeIconRepeat(this.props.login.token);
     }
     if(prevProps.feed.likeIcon !== this.props.feed.likeIcon && this.props.feed.likeIcon) {
       this.props.clearLikeIconRepeat();

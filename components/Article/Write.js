@@ -3,7 +3,7 @@ import { Dimensions, StatusBar, ScrollView, Text } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
-import { requestSaveArticle, articleInit } from '../../actions';
+import { requestSaveArticle, articleInit, setNotifyIcon } from '../../actions';
 import { ConfirmDialog } from 'react-native-simple-dialogs';
 import { withNavigation } from 'react-navigation';
 import axios from 'axios';
@@ -64,8 +64,10 @@ class Write extends Component {
           article : {
             ...this.state.article,
             _id: this.props.http.result,
-          }
+          }          
         })
+        
+        this.props.setNotifyIcon(true);
       }
     }    
   }
@@ -168,6 +170,9 @@ const mapDispatchToProps = (dispatch) => {
       },
       articleInit: () => {
         return dispatch(articleInit());
+      },
+      setNotifyIcon: (bool) => {
+        return dispatch(setNotifyIcon(bool));
       }
   };
 };

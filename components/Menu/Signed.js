@@ -31,7 +31,7 @@ class SignedMenu extends Component {
         </CloseBox>
         <ProfileBox
           onPressOut={() => this.props.navigation.navigate('Mypage')}>
-          <ProfileImgBox source={require('../../assets/bonobono.jpg')} />
+          <ProfileImgBox source={{uri: 'https://i.pinimg.com/564x/23/9d/64/239d649cbeaf9466a17620a1209c6f92.jpg'}} />
           <UserNickname>{auth.login.nickname}</UserNickname>
         </ProfileBox>
         <BorderBox />
@@ -174,6 +174,8 @@ const ProfileImgBox = styled.Image`
   height : 70px;
   border-radius : 35px;
   background-color : transparent;
+  border-width: 1px;
+  border-color: #e5e5e5;
 `;
 
 const UserNickname = styled.Text`

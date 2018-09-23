@@ -26,6 +26,9 @@ export const setLikeIcon = (bool) => {
 //Like Icons check
 export const likeIconRepeat = (token) => {
   return (dispatch) => {
+      if(getLikeRepeat){
+          clearInterval(getLikeRepeat);
+      }
       //한번하고
       getLikeFn(token, dispatch);
       //10초마다 하기

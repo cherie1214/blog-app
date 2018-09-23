@@ -194,7 +194,6 @@ const BorderBox = styled.View`
 
 const TextBox = styled.View`
   margin-top:12%;
-  height:46px;
 `;
 
 const ConText = styled.Text`
