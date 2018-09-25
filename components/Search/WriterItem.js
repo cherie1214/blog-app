@@ -14,12 +14,12 @@ class WriterItem extends Component {
 
 
   render(){
-    const { nickname, articleLength, profileImg } = this.props;
+    const { _id, nickname, articleLength, profileImg } = this.props;
     
     return (
       <Wrap>  
-        <Row>
-          <WriterBox onPressOut={() => this.navigation.navigate('WriterView')}>
+        <Row onPressOut={() => this.props.navigation.navigate('WriterView', {writer_id : _id})}>
+          <WriterBox>
             <ProfileImgBox source={{uri: profileImg}}/>
             <WriterText>{nickname}</WriterText>
           </WriterBox>

@@ -96,7 +96,7 @@ class CardItem extends Component {
           </Row>
         </FlexBox>
         <FlexBox flexEnd>
-          <WriterBox onPressOut={() => this.props.navigation.navigate('WriterView', {item})}>
+          <WriterBox onPressOut={() => this.props.navigation.navigate('WriterView', {writer_id : item.__id._id})}>
             <ProfileImgBox source={{ uri: item.__id.profileImg }} />
             <WriterNickname>{item.__id.nickname}</WriterNickname>
           </WriterBox>

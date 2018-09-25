@@ -19,7 +19,6 @@ class WriterView extends Component {
       items: {},
       data: [],
       message: "로딩 중...",
-      itemParam: this.props.navigation.getParam('item'),
     }
   }
   
@@ -28,12 +27,7 @@ class WriterView extends Component {
   }
 
   getList() {
-    const _this = this;
-    const obj = {
-      id: _this.state.itemParam.id,
-    };
-
-    axios.post(domain + '/api/article/getWriterList', obj)
+    axios.post(domain + '/api/article/getWriterList', {_id : this.props.navigation.getParam('writer_id')})
     .then((res)=>{
         if(res.data.status === 'WRITER_GET_SUCCESSED'){
           this.setState({
@@ -41,7 +35,7 @@ class WriterView extends Component {
               items: res.data.list,
               data: res.data.data,
           },()=>{
-            // alert(JSON.stringify(_this.state.data))
+            // alert(JSON.stringify(this.state.data))
           });
         }
     })
@@ -61,7 +55,7 @@ class WriterView extends Component {
   renderSticky(){
     return(
       <StickyBox>
-        <Nickname style={{marginTop: 5}}>{this.state.itemParam.__id.nickname}</Nickname>
+        <Nickname style={{marginTop: 5}}>{this.state.data.nickname}</Nickname>
       </StickyBox>
     )
   }

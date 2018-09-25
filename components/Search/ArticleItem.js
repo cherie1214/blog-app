@@ -17,18 +17,19 @@ class ArticleItem extends Component {
   
   render(){
     const { _id, title, text, isLiked, __id, startDate, finishDate, writtenDate, updatedDate, weather } = this.props;
+    const item = this.props;
     
     return (
       <Wrap>  
-        <Link onPressOut={() => this.navigation.navigate('ArticleView')}>
-          <FirstRow>
-            <DateBox>
-              <DateText>{startDate ? startDate : ''}{finishDate? ' - '+finishDate : ''}</DateText>
-            </DateBox>
-            <WeatherBox>
-            <MaterialCommunityIcons name={weather} color="#999" size={20} style={{marginLeft:3}}/>
-            </WeatherBox>
-          </FirstRow>
+        <FirstRow>
+          <DateBox>
+            <DateText>{startDate ? startDate : ''}{finishDate? ' - '+finishDate : ''}</DateText>
+          </DateBox>
+          <WeatherBox>
+          <MaterialCommunityIcons name={weather} color="#999" size={20} style={{marginLeft:3}}/>
+          </WeatherBox>
+        </FirstRow>
+        <Link onPressOut={() => this.props.navigation.navigate('ArticleView', {item})}>
           <TitBox>
             <TitText>{title}</TitText>
           </TitBox>
@@ -37,7 +38,7 @@ class ArticleItem extends Component {
           </TextBox>
         </Link>
         <LastRow>
-          <Link onPressOut={() => this.navigation.navigate('WriterView')}>
+          <Link onPressOut={() => this.props.navigation.navigate('WriterView', {writer_id : __id._id})}>
             <WriterText>by. {__id.nickname}</WriterText>
           </Link>
           <RightBox>

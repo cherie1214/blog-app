@@ -38,6 +38,7 @@ class SearchBox extends Component {
                 onChangeText={(text) => this.setState({ text })}
                 placeholder="Search"
                 placeholderTextColor="#ccc"
+                autoFocus={true}
               />
             ) : (
              <Logo>Travel</Logo>
