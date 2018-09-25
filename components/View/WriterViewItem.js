@@ -45,7 +45,7 @@ export default class WriterViewItem extends Component {
             <ConText numberOfLines={2}>{text}</ConText>
           </TextBox>
           <LastRow>
-            <ToggleLike iconSiz={13} numSize={12} isLiked={isLiked} _id={_id} />
+            <ToggleLike iconSize={13} iconColor="#fff" numSize={12} textColor="#fff" isLiked={isLiked} _id={_id} />
             {/* <UpdatedDate>{JSON.stringify(_id)}</UpdatedDate> */}
             <UpdatedDate> · {updatedDate ? timeAgo(updatedDate, true) : timeAgo(writtenDate, true)}</UpdatedDate>
           </LastRow>

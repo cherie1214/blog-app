@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Dimensions, ScrollView, Text } from 'react-native';
+import { Dimensions, ScrollView, FlatList } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
@@ -7,6 +7,7 @@ import { setNotifyIcon } from '../../actions';
 import axios from 'axios';
 import { withNavigation } from 'react-navigation';
 import { domain } from '../../config'
+import { debounce } from "debounce";
 
 import NotifyItem from './NotifyItem'
 
@@ -16,13 +17,19 @@ class Notify extends Component {
   constructor(props){
     super(props);
     this.state = {
-      items: {},
-      loading: true,
+      dataSource: {},
+      listCount: 0,
+      endYn: false,
       message: "로딩 중...",
-    }
+    };
+    this.getNotifyList = this.getNotifyList.bind(this);
   }
 
   componentDidMount(){
+    this.getNotifyList();
+  }
+
+  getNotifyList(){
     const token = this.props.login.token;
     const header = {
       headers: {
@@ -30,22 +37,22 @@ class Notify extends Component {
       }
     }
         
-    axios.post(domain + '/api/feed/getFeeds', {feedType: "notify"}, header)
+    axios.post(domain + '/api/feed/getFeeds', {feedType: "notify", listCount: this.state.listCount}, header)
     .then((res) => {
       if(res.data.status === "FEED_GET_FAILED"){
         alert("ERROR\n"+res.data.message);
-      }else if(res.data.status === "FEED_GET_SUCCESSED"){ 
-          const items = res.data.data;
+      } else if(res.data.status === "FEED_GET_SUCCESSED"){ 
+          const notifies = res.data.data;
+          const endYn = res.data.endYn;
+          let newState = {...this.state}
 
-          let newState = {
-            items
-          }
-
-          if(Object.keys(items).length === 0){
+          if(Object.keys(notifies).length === 0){
             newState.message = "저장한 글이 없습니다.";
             newState.loading = false;
           } else newState.message = ""; 
 
+          newState.dataSource = notifies;
+          newState.endYn = endYn;
           this.setState(newState)
         }
       }).catch((error) => {
@@ -74,18 +81,24 @@ class Notify extends Component {
       });
   }
 
-  _getItemList () {
-    if(Object.keys(this.state.items).length === 0) return '';
-    var indents = [];
-    Object.values(this.state.items).forEach((e, i) => {
-      indents.push(<NotifyItem key={i} {...e} />);
-    })
-
-    return indents;
+  _onEndReached(){
+    alert(this.state.endYn)
+    // if(!this.state.endYn)(debounce(()=>{
+    //   const listCount = ++this.state.listCount;
+    //   this.setState({
+    //     ...this.state,
+    //     listCount
+    //   },()=>{
+    //     this.getNotifyList();
+    //     alert(this.state.listCount)
+    //   })
+    // },1500))();
   }
   
+  _keyExtractor = (item, index) => item._id;
+  
   render(){
-    const { items, message } = this.state;
+    const { dataSource, message } = this.state;
 
     return(
         <Wrap>
@@ -98,9 +111,16 @@ class Notify extends Component {
           <ScrollView>
             <ConBox>
               {/* <Text>{JSON.stringify(this.state.items,0,2)}</Text> */}
-              {Object.keys(items).length === 0 
+              {Object.keys(dataSource).length === 0 
                 ? (<NoDataBox><NoDataText>{message}</NoDataText></NoDataBox>)
-                : this._getItemList()
+                :
+                <FlatList 
+                  data={dataSource}
+                  renderItem={({item}) => <NotifyItem data={item} key={item._id}/>}
+                  onEndReached = {()=>{this._onEndReached()}}
+                  onEndReachedThreshold = {0.1}
+                  keyExtractor={this._keyExtractor}
+                />
               }
             </ConBox>
           </ScrollView>  
@@ -130,7 +150,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(notifyWithNavigation
 
 const Wrap = styled.View`
   flex: 1;
-  margin:8% 0 -8%;
+  margin:8% 0 0%;
 `;
 
 const HeaderBox = styled.View`

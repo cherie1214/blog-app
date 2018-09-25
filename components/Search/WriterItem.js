@@ -1,43 +1,44 @@
 import React, { Component } from 'react';
 import { Dimensions } from 'react-native';
 import styled from 'styled-components';
+import { withNavigation } from 'react-navigation';
 
 const { height, width } = Dimensions.get("window");
 
-export default class WriterItem extends Component {
+class WriterItem extends Component {
   constructor(props){
     super(props);
     this.state = {
-      writerNickname: 'nickname',
-      articleNum: 3,
     }
   }
 
 
   render(){
-    const { writerNickname, articleNum } = this.state;
+    const { nickname, articleLength, profileImg } = this.props;
     
     return (
       <Wrap>  
         <Row>
-          <WriterBox>
-            <ProfileImgBox source={require('../../assets/bonobono.jpg')}/>
-            <WriterText>{writerNickname}</WriterText>
+          <WriterBox onPressOut={() => this.navigation.navigate('WriterView')}>
+            <ProfileImgBox source={{uri: profileImg}}/>
+            <WriterText>{nickname}</WriterText>
           </WriterBox>
-          <ArticleNumText>글수 {articleNum}</ArticleNumText>
+          <ArticleNumText>글수 {articleLength}</ArticleNumText>
         </Row>
       </Wrap>
     )
   }
 }
-    
-const Wrap = styled.TouchableOpacity`
+
+export default withNavigation(WriterItem);
+
+const Wrap = styled.View`
   padding: 5% 7%;
   border-bottom-width: 1px;
   border-bottom-color: #ebebeb;
 `;
 
-const Row = styled.View`
+const Row = styled.TouchableOpacity`
   margin-bottom: 7%;
   flex-direction: row;
   justify-content: space-between;
@@ -55,6 +56,8 @@ const ProfileImgBox = styled.Image`
   border-radius : 20px;
   margin-right : 7px;
   background-color : transparent;
+  border-width: 1px;
+  border-color: #e5e5e5;
 `;
 
 const WriterText = styled.Text`

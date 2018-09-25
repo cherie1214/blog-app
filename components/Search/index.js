@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Dimensions, ScrollView } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons, Feather } from '@expo/vector-icons';
+import axios from 'axios';
+import { domain } from '../../config';
 
 import ArticleTab from './ArticleTab';
 import WriterTab from './WriterTab';
@@ -14,8 +16,15 @@ export default class Search extends Component {
     this.state = {
       tab: 1,
       on: true,
-      inputValue: ""
+      inputValue: this.props.navigation.getParam('text') || null,
+      list1 : [],
+      list2 : [],
+      result: null,
     } 
+  }
+
+  componentDidMount(){
+    this._handleSearch();
   }
 
   _handleTextChange = inputValue => {
@@ -26,6 +35,8 @@ export default class Search extends Component {
     this.setState({
       tab: 1,
       on: true,
+    },() => {
+      this._handleSearch();
     })
   }
 
@@ -33,12 +44,41 @@ export default class Search extends Component {
     this.setState({
       tab: 2,
       on: false,
+    },() => {
+      this._handleSearch();
     })
+  }
+
+  _handleSearch(){
+    const state = this.state;
+    const { inputValue } = this.state;
+
+    if(inputValue === null || inputValue === "" ){
+      alert("최소 1글자 이상 입력해 주세요.")
+      return false;
+    }
+
+    if(inputValue){
+      axios.post(domain+'/api/search/articleAndWriter', {text:inputValue, tab : state.tab})
+      .then((res) => {
+        if(res.data.status === 'SEARCH_GET_SUCCESSED'){
+          let obj = {
+            ...state
+          }
+          obj["list"+state.tab] = res.data.list
+          this.setState(obj);
+          this.setState({ result: inputValue});
+        }
+      }).catch((error) => {
+        alert("ERROR\n"+error.message);
+      });
+    }
+
   }
 
   render(){
 
-    const { tab, on, inputValue } = this.state;
+    const { tab, on, inputValue, list1, list2, result } = this.state;
     
     return(
         <Wrap>
@@ -52,7 +92,9 @@ export default class Search extends Component {
                 onChangeText={this._handleTextChange}
                 placeholder="Search"
               />
-              <Feather name="search" color="#afafaf" size={20} />
+              <BtnIcon onPressOut={() => this._handleSearch()}>
+                <Feather name="search" color="#afafaf" size={20}/>
+              </BtnIcon>
             </SearchBox>
           </HeaderBox>
           <TabBox>
@@ -65,7 +107,7 @@ export default class Search extends Component {
           </TabBox>
           <ScrollView>
           <ConBox>
-              {tab === 1 ? <ArticleTab /> : <WriterTab />}
+              {tab === 1 ? <ArticleTab result={result} list={list1} /> : <WriterTab result={result} list={list2} />}
             </ConBox>  
           </ScrollView>           
         </Wrap>

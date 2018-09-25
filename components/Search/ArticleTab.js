@@ -10,28 +10,28 @@ export default class ArticleTab extends Component {
   constructor(props){
     super(props);
     this.state = {
-      resultNum: 3,
     } 
   }
 
   render(){
-    
-    const { resultNum } = this.state;
+    const { result, list } = this.props;
 
     return(
       <Wrap>
-        {resultNum === 0 ? (
+        {list.length === 0 ? (
           <ResultBox>
-            <ResultText>검색 결과가 없습니다.</ResultText>
+            <ResultText>"{result}"에 대한 글 검색 결과가 없습니다.</ResultText>
           </ResultBox>
           ) : (
           <View>
             <ResultBox>
-              <ResultText>글 검색결과 {resultNum}건</ResultText>
+              <ResultText>"{result}" 글 검색결과 {list.length}건</ResultText>
             </ResultBox>
-            <ArticleItem  />
-            <ArticleItem  />
-            <ArticleItem  />
+            {list.map((item) => {
+              return (
+                <ArticleItem {...item} key={item._id}/>
+              )
+            })}
           </View>
           )}       
       </Wrap>

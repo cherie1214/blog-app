@@ -9,12 +9,11 @@ export default class LikeItem extends Component {
   constructor(props){
     super(props);
     this.state = {
-      item: this.props.likes,
     }
   }
   
   render(){
-    const { title, registedDate, confirmed, likePersonName, likeLength } = this.props;
+    const { title, registedDate, confirmed, likePersonName, likeLength } = this.props.data;
 
     return(
         <Wrap>

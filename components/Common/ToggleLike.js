@@ -44,19 +44,19 @@ class ToggleLike extends Component {
 
   render(){  
     const { isLiked } = this.state;
-    const { iconSize, numSize, _id, login } = this.props;
+    const { iconSize, iconColor, numSize, textColor, _id, login } = this.props;
 
     return(
       <LikeBox>
         {isLiked && isLiked.indexOf(login.nickname) != -1 ? (
           <BtnLike onPress={()=>{this.handleLike(_id)}}>
             <Ionicons name="md-heart" color="#EC4568" size={iconSize} />
-            <LikeNum size={numSize}>{isLiked.length}</LikeNum>
+            <LikeNum size={numSize} color={textColor}>{isLiked.length}</LikeNum>
           </BtnLike>
           ) : (
           <BtnLike onPress={()=>{this.handleLike(_id)}}>
-            <Ionicons name="md-heart-outline" color="#fff" size={iconSize}/>
-            <LikeNum size={numSize}>{isLiked.length}</LikeNum>
+            <Ionicons name="md-heart-outline" color={iconColor} size={iconSize} />
+            <LikeNum size={numSize} color={textColor}>{isLiked.length}</LikeNum>
           </BtnLike>
         )}
       </LikeBox>
@@ -93,7 +93,7 @@ const BtnLike = styled.TouchableOpacity`
 const LikeNum = styled.Text`
   font-family: 'hd-regular';
   margin-left:3px;
-  color:#fff;
   font-size:${props => props.size}px;
   font-weight:500;
+  color: ${props => props.color};
 `;

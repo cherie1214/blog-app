@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { setLikeIcon } from '../../actions';
 import axios from 'axios';
 import { domain } from '../../config';
+import ToggleLike from '../Common/ToggleLike';
 
 import ArticleHeaderCon from './ArticleHeaderCon'
 
@@ -103,17 +104,14 @@ class ArticleView extends Component {
           <Ionicons name="ios-arrow-round-back" color={isScrolling ? ("#333") : ("#fff")} size={45}/>
         </BtnIcon>
         <Row>    
-          {isLiked && isLiked.indexOf(__id.nickname) != -1 ? (
-            <BtnLike onPress={()=>{this.handleLike(_id)}}>
-              <Ionicons name="md-heart" color="#EC4568" size={13} />
-              <LikeNum visual={isScrolling}>{isLiked.length}</LikeNum>
-            </BtnLike>
-            ) : (
-            <BtnLike onPress={()=>{this.handleLike(_id)}}>
-              <Ionicons name="md-heart-outline" color={isScrolling ? ("#333") : ("#fff")} size={13}/>
-              <LikeNum visual={isScrolling}>{isLiked.length}</LikeNum>
-            </BtnLike>
-          )}
+          <ToggleLike 
+            iconSize={15} 
+            iconColor={isScrolling ? "#333" : "#fff"}
+            numSize={15} 
+            textColor={isScrolling ? "#333" : "#fff"} 
+            isLiked={isLiked} 
+            _id={_id} 
+            visual={isScrolling} />
           <WrittenDate visual={isScrolling}> · {updatedDate ? timeAgo(updatedDate, true) : timeAgo(writtenDate, true)}</WrittenDate>   
         </Row> 
       </FixedHeaderBox>
@@ -209,18 +207,18 @@ const Row = styled.View`
   margin-top:10px;
 `;
 
-const BtnLike = styled.TouchableOpacity`
-  align-items: center;
-  flex-direction: row;
-`;
+// const BtnLike = styled.TouchableOpacity`
+//   align-items: center;
+//   flex-direction: row;
+// `;
 
-const LikeNum = styled.Text`
-  font-family: 'hd-regular';
-  margin-left:3px;
-  font-size:15px;
-  color: ${props => props.visual ? ('#333;') : ('#fff;')}
-  font-weight:500;
-`;
+// const LikeNum = styled.Text`
+//   font-family: 'hd-regular';
+//   margin-left:3px;
+//   font-size:15px;
+//   color: ${props => props.visual ? ('#333;') : ('#fff;')}
+//   font-weight:500;
+// `;
 
 const WrittenDate = styled.Text`
   font-family: 'hd-regular';

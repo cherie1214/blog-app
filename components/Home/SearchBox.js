@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Dimensions } from 'react-native';
+import { Dimensions, View } from 'react-native';
 import styled from 'styled-components';
 import { Feather } from '@expo/vector-icons';
 import { withNavigation } from 'react-navigation';
@@ -11,37 +11,31 @@ class SearchBox extends Component {
     super(props);
     this.state = {
       isSearching: false,
-      inputValue: ""
+      text: null,
     }
   }
-  
-  _handleTextChange = inputValue => {
-    this.setState({ inputValue });
-  };
 
-  _handleInputAppear(){
-    this.setState({
-      isSearching: true,
-    });
+  _handleSearch(){
+    const text = this.state.text;
+
+    if(text === null || text === ""){
+      alert("최소 1글자 이상 입력해 주세요.")
+      return false;
+    }
+    this.props.navigation.navigate('Search', {text});
   }
-  
-  _handleSearchSubmit(){
-    this.setState({
-      isSearching: false,
-    });
-  }
-  
+   
  
   render() {
-    const { isSearching, inputValue } = this.state;
+    const { isSearching, text } = this.state;
     
     return (
       <Wrap>
         <LogoBox>
           {isSearching ? (
              <InputSearch
-                value={inputValue}
-                onChangeText={this._handleTextChange}
+                value={text}
+                onChangeText={(text) => this.setState({ text })}
                 placeholder="Search"
                 placeholderTextColor="#ccc"
               />
@@ -51,13 +45,20 @@ class SearchBox extends Component {
           }
         </LogoBox>
           {isSearching ? (
-            <Button onPressOut={() => this.props.navigation.navigate('Search')}>
-              <Feather name="check" color="#afafaf" size={25} />
-            </Button>  
+            <BtnBox>
+              <Button onPressOut={() => this._handleSearch()}>
+                <Feather name="check" color="#666" size={25} />
+              </Button>  
+              <Button onPressOut={() => this.setState({ isSearching: false })}>
+                <Feather name="x" color="#bbb" size={25} />
+              </Button>
+            </BtnBox>
             ) : (
-            <Button onPressOut={() => this._handleInputAppear()}>
-              <Feather name="search" color="#afafaf" size={25} />
-            </Button>  
+            <BtnBox>
+              <Button onPressOut={() => this.setState({ isSearching: true })}>
+                <Feather name="search" color="#999" size={25} />
+              </Button>  
+            </BtnBox>
             )
           }
       </Wrap>  
@@ -77,7 +78,7 @@ const Wrap = styled.View`
 `;
 
 const LogoBox = styled.View`
-  width: ${width * 0.65};
+  width: 70%;
 `;
 
 const Logo = styled.Text`
@@ -87,12 +88,19 @@ const Logo = styled.Text`
 `;
 
 const InputSearch = styled.TextInput`
+  width:95%;
+  font-size:18px;
   font-family: 'hd-regular';
   height:35px;
-  font-size:20px;
+`;
+
+const BtnBox = styled.View` 
+  width:30%;
+  flex-direction: row;
+  justify-content: center;
 `;
 
 const Button = styled.TouchableOpacity`
-  margin-right:15px;
+  margin: 0 5px;
 `;
 

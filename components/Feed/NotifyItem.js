@@ -26,7 +26,7 @@ export default class NotifyItem extends Component {
 
   render(){
 
-    const { title, registedDate, confirmed } = this.props;
+    const { title, registedDate, confirmed } = this.props.data;
 
     return(
         <Wrap>

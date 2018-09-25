@@ -91,7 +91,7 @@ class CardItem extends Component {
             </TxtBox>
           </ViewLinkBox>
           <Row>
-            <ToggleLike iconSiz={15} numSize={14} isLiked={item.isLiked} _id={item._id} />
+            <ToggleLike iconSize={15} iconColor="#fff" numSize={14} textColor="#fff" isLiked={item.isLiked} _id={item._id} />
             <UpdatedDate> · {item.updatedDate ? timeAgo(item.updatedDate, true) : timeAgo(item.writtenDate, true)}</UpdatedDate>
           </Row>
         </FlexBox>
@@ -113,7 +113,7 @@ class CardItem extends Component {
           activeDotIndex={activeSlide}
           containerStyle={{ 
             position: 'absolute',
-            bottom:-5,
+            bottom: -30,
             backgroundColor: 'transparent' 
           }}
           dotStyle={{

@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
-import { Dimensions, ScrollView } from 'react-native';
+import { Dimensions, ScrollView, FlatList } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { setLikeIcon } from '../../actions';
 import { withNavigation } from 'react-navigation';
 import axios from 'axios';
-import { domain } from '../../config'
+import { domain } from '../../config';
+import { debounce } from "debounce";
 
 import LikeItem from './LikeItem';
 
@@ -16,9 +17,12 @@ class Like extends Component {
   constructor(props){
     super(props);
     this.state = {
-      likes: {},
-      message: null,
-    }
+      dataSource: {},
+      listCount: 1,
+      endYn: false,
+      message: "로딩 중...",
+    };
+    this.getLikeList = this.getLikeList.bind(this);
   }
 
   intervalHandler = null;
@@ -39,36 +43,27 @@ class Like extends Component {
       }
     }
         
-    axios.post(domain + '/api/feed/getFeeds', {feedType: "like"}, header)
+    axios.post(domain + '/api/feed/getFeeds', {feedType: "like", listCount: this.state.listCount}, header)
     .then((res) => {
       if(res.data.status === "FEED_GET_FAILED"){
         alert("ERROR\n"+res.data.message);
       }else if(res.data.status === "FEED_GET_SUCCESSED"){ 
           const likes = res.data.data;
-
-          let newState = {
-            likes
-          }
+          const endYn = res.data.endYn;
+          let newState = {...this.state}
 
           if(Object.keys(likes).length === 0){
             newState.message = "좋아요가 아직 없습니다.";
             newState.loading = false;
           } else newState.message = ""; 
 
+          newState.dataSource = likes;
+          newState.endYn = endYn;
           this.setState(newState)
         }
       }).catch((error) => {
         alert("ERROR\n"+res.data.message);
       });
-  }
-
-  _getItemList() {
-    if(Object.keys(this.state.likes).length === 0) return '';
-    let indents = [];
-    Object.values(this.state.likes).forEach((e,i)=>{
-        indents.push(<LikeItem key={i} {...e} />);
-    });
-    return indents;
   }
 
   componentWillUnmount () {
@@ -93,9 +88,24 @@ class Like extends Component {
         alert("ERROR\n"+res.data.message);
       });
   }
+  _onEndReached(){
+    // alert(this.state.endYn)
+    if(!this.state.endYn)(debounce(()=>{
+      const listCount = ++this.state.listCount;
+      this.setState({
+        ...this.state,
+        listCount
+      },()=>{
+        this.getLikeList();
+        // alert(this.state.listCount)
+      })
+    },1500))();
+  }
+
+  _keyExtractor = (item, index) => item._id;
   
   render(){
-    const { likes, message } = this.state;
+    const { dataSource, message } = this.state;
 
     return(
         <Wrap>
@@ -107,9 +117,16 @@ class Like extends Component {
           </HeaderBox>
           <ScrollView>
             <ConBox>
-            {Object.keys(likes).length === 0 
+            {Object.keys(dataSource).length === 0 
                 ? (<NoDataBox><NoDataText>{message}</NoDataText></NoDataBox>)
-                : this._getItemList()
+                : 
+                <FlatList 
+                  data={dataSource}
+                  renderItem={({item}) => <LikeItem data={item} key={item._id}/>}
+                  onEndReached = {()=>{this._onEndReached()}}
+                  onEndReachedThreshold = {0.5}
+                  keyExtractor={this._keyExtractor}
+                />
               }
             </ConBox>
           </ScrollView>
@@ -139,7 +156,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(likeWithNavigation);
 
 const Wrap = styled.View`
   flex: 1;
-  margin:8% 0 -8%;
+  margin:8% 0 -4%;
 `;
 
 const HeaderBox = styled.View`

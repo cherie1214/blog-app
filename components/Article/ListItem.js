@@ -54,7 +54,7 @@ class ListItem extends Component {
             <ConText numberOfLines={2}>{text}</ConText>
           </TextBox>
           <Row>
-          <ToggleLike iconSiz={13} numSize={13} isLiked={isLiked} _id={_id} />
+            <ToggleLike iconSize={13} iconColor="#fff" numSize={13} textColor="#fff" isLiked={isLiked} _id={_id} />
             <UpdatedDate> · {updatedDate ? timeAgo(updatedDate, true) : timeAgo(writtenDate, true)}</UpdatedDate>
           </Row>
         </Wrapper>

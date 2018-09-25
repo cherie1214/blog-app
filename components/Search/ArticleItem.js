@@ -2,56 +2,48 @@ import React, { Component } from 'react';
 import { Dimensions } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import timeAgo from '../../lib/timeAgo';
+import ToggleLike from '../Common/ToggleLike';
+import { withNavigation } from 'react-navigation';
 
 const { height, width } = Dimensions.get("window");
 
-export default class ArticleItem extends Component {
+class ArticleItem extends Component {
   constructor(props){
     super(props);
     this.state = {
-      conText: `봄바람이다 풀밭에 속잎나고 가지에 싹이 트고 꽃 피고 새 우는 봄날의 천지는 얼마나 기쁘며 얼마나 아름다우냐`,
-      isPulished: false,
-      isLiked: false,
-      likeCount: 120,
-      writerNickname: 'nickname',
-      writtenDate: '9시간 전',
     }
   }
   
   render(){
-    const { conText, isLiked, likeCount, writerNickname, writtenDate } = this.state;
+    const { _id, title, text, isLiked, __id, startDate, finishDate, writtenDate, updatedDate, weather } = this.props;
     
     return (
       <Wrap>  
-        <FirstRow>
-          <DateBox>
-            <DateText>2018.01.01 - 2018.01.01</DateText>
-          </DateBox>
-          <WeatherBox>
-            <MaterialCommunityIcons name="weather-sunny" color="#999" size={20} style={{marginLeft:3}}/>
-            <MaterialCommunityIcons name="weather-partlycloudy" color="#999" size={20} style={{marginLeft:3}} />
-          </WeatherBox>
-        </FirstRow>
-        <TitBox>
-          <TitText>45일동안 서유럽 한바퀴, 45days in Wetern Europe</TitText>
-        </TitBox>
-        <TextBox>
-          <ConText numberOfLines={3}>{conText}</ConText>
-        </TextBox>
+        <Link onPressOut={() => this.navigation.navigate('ArticleView')}>
+          <FirstRow>
+            <DateBox>
+              <DateText>{startDate ? startDate : ''}{finishDate? ' - '+finishDate : ''}</DateText>
+            </DateBox>
+            <WeatherBox>
+            <MaterialCommunityIcons name={weather} color="#999" size={20} style={{marginLeft:3}}/>
+            </WeatherBox>
+          </FirstRow>
+          <TitBox>
+            <TitText>{title}</TitText>
+          </TitBox>
+          <TextBox>
+            <ConText numberOfLines={3}>{text}</ConText>
+          </TextBox>
+        </Link>
         <LastRow>
-          <WriterText>by. {writerNickname}</WriterText>
+          <Link onPressOut={() => this.navigation.navigate('WriterView')}>
+            <WriterText>by. {__id.nickname}</WriterText>
+          </Link>
           <RightBox>
-            <BtnLike onPressOut={this.props.likeToggle}>
-              {isLiked ? (
-                <Ionicons name="md-heart" color="#EC4568" size={13} />
-                ) : (
-                <Ionicons name="md-heart-outline" color="#666" size={13} />
-                )
-              }
-              <LikeNum>{likeCount}</LikeNum>
-            </BtnLike>
-            <Dot></Dot>
-            <WrittenDateText>{writtenDate}</WrittenDateText>
+            <ToggleLike 
+              iconSize={14} iconColor="#666" numSize={13} textColor="#666" isLiked={isLiked} _id={_id} />
+            <WrittenDateText> · {updatedDate ? timeAgo(updatedDate, true) : timeAgo(writtenDate, true)}</WrittenDateText>
           </RightBox>
         </LastRow>
       </Wrap>
@@ -59,11 +51,15 @@ export default class ArticleItem extends Component {
   }
 }
     
-const Wrap = styled.TouchableOpacity`
+export default withNavigation(ArticleItem);
+
+const Wrap = styled.View`
   padding: 10% 7%;
   border-bottom-width: 1px;
   border-bottom-color: #ebebeb;
 `;
+
+const Link = styled.TouchableOpacity``;
 
 const FirstRow = styled.View`
   margin-bottom: 7%;
@@ -129,27 +125,6 @@ const RightBox = styled.View`
   flex-direction: row;
   align-items:center;
   justify-content: flex-end;
-`;
-
-const BtnLike = styled.View`
-  align-items: center;
-  flex-direction: row;
-`;
-
-const LikeNum = styled.Text`
-  font-family: 'hd-regular';
-  margin-left:3px;
-  color:#666;
-  font-size:13px;
-  font-weight:500;
-`;
-
-const Dot = styled.View` 
-  margin:0 7px;
-  width:2px;
-  height:2px;
-  background:#ccc;
-  border-radius:1px;
 `;
 
 const WrittenDateText = styled.Text`
