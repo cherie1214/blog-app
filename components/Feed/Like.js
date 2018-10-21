@@ -89,17 +89,17 @@ class Like extends Component {
       });
   }
   _onEndReached(){
-    // alert(this.state.endYn)
-    if(!this.state.endYn)(debounce(()=>{
+    alert(this.state.endYn)
+    if(!this.state.endYn)(debounce(() => {
       const listCount = ++this.state.listCount;
       this.setState({
         ...this.state,
         listCount
       },()=>{
         this.getLikeList();
-        // alert(this.state.listCount)
+        alert(this.state.listCount)
       })
-    },1500))();
+    },500))();
   }
 
   _keyExtractor = (item, index) => item._id;
@@ -120,12 +120,18 @@ class Like extends Component {
             {Object.keys(dataSource).length === 0 
                 ? (<NoDataBox><NoDataText>{message}</NoDataText></NoDataBox>)
                 : 
-                <FlatList 
+                <FlatList
                   data={dataSource}
-                  renderItem={({item}) => <LikeItem data={item} key={item._id}/>}
-                  onEndReached = {()=>{this._onEndReached()}}
-                  onEndReachedThreshold = {0.5}
+                  renderItem={({item}) => <LikeItem data={item} key={item._id} />}
+                  onEndReachedThreshold = {3}
                   keyExtractor={this._keyExtractor}
+                  onMomentumScrollEnd={()=>{
+                    if(this.shouldLoadMore = true){
+                        //load datas
+                      this._onEndReached();
+                      this.shouldLoadMore = false;
+                    }
+                  }}
                 />
               }
             </ConBox>
@@ -156,7 +162,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(likeWithNavigation);
 
 const Wrap = styled.View`
   flex: 1;
-  margin:8% 0 -4%;
+  margin:8% 0 -5%;
 `;
 
 const HeaderBox = styled.View`

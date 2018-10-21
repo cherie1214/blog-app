@@ -3898,6 +3898,12 @@ react-native-scrollable-mixin@^1.0.0:
   version "1.0.1"
   resolved "http://registry.npmjs.org/react-native-scrollable-mixin/-/react-native-scrollable-mixin-1.0.1.tgz#34a32167b64248594154fd0d6a8b03f22740548e"
 
+react-native-scrollview-smart@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/react-native-scrollview-smart/-/react-native-scrollview-smart-0.1.5.tgz#94a0d7b14a5f5762e431ca29d1b07eebad772f0d"
+  dependencies:
+    prop-types "^15.5.10"
+
 react-native-simple-dialogs@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/react-native-simple-dialogs/-/react-native-simple-dialogs-0.4.0.tgz#7a868dc5795faec562e04439523c82f06ddbe60f"

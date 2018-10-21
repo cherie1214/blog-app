@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Dimensions } from 'react-native';
+import { Dimensions, findNodeHandle, TextInput } from 'react-native';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { userSignIn, signInInit, likeIconRepeat } from '../../actions';
 import { Ionicons, Feather } from '@expo/vector-icons';
 import { AsyncStorage } from 'react-native';
+import { ScrollViewSmart } from 'react-native-scrollview-smart';
 
 const { height, width } = Dimensions.get("window");
 
@@ -14,8 +15,16 @@ class SignIn extends Component {
     this.state = {
       id: "",
       pw: "",
-    }
+    };
+    this.scrollOnFocus = this.scrollOnFocus.bind(this);
   }
+
+  scrollOnFocus = inputName => () => {
+    this.scroll.inputFocused(
+      findNodeHandle(this[inputName]),
+    );
+  }
+
   componentDidMount(){
     // this.getKey();
   }
@@ -51,6 +60,10 @@ class SignIn extends Component {
     // const authState = JSON.stringify(auth, 0, 2)
 
     return (
+      <ScrollViewSmart
+        ref={e => (this.scroll = e)}
+        style={{flex: 1, backgroundColor: "#9FA3A8"}}
+      >
       <Wrap>
         <CloseBox>
           <BtnClose onPressOut={() => this.props.navigation.navigate('Home')}>
@@ -65,18 +78,24 @@ class SignIn extends Component {
         <InputBox>
           <InputWrap>
             <Feather name="user" color="#999" size={20} />
-            <InputText 
+            <TextInput 
+              style={inputTextStyle}
               value={this.state.id}
               onChangeText={(id) => this.setState({id: id.toLowerCase()})}
               placeholder="Email Address"
               placeholderTextColor="#bbb"
-              returnKeyType={"done"}
               autoCorrect={false}
+              autoFocus={true}
+              returnKeyType={'next'}
+              ref={e => (this.input1 = e)}
+              onFocus={this.scrollOnFocus('input1')}
+              onSubmitEditing={() => { this.input2.focus(); }}
             />
           </InputWrap>
           <InputWrap>
              <Feather name="lock" color="#999" size={20} />
-             <InputText 
+             <TextInput 
+              style={inputTextStyle}
               value={this.state.pw}
               onChangeText={(pw) => this.setState({pw: pw})}
               placeholder="Password"
@@ -84,6 +103,9 @@ class SignIn extends Component {
               secureTextEntry
               returnKeyType={"done"}
               autoCorrect={false}
+              returnKeyType={'next'}
+              ref={e => (this.input2 = e)}
+              onFocus={this.scrollOnFocus('input2')}
             />
           </InputWrap>
           <Button onPressOut={() => this.props.userSignIn(userInfo)} >
@@ -95,6 +117,7 @@ class SignIn extends Component {
           </Button>
         </InputBox>
       </Wrap>
+      </ScrollViewSmart>
     );
   }
 }
@@ -124,15 +147,16 @@ export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
 
 const Wrap = styled.View`
   flex: 1;
-  background: #9FA3A8;
+  height: ${height};
 `;
 
 const CloseBox = styled.View`
-  flex: 1.5;
-  align-items: flex-end;
+  height: ${height * 0.15};
+  align-items: flex-end; 
   flex-direction: row;
   justify-content: flex-start;
 `;
+
 
 const BtnClose = styled.TouchableOpacity`
 `;
@@ -151,9 +175,9 @@ const Button = styled.TouchableOpacity`
   }}
 `;
 
-const LogoBox = styled.View`
-  flex: 1;
+const LogoBox = styled.View`  
   margin-left:18%;
+  height: ${height * 0.10};
   justify-content: flex-end;
 `;
 
@@ -170,7 +194,7 @@ const BorderBox = styled.View`
 `;
 
 const InputBox = styled.View`
-  flex: 7.5;
+  height: ${height * 0.75};
   justify-content:center;
   align-items:center;
 `;
@@ -186,13 +210,21 @@ const InputWrap = styled.View`
   background: #fff;
 `;
 
-const InputText = styled.TextInput`
-  margin-left:10px; 
-  padding: 5px;
-  width: 150px;
-  font-family: 'hd-regular';
-  font-size: 15px;
-`;
+// const InputText = styled.TextInput`
+//   padding: 5px 0;
+//   width: ${width * 0.7};
+//   font-family: 'hd-regular';
+//   font-size: 15px;
+//   color:#fff;
+// `;
+
+const inputTextStyle = {
+  marginLeft: 10, 
+  padding: 5,
+  width: 150,
+  fontFamily: 'hd-regular',
+  fontSize: 15
+};
 
 const BtnText = styled.Text`
   font-family: 'hd-bold';

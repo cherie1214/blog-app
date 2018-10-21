@@ -9,7 +9,7 @@ export default class NotifyItem extends Component {
   constructor(props){
     super(props);
     this.state = {
-      notifyType: this.props.notifyType,
+      notifyType: this.props.data.notifyType,
     }
     this._renderStatusType = this._renderStatusType.bind(this);
   }
@@ -33,7 +33,6 @@ export default class NotifyItem extends Component {
           <ConBox>
             <Tit>{title}</Tit>
             <Con>글이 {this._renderStatusType()} 되었습니다.</Con>
-            {/* <Con>{this.state.notifyType}</Con> */}
             <TimeBox>
               {confirmed ? null : <New></New>}
               <Time>{timeAgo(registedDate, true)}</Time>
@@ -45,6 +44,7 @@ export default class NotifyItem extends Component {
 }
 
 const Wrap = styled.View`
+  flex: 1;
 `;
 
 const ConBox = styled.View`

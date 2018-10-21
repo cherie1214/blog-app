@@ -7,7 +7,7 @@ import { setNotifyIcon } from '../../actions';
 import axios from 'axios';
 import { withNavigation } from 'react-navigation';
 import { domain } from '../../config'
-import { debounce } from "debounce";
+import { debounce } from 'debounce';
 
 import NotifyItem from './NotifyItem'
 
@@ -18,12 +18,14 @@ class Notify extends Component {
     super(props);
     this.state = {
       dataSource: {},
-      listCount: 0,
+      listCount: 1,
       endYn: false,
       message: "로딩 중...",
     };
     this.getNotifyList = this.getNotifyList.bind(this);
   }
+
+  inverterHandler = null;
 
   componentDidMount(){
     this.getNotifyList();
@@ -81,24 +83,39 @@ class Notify extends Component {
       });
   }
 
-  _onEndReached(){
-    alert(this.state.endYn)
-    // if(!this.state.endYn)(debounce(()=>{
-    //   const listCount = ++this.state.listCount;
-    //   this.setState({
-    //     ...this.state,
-    //     listCount
-    //   },()=>{
-    //     this.getNotifyList();
-    //     alert(this.state.listCount)
-    //   })
-    // },1500))();
-  }
+  // _onEndReached(){
+  //   alert("??")
+  //   alert(this.state.endYn)
+  //   if(!this.state.endYn)(debounce(() => {
+  //     const listCount = ++this.state.listCount;
+  //     this.setState({
+  //       ...this.state,
+  //       listCount
+  //     },()=>{
+  //       this.getNotifyList();
+  //       alert(this.state.listCount)
+  //     })
+  //   },500))();
+  // }
   
-  _keyExtractor = (item, index) => item._id;
+  _onEndReached(){
+    alert("aa")
+    if(!this.state.endYn)(debounce(()=>{
+      const listCount = ++this.state.listCount;
+      this.setState({
+        ...this.state,
+        listCount
+      },()=>{
+        this.getAlarmList();
+        // alert(this.state.listCount)
+      })
+    },2000))();
+  }
+
+  // _keyExtractor = (item, index) => item._id;
   
   render(){
-    const { dataSource, message } = this.state;
+    const { dataSource, message, endYn } = this.state;
 
     return(
         <Wrap>
@@ -114,12 +131,19 @@ class Notify extends Component {
               {Object.keys(dataSource).length === 0 
                 ? (<NoDataBox><NoDataText>{message}</NoDataText></NoDataBox>)
                 :
-                <FlatList 
+                <FlatList
                   data={dataSource}
                   renderItem={({item}) => <NotifyItem data={item} key={item._id}/>}
-                  onEndReached = {()=>{this._onEndReached()}}
-                  onEndReachedThreshold = {0.1}
-                  keyExtractor={this._keyExtractor}
+                  onEndReachedThreshold = {0.5}
+                  keyExtractor={(item, index) => item._id}
+                  onMomentumScrollEnd={()=>{
+                    alert("aa")
+                    if(!endYn){
+                      //load datas
+                      alert("end")
+                      this._onEndReached();
+                    }
+                  }}
                 />
               }
             </ConBox>
@@ -150,7 +174,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(notifyWithNavigation
 
 const Wrap = styled.View`
   flex: 1;
-  margin:8% 0 0%;
+  margin:8% 0 -5%;
 `;
 
 const HeaderBox = styled.View`
@@ -178,7 +202,7 @@ const H1 = styled.Text`
 `;
 
 const ConBox = styled.View`
-  flex: 8.8;
+  flex: 1;
 `;
 
 const NoDataBox = styled.View`
