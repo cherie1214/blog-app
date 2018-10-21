@@ -94,7 +94,7 @@ class SignUp extends Component {
         <InputBox>          
           <InputWrap>
             <TextInput 
-              style={inputTextStyle}
+              style={InputTextStyle}
               onChangeText={(id) => this.setState({id: id.toLowerCase()})}
               placeholder="Email Address"
               placeholderTextColor="#fff"
@@ -108,7 +108,7 @@ class SignUp extends Component {
           </InputWrap>
           <InputWrap>
              <TextInput 
-              style={inputTextStyle}
+              style={InputTextStyle}
               value={this.state.pw}
               onChangeText={(pw) => this.setState({pw: pw})}
               placeholder="Password"
@@ -123,7 +123,7 @@ class SignUp extends Component {
           </InputWrap>
            <InputWrap>
             <TextInput 
-              style={inputTextStyle}
+              style={InputTextStyle}
               onChangeText={(cpw) => this.setState({cpw: cpw})}
               placeholder="Confirm Password"
               placeholderTextColor="#fff"
@@ -137,7 +137,7 @@ class SignUp extends Component {
           </InputWrap>
            <InputWrap>
             <TextInput 
-              style={inputTextStyle}
+              style={InputTextStyle}
               onChangeText={(nickname) => this.setState({nickname: nickname})}
               placeholder="Nickname"
               placeholderTextColor="#fff"
@@ -244,7 +244,7 @@ const InputWrap = styled.View`
 //   color:#fff;
 // `;
 
-const inputTextStyle = {
+const InputTextStyle = {
   paddingVertical: 5,
   width: width * 0.7,
   fontFamily: 'hd-regular',

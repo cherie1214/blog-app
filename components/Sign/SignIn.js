@@ -79,7 +79,7 @@ class SignIn extends Component {
           <InputWrap>
             <Feather name="user" color="#999" size={20} />
             <TextInput 
-              style={inputTextStyle}
+              style={InputTextStyle}
               value={this.state.id}
               onChangeText={(id) => this.setState({id: id.toLowerCase()})}
               placeholder="Email Address"
@@ -95,7 +95,7 @@ class SignIn extends Component {
           <InputWrap>
              <Feather name="lock" color="#999" size={20} />
              <TextInput 
-              style={inputTextStyle}
+              style={InputTextStyle}
               value={this.state.pw}
               onChangeText={(pw) => this.setState({pw: pw})}
               placeholder="Password"
@@ -218,7 +218,7 @@ const InputWrap = styled.View`
 //   color:#fff;
 // `;
 
-const inputTextStyle = {
+const InputTextStyle = {
   marginLeft: 10, 
   padding: 5,
   width: 150,

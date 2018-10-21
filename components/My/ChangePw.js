@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import { Dimensions } from 'react-native';
+import { Dimensions, findNodeHandle, TextInput } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { userChangePw } from '../../actions';
+import { ScrollViewSmart } from 'react-native-scrollview-smart';
 
 const { height, width } = Dimensions.get("window");
 
@@ -15,7 +16,14 @@ class ChangePw extends Component {
       currentPw: "",
       newPw: "",
       confirmPw: "",
-    }
+    };
+    this.scrollOnFocus = this.scrollOnFocus.bind(this);
+  }
+
+  scrollOnFocus = inputName => () => {
+    this.scroll.inputFocused(
+      findNodeHandle(this[inputName]),
+    );
   }
   
   render(){
@@ -23,6 +31,10 @@ class ChangePw extends Component {
     const Token = this.props.auth.login.token;
 
     return(
+      <ScrollViewSmart
+        ref={e => (this.scroll = e)}
+        style={{flex: 1}}
+      >
         <Wrap>
           <HeaderBox>
             <BtnIcon onPressOut={() => this.props.navigation.navigate('Mypage')}>
@@ -32,18 +44,24 @@ class ChangePw extends Component {
           </HeaderBox>
           <InputBox>
             <InputWrap>
-               <InputText 
+              <TextInput 
+                style={InputTextStyle}
                 value={this.state.currentPw}
                 onChangeText={(currentPw) => this.setState({currentPw: currentPw})}
                 placeholder="Current Password"
                 placeholderTextColor="#999"
                 secureTextEntry
-                returnKeyType={"done"}
                 autoCorrect={false}
+                autoFocus={true}
+                returnKeyType={'next'}
+                ref={e => (this.input1 = e)}
+                onFocus={this.scrollOnFocus('input1')}
+                onSubmitEditing={() => { this.input2.focus(); }}
               />
             </InputWrap>
              <InputWrap>
-               <InputText 
+              <TextInput 
+                style={InputTextStyle}
                 value={this.state.newPw}
                 onChangeText={(newPw) => this.setState({newPw: newPw})}
                 placeholder="New Password"
@@ -51,10 +69,15 @@ class ChangePw extends Component {
                 secureTextEntry
                 returnKeyType={"done"}
                 autoCorrect={false}
+                returnKeyType={'next'}
+                ref={e => (this.input2 = e)}
+                onFocus={this.scrollOnFocus('input2')}
+                onSubmitEditing={() => { this.input3.focus(); }}
               />
             </InputWrap>
              <InputWrap>
-               <InputText 
+              <TextInput 
+                style={InputTextStyle}
                 value={this.state.confirmPw}
                 onChangeText={(confirmPw) => this.setState({confirmPw: confirmPw})}
                 placeholder="Confirm Password"
@@ -62,6 +85,9 @@ class ChangePw extends Component {
                 secureTextEntry
                 returnKeyType={"done"}
                 autoCorrect={false}
+                returnKeyType={'done'}
+                ref={e => (this.input3 = e)}
+                onFocus={this.scrollOnFocus('input3')}
               />
             </InputWrap>
             <Button onPressOut={() => this.props.userChangePw(UserInfo, Token)}>
@@ -69,7 +95,8 @@ class ChangePw extends Component {
             </Button>
           </InputBox>
         </Wrap>
-      )
+      </ScrollViewSmart>
+    )
   }
 }
 
@@ -92,7 +119,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(ChangePw);
 
 const Wrap = styled.View`
   flex: 1;
-  margin:8% 0 -8%;
+  margin-top: 8%;
+  height: ${height - (height * 0.08)};
 `;
 
 const HeaderBox = styled.View`
@@ -120,7 +148,7 @@ const H1 = styled.Text`
 `;
 
 const InputBox = styled.View`
-  flex: 8.8;
+  height: ${height - 50 - (height * 0.08)};
   justify-content:center;
   align-items:center;
 `;
@@ -142,6 +170,14 @@ const InputText = styled.TextInput`
   font-size: 15px;
   color:#333;
 `;
+
+const InputTextStyle = {
+  paddingVertical: 5,
+  width: width * 0.7,
+  fontFamily: 'hd-regular',
+  fontSize: 15,
+  color: "#333"
+}
 
 const Button = styled.TouchableOpacity`
   margin-top:30px;
