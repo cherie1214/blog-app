@@ -100,6 +100,7 @@ class SignUp extends Component {
               placeholder="Email Address"
               placeholderTextColor="#fff"
               autoCorrect={false}
+              autoCapitalize={"none"}
               autoFocus={true}
               returnKeyType={'next'}
               onFocus={this.scrollOnFocus('input1')}
@@ -143,6 +144,7 @@ class SignUp extends Component {
               placeholder="Nickname"
               placeholderTextColor="#fff"
               returnKeyType={"done"}
+              autoCapitalize={"none"}
               autoCorrect={false}
               ref={e => (this.input4 = e)}
               onFocus={this.scrollOnFocus('input4')}

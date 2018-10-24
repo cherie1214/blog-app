@@ -55,7 +55,7 @@ class CardItem extends Component {
     if(this.state.cardCon.length -1 == index){
       return (
         <ItemBox last>
-          <LastBox onPressOut={() => this.props.navigation.navigate("List")}>
+          <LastBox onPress={() => this.props.navigation.navigate("List")}>
             <EvilIcons name="plus" size={90} color="#fff" />
             <LastTextBox>
               {/* <Ionicons name="ios-quote-outline" size={30} color="#fff" style={{marginRight:5}}/> */}
@@ -77,7 +77,7 @@ class CardItem extends Component {
           </BgBox>
         ) : null }
         <FlexBox flex2>
-          <ViewLinkBox onPressOut={() => this.props.navigation.navigate('ArticleView', {item})}>
+          <ViewLinkBox onPress={() => this.props.navigation.navigate('ArticleView', {item})}>
             <WeatherBox>
               <MaterialCommunityIcons name={item.weather} color="#fff" size={24} style={{marginLeft:3, marginRight:3}}/>
             </WeatherBox>
@@ -90,17 +90,17 @@ class CardItem extends Component {
               <ConText numberOfLines={2}>{item.text}</ConText>
             </TxtBox>
           </ViewLinkBox>
-          <Row>
+          <Row mt30 flexEnd>
             <ToggleLike iconSize={15} iconColor="#fff" numSize={14} textColor="#fff" isLiked={item.isLiked} _id={item._id} />
             <UpdatedDate> · {item.updatedDate ? timeAgo(item.updatedDate, true) : timeAgo(item.writtenDate, true)}</UpdatedDate>
           </Row>
         </FlexBox>
-        <FlexBox flexEnd>
-          <WriterBox onPressOut={() => this.props.navigation.navigate('WriterView', {writer_id : item.__id._id})}>
-            <ProfileImgBox source={{ uri: item.__id.profileImg }} />
-            <WriterNickname>{item.__id.nickname}</WriterNickname>
-          </WriterBox>
-        </FlexBox>
+        <Row>
+            <WriterBox onPress={() => this.props.navigation.navigate('WriterView', {writer_id : item.__id._id})}>
+              <ProfileImgBox source={{ uri: item.__id.profileImg }} />
+              <WriterNickname>{item.__id.nickname}</WriterNickname>
+            </WriterBox>
+        </Row>
       </ItemBox>
     );
   }
@@ -258,8 +258,9 @@ const ConText = styled.Text`
 const Row = styled.View`
   margin-top:30px;
   flex-direction: row;
-  justify-content: flex-end;
   align-items: center;
+  margin-top: ${props => props.mt30 ? "30px" : "0"}
+  justify-content: ${props => props.flexEnd ? "flex-end" : "flex-start"}
 `;
 
 const UpdatedDate = styled.Text`
@@ -277,7 +278,7 @@ const WriterNickname = styled.Text`
   font-family: 'hd-bold';
   color:#fff;
   font-size:16px;
-  font-weight:500;
+  font-weight:500;  
 `;
 
 const ProfileImgBox = styled.Image`

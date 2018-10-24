@@ -86,6 +86,7 @@ class SignIn extends Component {
               placeholder="Email Address"
               placeholderTextColor="#bbb"
               autoCorrect={false}
+              autoCapitalize={"none"}
               autoFocus={true}
               returnKeyType={'next'}
               ref={e => (this.input1 = e)}
@@ -103,6 +104,7 @@ class SignIn extends Component {
               placeholderTextColor="#bbb"
               secureTextEntry
               autoCorrect={false}
+              autoCapitalize={"none"}
               returnKeyType={'done'}
               ref={e => (this.input2 = e)}
               onFocus={this.scrollOnFocus('input2')}

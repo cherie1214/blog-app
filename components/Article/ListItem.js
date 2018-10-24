@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Text, Dimensions } from 'react-native';
 import styled from 'styled-components';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons, TouchableOpacity } from '@expo/vector-icons';
 import { withNavigation } from 'react-navigation';
 import timeAgo from '../../lib/timeAgo';
 import ToggleLike from '../Common/ToggleLike';
@@ -46,13 +46,15 @@ class ListItem extends Component {
               <MaterialCommunityIcons name={weather} color="#fff" size={20} style={{marginLeft:3}}/>
             </WeatherBox>
           </FirstRow>
-          <TitBox>
-            <TitText>{title}</TitText>
-            <BorderBox></BorderBox>
-          </TitBox>
-          <TextBox>
-            <ConText numberOfLines={2}>{text}</ConText>
-          </TextBox>
+          <LinkView>
+            <TitBox>
+              <TitText>{title}</TitText>
+              <BorderBox></BorderBox>
+            </TitBox>
+            <TextBox>
+              <ConText numberOfLines={2}>{text}</ConText>
+            </TextBox>
+          </LinkView>
           <Row>
             <ToggleLike iconSize={13} iconColor="#fff" numSize={13} textColor="#fff" isLiked={isLiked} _id={_id} />
             <UpdatedDate> · {updatedDate ? timeAgo(updatedDate, true) : timeAgo(writtenDate, true)}</UpdatedDate>
@@ -66,7 +68,7 @@ class ListItem extends Component {
 export default withNavigation(ListItem);
     
 const Wrap = styled.View`
-  margin-bottom:8%;
+  margin-bottom: ${width * 0.07};
 `;
   
 const Wrapper = styled.View`
@@ -142,6 +144,8 @@ const WeatherBox = styled.View`
   flex-direction: row;
   justify-content: flex-end;
 `;
+
+const LinkView = styled.TouchableOpacity``;
 
 const TitBox = styled.View`
   position:relative;

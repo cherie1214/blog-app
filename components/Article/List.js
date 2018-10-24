@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { Dimensions, ScrollView, ListView, RefreshControl } from 'react-native';
+import { Dimensions, View, FlatList, ActivityIndicator } from 'react-native';
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { setLikeIcon } from '../../actions'  
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import axios from 'axios';
 import { domain } from '../../config';
-// import InfiniteScrollView from 'react-native-infinite-scroll-view';
 
 import ListItem from './ListItem';
 
@@ -16,54 +15,103 @@ class List extends Component {
   constructor(props){
     super(props);
     this.state = {
-      items: {},
-      loading: true,
-      message: "로딩 중..."
-    }
+      loading: false,
+      data: [],
+      page: 1,
+      seed: 1,
+      endYn : false,
+      error: null,
+      refreshing: false,
+      message : '로딩 중...',
+      init : false
+    };
+    this.getList = this.getList.bind(this);
   }
 
   componentDidMount(){
-    this.setState({
-      loading: false,
-    })
     this.getList();
   }
 
   getList() {
-    const _this = this;
-    axios.get(domain + '/api/article/getAllList')
+    const { page, seed, data } = this.state;
+    axios.post(domain + '/api/article/getAllList', {page, seed})
     .then((res)=>{
         if(res.data.status === 'ALL_ARTICLE_GET_SUCCESSED'){
-            this.setState({
-                ...this.state,
-                items : res.data.list
-            },()=>{
-              // alert(JSON.stringify(_this.state.items))
-            });
+          // alert(page)
+          let newState = {
+            data: page === 1 ? res.data.list : [...data, ...res.data.list],
+            error: res.message || null,
+            loading: false,
+            refreshing: false,
+            endYn : res.data.endYn,
+            init : true
+          }
+          if(res.data.length == 0 ) {
+              newState.init = false;
+              newState.message = "게시물이 없습니다.";
+          }else newState.message = "";
+    
+          this.setState(newState);
         }
     })
     .catch((err)=>{})
   }
-  
-  _getItemList () {
-    if(Object.keys(this.state.items).length === 0) return '';
-    var indents = [];
-    Object.values(this.state.items).forEach((e, i) => {
-      indents.push(
-      <ListItem 
-        key={i} {...e} 
-        token={this.props.login.token} 
-        nickname={this.props.login.nickname} 
-        setLikeIcon={this.props.setLikeIcon} 
-        _handleLike={(_id) => {this.handleLike(_id)}}
-        />);
-    })
 
-    return indents;
+  renderFooter = (
+    <View
+      style={{
+        paddingVertical: 20,
+        // borderTopWidth: 1,
+        // borderColor: "#CED0CE"
+      }}
+    >
+      <ActivityIndicator animating size="large" />
+    </View>
+  );
+
+  handleLoadMore = () => {
+    if (!this.state.loading && !this.state.endYn){
+      this.setState({
+        page : this.state.page + 1,
+        loading : true
+      },() => {
+        this.getList();
+      });
+    }
   }
 
+  handleRefresh = () => {
+    this.setState({
+      page : 1,
+      seed : this.state.seed + 1,
+      refreshing : true,
+      endYn: false,
+    },()=>{
+      this.getList();
+    });
+  }
+
+  _keyExtractor = (item, index) => item._id;
+  
+  // _getItemList () {
+  //   if(Object.keys(this.state.items).length === 0) return '';
+  //   var indents = [];
+  //   Object.values(this.state.items).forEach((e, i) => {
+  //     indents.push(
+  //     <ListItem 
+  //       key={i} {...e} 
+  //       token={this.props.login.token} 
+  //       nickname={this.props.login.nickname} 
+  //       setLikeIcon={this.props.setLikeIcon} 
+  //       _handleLike={(_id) => {this.handleLike(_id)}}
+  //       />);
+  //   })
+
+  //   return indents;
+  // }
+
   render(){
-    const { items, message } = this.state;
+    const { message, data, refreshing, loading, init } = this.state;
 
     return(
         <Wrap>
@@ -77,14 +125,30 @@ class List extends Component {
               <Logo>Travel</Logo>
             </LogoBox>
           </HeaderBox>
-          <ScrollView>
-            <ConBox>
-              {Object.keys(items).length === 0 
-                ? (<NoDataBox><NoDataText>{message}</NoDataText></NoDataBox>)
-                : this._getItemList()
+          <ConBox>
+            {data.length === 0
+              ? (<Loading ><ActivityIndicator animating size="large" /></Loading>)
+              : <FlatList
+                  style={{padding: "7%"}}
+                  data={data} 
+                  renderItem={({item}) => <ListItem 
+                    {...item}
+                    token={this.props.login.token} 
+                    nickname={this.props.login.nickname} 
+                    setLikeIcon={this.props.setLikeIcon}
+                    _handleLike={(_id)=>{this.handleLike(_id)}}
+                  />}
+                  extraData={this.state}
+                  keyExtractor={this._keyExtractor}
+                  ListFooterComponent={loading ? this.renderFooter : null}
+                  refreshing={refreshing}
+                  onRefresh={this.handleRefresh}
+                  onEndReached={this.handleLoadMore}
+                  onEndReachedThreshold={0}
+                />
               }
-            </ConBox>
-          </ScrollView>
+              {!init ? <NoDataBox><NoDataText>{message}</NoDataText></NoDataBox> : null}
+          </ConBox>
         </Wrap>
       )
   }
@@ -150,8 +214,12 @@ const Logo = styled.Text`
 `;
 
 const ConBox = styled.View`
-  flex:10;
-  padding: 7%;
+  flex:1;
+  padding-bottom: 7%;
+`;
+
+const Loading = styled.View`
+  margin-top : 7%;
 `;
 
 const NoDataBox = styled.View`

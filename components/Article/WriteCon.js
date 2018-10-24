@@ -179,6 +179,7 @@ export default class WriteCon extends Component {
                 onChangeText={(title) => this.setState({title})}
                 value={title}
                 maxLength={45}
+                autoCapitalize={"none"}
                 autoFocus={true}
                 selectionColor="#fff"
                 placeholder="45이내로 입력해 주세요."
