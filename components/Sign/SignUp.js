@@ -80,6 +80,7 @@ class SignUp extends Component {
       <ScrollViewSmart
         ref={e => (this.scroll = e)}
         style={{flex: 1, backgroundColor: "#9FA3A8"}}
+        keyboardShouldPersistTaps={'never'}
       >
       <Wrap>
         <BtnBox>

@@ -63,6 +63,7 @@ class SignIn extends Component {
       <ScrollViewSmart
         ref={e => (this.scroll = e)}
         style={{flex: 1, backgroundColor: "#9FA3A8"}}
+        keyboardShouldPersistTaps={'never'}
       >
       <Wrap>
         <CloseBox>
@@ -101,9 +102,8 @@ class SignIn extends Component {
               placeholder="Password"
               placeholderTextColor="#bbb"
               secureTextEntry
-              returnKeyType={"done"}
               autoCorrect={false}
-              returnKeyType={'next'}
+              returnKeyType={'done'}
               ref={e => (this.input2 = e)}
               onFocus={this.scrollOnFocus('input2')}
             />

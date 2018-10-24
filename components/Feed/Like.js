@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Dimensions, ScrollView, FlatList } from 'react-native';
+import { Dimensions, ScrollView, FlatList, ActivityIndicator, View } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
@@ -17,9 +17,13 @@ class Like extends Component {
   constructor(props){
     super(props);
     this.state = {
-      dataSource: {},
-      listCount: 1,
+      loading: false,
+      data: [],
+      page: 1, 
+      seed: 1, 
       endYn: false,
+      error: null,
+      refreshing: false,
       message: "로딩 중...",
     };
     this.getLikeList = this.getLikeList.bind(this);
@@ -30,12 +34,11 @@ class Like extends Component {
   componentDidMount(){
     //enhancement > 새로운것만 가져오기
     this.getLikeList();
-    this.intervalHandler = setInterval(()=>{
-      this.getLikeList();
-    },10000);
   }
 
   getLikeList() {
+    const { page, seed, data } = this.state;
+
     const token = this.props.login.token;
     const header = {
       headers: {
@@ -43,27 +46,29 @@ class Like extends Component {
       }
     }
         
-    axios.post(domain + '/api/feed/getFeeds', {feedType: "like", listCount: this.state.listCount}, header)
-    .then((res) => {
-      if(res.data.status === "FEED_GET_FAILED"){
-        alert("ERROR\n"+res.data.message);
-      }else if(res.data.status === "FEED_GET_SUCCESSED"){ 
-          const likes = res.data.data;
-          const endYn = res.data.endYn;
-          let newState = {...this.state}
-
-          if(Object.keys(likes).length === 0){
-            newState.message = "좋아요가 아직 없습니다.";
-            newState.loading = false;
-          } else newState.message = ""; 
-
-          newState.dataSource = likes;
-          newState.endYn = endYn;
-          this.setState(newState)
-        }
-      }).catch((error) => {
-        alert("ERROR\n"+res.data.message);
-      });
+    setTimeout(() => {
+      axios.post(domain + '/api/feed/getFeeds', {feedType: "like", page, seed}, header)
+      .then((res) => {
+        if(res.data.status === "FEED_GET_FAILED"){
+          alert("ERROR\n"+res.data.message);
+        }else if(res.data.status === "FEED_GET_SUCCESSED"){ 
+            let newState = {
+              data: page === 1 ? res.data.list : [...data, ...res.data.list],
+              error: res.message || null,
+              loading: false,
+              refreshing: false,
+              endYn : res.data.endYn
+            }
+            if(res.data.length == 0 ) {
+                newState.message = "좋아요가 아직 없습니다.";
+            }else newState.message = "";
+      
+            this.setState(newState);
+          }
+        }).catch((error) => {
+          alert("ERROR\n"+res.data.message);
+        });
+    }, 100) 
   }
 
   componentWillUnmount () {
@@ -88,24 +93,44 @@ class Like extends Component {
         alert("ERROR\n"+res.data.message);
       });
   }
-  _onEndReached(){
-    alert(this.state.endYn)
-    if(!this.state.endYn)(debounce(() => {
-      const listCount = ++this.state.listCount;
-      this.setState({
-        ...this.state,
-        listCount
-      },()=>{
-        this.getLikeList();
-        alert(this.state.listCount)
-      })
-    },500))();
+ 
+  handleRefresh = () => {
+    this.setState({
+      page : 1,
+      seed : this.state.seed + 1,
+      refreshing : true
+    },()=>{
+      this.getLikeList();
+    });
   }
+
+  handleLoadMore = () => {
+    if (!this.state.loading && !this.state.endYn){
+      this.setState({
+        page : this.state.page + 1,
+        loading : true
+      },() => {
+        this.getLikeList();
+      });
+    }
+  }
+
+  renderFooter = (
+    <View
+      style={{
+        paddingVertical: 40,
+        // borderTopWidth: 1,
+        // borderColor: "#CED0CE"
+      }}
+    >
+      <ActivityIndicator animating size="large" />
+    </View>
+  );
 
   _keyExtractor = (item, index) => item._id;
   
   render(){
-    const { dataSource, message } = this.state;
+    const { data, refreshing, loading } = this.state;
 
     return(
         <Wrap>
@@ -115,27 +140,23 @@ class Like extends Component {
             </BtnIcon>
             <H1>좋아요</H1>
           </HeaderBox>
-          <ScrollView>
-            <ConBox>
-            {Object.keys(dataSource).length === 0 
-                ? (<NoDataBox><NoDataText>{message}</NoDataText></NoDataBox>)
-                : 
-                <FlatList
-                  data={dataSource}
-                  renderItem={({item}) => <LikeItem data={item} key={item._id} />}
-                  onEndReachedThreshold = {3}
-                  keyExtractor={this._keyExtractor}
-                  onMomentumScrollEnd={()=>{
-                    if(this.shouldLoadMore = true){
-                        //load datas
-                      this._onEndReached();
-                      this.shouldLoadMore = false;
-                    }
-                  }}
-                />
-              }
-            </ConBox>
-          </ScrollView>
+          <ConBox>
+            {data.length === 0 
+              ? (<Loading><ActivityIndicator animating size="large" /></Loading>)
+              : 
+              <FlatList
+                data={data}
+                renderItem={({item}) => <LikeItem data={item} key={item._id}/>}
+                keyExtractor={this._keyExtractor}
+                ListFooterComponent={loading ? this.renderFooter : null}
+                refreshing={refreshing}
+                onRefresh={this.handleRefresh}
+                refreshing={this.state.refreshing}
+                onEndReached={this.handleLoadMore}
+                onEndReachedThreshold={0}
+              />
+            }
+          </ConBox>
         </Wrap>
       )
   }
@@ -190,17 +211,10 @@ const H1 = styled.Text`
 `;
 
 const ConBox = styled.View`
-  flex: 8.8;
-`;
-const NoDataBox = styled.View`
-  padding-top:7%;
-  align-items: center;
-  justify-content: center;
+  flex: 1;
 `;
 
-const NoDataText = styled.Text`
-  color:#666;
-  font-size:16px;
-  font-family: 'hd-regular';
+const Loading = styled.View`
+  margin-top: 7%;
 `;
 

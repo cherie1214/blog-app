@@ -222,14 +222,13 @@ export function userChangePw(userInfo, token) {
             }
         }
   
-
         // API REQUEST
         return axios.post(domain + '/api/auth/changePw', userInfo, header)
         .then((res) => {
-            alert(JSON.stringify(res.data,0,2))
+            // alert(JSON.stringify(res.data,0,2))
             const id = res.data.id;
             const pw = res.data.pw;
-            alert(id);
+            // alert(id);
             if(res.data.status === "CHANGE_PW_SUCCESS"){
                 dispatch(changePw(pw));
             } else {

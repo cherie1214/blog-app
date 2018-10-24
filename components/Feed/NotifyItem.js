@@ -44,7 +44,6 @@ export default class NotifyItem extends Component {
 }
 
 const Wrap = styled.View`
-  flex: 1;
 `;
 
 const ConBox = styled.View`

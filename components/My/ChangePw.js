@@ -34,6 +34,7 @@ class ChangePw extends Component {
       <ScrollViewSmart
         ref={e => (this.scroll = e)}
         style={{flex: 1}}
+        keyboardShouldPersistTaps={'never'}
       >
         <Wrap>
           <HeaderBox>
@@ -67,9 +68,8 @@ class ChangePw extends Component {
                 placeholder="New Password"
                 placeholderTextColor="#999"
                 secureTextEntry
-                returnKeyType={"done"}
                 autoCorrect={false}
-                returnKeyType={'next'}
+                returnKeyType={'done'}
                 ref={e => (this.input2 = e)}
                 onFocus={this.scrollOnFocus('input2')}
                 onSubmitEditing={() => { this.input3.focus(); }}
