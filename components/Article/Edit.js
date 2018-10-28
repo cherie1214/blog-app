@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Dimensions, ScrollView, Text, View } from 'react-native';
+import { Dimensions, ScrollView, FlatList, ActivityIndicator, View } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
@@ -17,47 +17,68 @@ class Edit extends Component {
   constructor(props){
     super(props);
     this.state = {
-      items: {},
-      loading: true,
+      loading: false,
+      init: false,
+      data: [],
+      page: 1, 
+      seed: 1, 
+      endYn: false,
+      error: null,
+      refreshing: false,
       message: "로딩 중...",
+      // items: {},
+      // loading: true,
+      // message: "로딩 중...",
       buttonShow: false,
       isModalVisible: false,
       _id: null,
     };
+    this.getEditList = this.getEditList.bind(this);
     this._handleUpdate = this._handleUpdate.bind(this);
     this._handleModal = this._handleModal.bind(this);
     this._renderModalContent = this._renderModalContent.bind(this);
   }
 
   componentDidMount(){
+    this.getEditList();
+  }
+
+  getEditList(){
+    const { page, seed, data } = this.state;
+
     const obj = {
       id: this.props.login.id,
       includePublish: true
     };
 
-    axios.post(domain + '/api/article/getArticles', obj)
-      .then((res) => {
-          if(res.data.status === "ARTICLE_GET_FAILED"){
-              alert("ERROR\n"+res.data.message);
-          }else if(res.data.status === "ARTICLE_GET_SUCCESSED"){  
-            
-            const items = res.data.data;
-
-            let newState = {
-              items
-            }
-
-            if(Object.keys(items).length === 0){
-              newState.message = "저장한 글이 없습니다.";
-              newState.loading = false;
-              newState.buttonShow = true;
-            } else newState.message = ""; 
-
-            this.setState(newState)
-          }
-      }).catch((error) => {
-        alert("ERROR\n"+res.data.message);
-      });
+    this.setState({loading: true},()=>{
+      setTimeout(() => {
+        axios.post(domain + '/api/article/getArticles', {page, seed, ...obj})
+          .then((res) => {
+              if(res.data.status === "ARTICLE_GET_FAILED"){
+                  alert("ERROR\n"+res.data.message);
+              }else if(res.data.status === "ARTICLE_GET_SUCCESSED"){  
+                let newState = {
+                  data: page === 1 ? res.data.list : [...data, ...res.data.list],
+                  error: res.message || null,
+                  loading: false,
+                  refreshing: false,
+                  endYn : res.data.endYn,
+                  init : true
+                }
+                if(res.data.list.length == 0 ) {
+                    newState.init = true;
+                    newState.loading = false;
+                    newState.message = "저장한 글이 없습니다.";
+                }else newState.message = "";
+          
+                this.setState(newState);
+              }
+          }).catch((error) => {
+            alert("ERROR\n"+res.data.message);
+          });
+        }, 0)
+      })      
   }
 
   _handleUpdate(_id, obj, target){
@@ -80,40 +101,37 @@ class Edit extends Component {
               alert("ERROR\n"+"세이브 실패");
           }else if(res.data.status === "ARTICLE_UPDATE_SUCCESSED"){ 
             
-            let newArticle = Object.assign({}, this.state.items)
-            let newState = {};
+            let newArticle = this.state.data;
+            let newState = [];
 
             if (target === "published"){
-              newArticle[res.data.article._id].published = res.data.article.published;
+              for(index in newArticle){
+                if(newArticle[index]["_id"] === res.data.article._id) newArticle[index].published = res.data.article.published;
+              }
               this.props.setNotifyIcon(true);
-            } else if(target === "delYn"){              
-              delete newArticle[res.data.article._id];
-              if(Object.keys(newArticle).length === 0){
+
+            } else if(target === "delYn"){
+              for(index in newArticle){
+                if(newArticle[index]["_id"] === res.data.article._id) newArticle.splice(index, 1);                
+              }
+
+              if(newArticle.length === 0){
                 newState.message = "저장한 글이 없습니다.";
-                newState.buttonShow = true;
+                newState.init = true;
+                newState.loading = false;
               }
               this.props.setNotifyIcon(true);
             } 
 
             this.setState({
               ...this.state,
-              items: newArticle,
+              data: newArticle,
               ...newState,
             })
           }
       }).catch((error) => {
         alert("ERROR\n"+"캐치에러");
       });
-  }
-
-  _getItemList () {
-    if(Object.keys(this.state.items).length === 0) return '';
-    var indents = [];
-    Object.values(this.state.items).forEach((e, i) => {
-      indents.push(<EditItem key={i} {...e}  handleUpdate={this._handleUpdate} handleModal={this._handleModal}/>);
-    })
-
-    return indents;
   }
 
   _renderModalContent = (_id) => (
@@ -143,8 +161,45 @@ class Edit extends Component {
     });
   }
 
+  renderFooter = (
+    <View
+      style={{
+        paddingVertical: 20,
+        // borderTopWidth: 1,
+        // borderColor: "#CED0CE"
+      }}
+    >
+      <ActivityIndicator animating size="large" />
+    </View>
+  );
+
+  handleLoadMore = () => {
+    if (!this.state.loading && !this.state.endYn){
+      this.setState({
+        page : this.state.page + 1,
+        loading : true
+      },() => {
+        this.getEditList();
+      });
+    }
+  }
+
+  handleRefresh = () => {
+    this.setState({
+      page : 1,
+      seed : this.state.seed + 1,
+      refreshing : true,
+      endYn: false,
+    },()=>{
+      this.getEditList();
+    });
+  }
+
+  _keyExtractor = (item, index) => item._id;
+
   render(){
-    const { _id, items, message, buttonShow, isModalVisible} = this.state;
+    const { _id, isModalVisible} = this.state;
+    const { message, data, refreshing, loading, init } = this.state;
  
     return(
       <Wrap>
@@ -161,24 +216,40 @@ class Edit extends Component {
           </BtnIcon>
           <H1>글 관리</H1>
         </HeaderBox>
-        <ScrollView>
           <ConBox>
-            {/* <Text>{JSON.stringify(items)}</Text> */}
-            {/* <Text>{JSON.stringify(this.state._id)}</Text> */}
-            {Object.keys(items).length === 0 
-              ? (<NoDataBox><NoDataText>{message}</NoDataText></NoDataBox>)
-              : this._getItemList()
-            }
-            {buttonShow ? 
-              <NoDataBox>
-                <BtnText noData onPressOut={() => this.props.navigation.navigate('Write')}>
-                  <LinkText>글 쓰러 가기</LinkText>
-                  <Ionicons name="ios-arrow-round-forward" color="#6093E3" size={24} style={{marginLeft:10}}/>
-                </BtnText>
-              </NoDataBox>
-            : ''}     
-          </ConBox>
-        </ScrollView>
+          {data.length !== 0
+            ? <FlatList
+                style={{padding: "7%"}}
+                data={data} 
+                renderItem={({item}) => <EditItem 
+                  {...item}
+                  handleUpdate={this._handleUpdate} 
+                  handleModal={this._handleModal}
+                />}
+                extraData={this.state}
+                keyExtractor={this._keyExtractor}
+                ListFooterComponent={loading ? this.renderFooter : null}
+                refreshing={refreshing}
+                onRefresh={this.handleRefresh}
+                onEndReached={this.handleLoadMore}
+                onEndReachedThreshold={0}
+              />
+          : init ? (
+            <NoDataBox>                
+              <NoDataText>{message}</NoDataText>
+              <BtnText noData onPressOut={() => this.props.navigation.navigate('Write')}>
+                <LinkText>글 쓰러 가기</LinkText>
+                <Ionicons name="ios-arrow-round-forward" color="#6093E3" size={24} style={{marginLeft:10}}/>
+              </BtnText>
+            </NoDataBox>
+          ): null}
+          {!init ? 
+          <NoDataBox>
+            <Loading><ActivityIndicator animating size="large" /></Loading>
+            <NoDataText>{message}</NoDataText>
+          </NoDataBox>
+          : ''} 
+        </ConBox>
       </Wrap>
       )
   }
@@ -237,16 +308,22 @@ const H1 = styled.Text`
 `;
 
 const ConBox = styled.View`
-  padding: 7%;
-  flex-direction: column;
+  flex:1;
+  padding-bottom: 7%;
 `;
 
-const NoDataBox = styled.View`
+const Loading = styled.View`
+  margin-top: 7%;
+`;
+
+const NoDataBox = styled.View`  
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 `;
 
 const NoDataText = styled.Text`
+  margin-top : 7%;
   color:#666;
   font-size:16px;
   font-family: 'hd-regular';

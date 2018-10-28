@@ -86,9 +86,8 @@ export default withNavigation(EditItem);
 
 
 const Wrap = styled.View`  
-  margin-bottom:7%;
-  border-radius: 10px;
-  
+  margin-bottom: ${width * 0.07};
+  border-radius: 10px;  
 `;
 
 const Wrapper = styled.View`

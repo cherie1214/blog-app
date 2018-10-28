@@ -27,6 +27,7 @@ export default class ArticleTab extends Component {
             <ResultBox>
               <ResultText>"{result}" 글 검색결과 {list.length}건</ResultText>
             </ResultBox>
+            {/* <ResultText>{JSON.stringify(list)}</ResultText> */}
             {list.map((item) => {
               return (
                 <ArticleItem {...item} key={item._id}/>
