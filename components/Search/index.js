@@ -14,12 +14,27 @@ export default class Search extends Component {
   constructor(props){
     super(props);
     this.state = {
+      loading1: false,
+      loading2: false,
+      list1 : [],
+      list2 : [],
+      page1: 1,
+      page2: 1,
+      seed1: 1,
+      seed2: 1,
+      endYn1 : false,
+      endYn2 : false,
+      error1: null,
+      error2: null,
+      refreshing1: false,
+      refreshing2: false,
+      init1: false,
+      init2: false,
       tab: 1,
       on: true,
       inputValue: this.props.navigation.getParam('text') || null,
-      list1 : [],
-      list2 : [],
       result: null,
+      count: null,
     } 
   }
 
@@ -28,13 +43,14 @@ export default class Search extends Component {
   }
 
   _handleTextChange = inputValue => {
-    this.setState({ inputValue });
+    this.setState({ inputValue,page1:1,page2:1,seed1:1,seed2:1 });
   };
 
   _handleTabChange1(tab){
     this.setState({
       tab: 1,
       on: true,
+      list2: null,
     },() => {
       this._handleSearch();
     })
@@ -44,6 +60,7 @@ export default class Search extends Component {
     this.setState({
       tab: 2,
       on: false,
+      list1: null,
     },() => {
       this._handleSearch();
     })
@@ -51,7 +68,7 @@ export default class Search extends Component {
 
   _handleSearch(){
     const state = this.state;
-    const { inputValue } = this.state;
+    const { inputValue, page1, page2, seed1, seed2, list1, list2 } = this.state;
 
     if(inputValue === null || inputValue === "" ){
       alert("최소 1글자 이상 입력해 주세요.")
@@ -59,13 +76,22 @@ export default class Search extends Component {
     }
 
     if(inputValue){
-      axios.post(domain+'/api/search/articleAndWriter', {text:inputValue, tab : state.tab})
+      axios.post(domain+'/api/search/articleAndWriter', {text: inputValue, tab: state.tab, page1, page2, seed1, seed2})
       .then((res) => {
         if(res.data.status === 'SEARCH_GET_SUCCESSED'){
           let obj = {
             ...state
           }
-          obj["list"+state.tab] = res.data.list
+          obj["list"+state.tab] = obj["page"+state.tab] === 1 ? res.data.list : [...obj["list"+state.tab], ...res.data.list]
+          obj["error"+state.tab] = res.message || null;
+          obj["loading"+state.tab] = false;
+          obj["refreshing"+state.tab] = false;
+          obj["endYn"+state.tab] = res.data.endYn;
+          obj["count"] = res.data.count;
+          obj["init"+state.tab] = true;
+          if(res.data.length == 0 ) {
+            obj["init"+state.tab] = false;
+          }
           this.setState(obj);
           this.setState({ result: inputValue});
         }
@@ -76,9 +102,56 @@ export default class Search extends Component {
 
   }
 
+  handleLoadMore1 = () => {
+    if (!this.state.loading1 && !this.state.endYn1){
+      this.setState({
+        page1 : this.state.page1 + 1,
+        loading1 : true
+      },() => {
+        this._handleSearch();
+      });
+    }
+  }
+
+  handleLoadMore2 = () => {
+    if (!this.state.loading2 && !this.state.endYn2){
+      this.setState({
+        page2 : this.state.page2 + 1,
+        loading2 : true
+      },() => {
+        this._handleSearch();
+      });
+    }
+  }
+
+  handleRefresh1 = () => {
+    this.setState({
+      page1 : 1,
+      seed1 : this.state.seed1 + 1,
+      refreshing1 : true,
+      endYn1: false,
+    },()=>{
+      this._handleSearch();
+    });
+  }
+
+  handleRefresh2 = () => {
+    this.setState({
+      page2 : 1,
+      seed2 : this.state.seed2 + 1,
+      refreshing2 : true,
+      endYn2: false,
+    },()=>{
+      this._handleSearch();
+    });
+  }
+
   render(){
 
-    const { tab, on, inputValue, list1, list2, result } = this.state;
+    const { 
+      tab, on, inputValue, result, count, 
+      list1, list2, refreshing1, refreshing2, loading1, loading2, init1, init2,
+    } = this.state;
     
     return(
         <Wrap>
@@ -105,11 +178,31 @@ export default class Search extends Component {
               <TabText visual={!on}>글쓴이</TabText>
             </Tab>
           </TabBox>
-          <ScrollView>
           <ConBox>
-              {tab === 1 ? <ArticleTab result={result} list={list1} /> : <WriterTab result={result} list={list2} />}
+            {tab === 1 ? (
+              <ArticleTab 
+                result={result} 
+                count={count}
+                list={list1} 
+                refreshing={refreshing1}
+                loading={loading1}
+                init={init1}
+                handleLoadMore={this.handleLoadMore1}
+                handleRefresh={this.handleRefresh1}
+              />
+              ) : (
+              <WriterTab 
+                result={result} 
+                count={count}
+                list={list2} 
+                refreshing={refreshing2}
+                loading={loading2}
+                init={init2}
+                handleLoadMore={this.handleLoadMore2}
+                handleRefresh={this.handleRefresh2}
+              />
+            )}
             </ConBox>  
-          </ScrollView>           
         </Wrap>
       )
   }

@@ -18,13 +18,15 @@ class WriterItem extends Component {
     
     return (
       <Wrap>  
-        <Row onPressOut={() => this.props.navigation.navigate('WriterView', {writer_id : _id})}>
-          <WriterBox>
-            <ProfileImgBox source={{uri: profileImg}}/>
-            <WriterText>{nickname}</WriterText>
-          </WriterBox>
-          <ArticleNumText>글수 {articleLength}</ArticleNumText>
-        </Row>
+        <Wrapper>
+          <Row onPress={() => this.props.navigation.navigate('WriterView', {writer_id : _id})}>
+            <WriterBox>
+              <ProfileImgBox source={{uri: profileImg}}/>
+              <WriterText>{nickname}</WriterText>
+            </WriterBox>
+            <ArticleNumText>글수 {articleLength}</ArticleNumText>
+          </Row>
+        </Wrapper>
       </Wrap>
     )
   }
@@ -33,9 +35,12 @@ class WriterItem extends Component {
 export default withNavigation(WriterItem);
 
 const Wrap = styled.View`
-  padding: 5% 7%;
   border-bottom-width: 1px;
   border-bottom-color: #ebebeb;
+`;
+
+const Wrapper = styled.View`
+  padding: 5% 7%;
 `;
 
 const Row = styled.TouchableOpacity`
@@ -43,7 +48,6 @@ const Row = styled.TouchableOpacity`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background: blue;
 `;
 
 const WriterBox = styled.View`  

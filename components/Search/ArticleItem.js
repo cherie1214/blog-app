@@ -21,32 +21,34 @@ class ArticleItem extends Component {
     
     return (
       <Wrap>  
-        <FirstRow>
-          <DateBox>
-            <DateText>{startDate ? startDate : ''}{finishDate? ' - '+finishDate : ''}</DateText>
-          </DateBox>
-          <WeatherBox>
-          <MaterialCommunityIcons name={weather} color="#999" size={20} style={{marginLeft:3}}/>
-          </WeatherBox>
-        </FirstRow>
-        <Link onPressOut={() => this.props.navigation.navigate('ArticleView', {item})}>
-          <TitBox>
-            <TitText>{title}</TitText>
-          </TitBox>
-          <TextBox>
-            <ConText numberOfLines={3}>{text}</ConText>
-          </TextBox>
-        </Link>
-        <LastRow>
-          <Link onPressOut={() => this.props.navigation.navigate('WriterView', {writer_id : __id._id})}>
-            <WriterText>by. {__id.nickname}</WriterText>
+        <Wrapper>
+          <FirstRow>
+            <DateBox>
+              <DateText>{startDate ? startDate : ''}{finishDate? ' - '+finishDate : ''}</DateText>
+            </DateBox>
+            <WeatherBox>
+            <MaterialCommunityIcons name={weather} color="#999" size={20} style={{marginLeft:3}}/>
+            </WeatherBox>
+          </FirstRow>
+          <Link onPress={() => this.props.navigation.navigate('ArticleView', {item})}>
+            <TitBox>
+              <TitText>{title}</TitText>
+            </TitBox>
+            <TextBox>
+              <ConText numberOfLines={3}>{text}</ConText>
+            </TextBox>
           </Link>
-          <RightBox>
-            <ToggleLike 
-              iconSize={14} iconColor="#666" numSize={13} textColor="#666" isLiked={isLiked} _id={_id} />
-            <WrittenDateText> · {updatedDate ? timeAgo(updatedDate, true) : timeAgo(writtenDate, true)}</WrittenDateText>
-          </RightBox>
-        </LastRow>
+          <LastRow>
+            <Link onPress={() => this.props.navigation.navigate('WriterView', {writer_id : __id._id})}>
+              <WriterText>by. {__id.nickname}</WriterText>
+            </Link>
+            <RightBox>
+              <ToggleLike 
+                iconSize={14} iconColor="#666" numSize={13} textColor="#666" isLiked={isLiked} _id={_id} />
+              <WrittenDateText> · {updatedDate ? timeAgo(updatedDate, true) : timeAgo(writtenDate, true)}</WrittenDateText>
+            </RightBox>
+          </LastRow>  
+        </Wrapper>  
       </Wrap>
     )
   }
@@ -55,19 +57,21 @@ class ArticleItem extends Component {
 export default withNavigation(ArticleItem);
 
 const Wrap = styled.View`
-  padding: 10% 7%;
   border-bottom-width: 1px;
   border-bottom-color: #ebebeb;
 `;
 
-const Link = styled.TouchableOpacity``;
+const Wrapper = styled.View`
+  padding: 10% 7%;
+`;
+
+const Link = styled.TouchableOpacity`
+`;
 
 const FirstRow = styled.View`
-  margin-bottom: 7%;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background: red;
 `;
 
 const DateBox = styled.View`
@@ -87,7 +91,7 @@ const WeatherBox = styled.View`
 `;
 
 const TitBox = styled.View`
-  position:relative;
+  margin-top: 8%;
 `;
 
 const TitText = styled.Text`
@@ -99,7 +103,6 @@ const TitText = styled.Text`
 `;
 
 const TextBox = styled.View`
-  margin-top:5%;
   height:46px;
 `;
 

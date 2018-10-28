@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Dimensions } from 'react-native';
+import { View, Dimensions, ActivityIndicator, FlatList } from 'react-native';
 import styled from 'styled-components';
 
 import WriterItem  from './WriterItem';
@@ -10,30 +10,47 @@ export default class ArticleTab extends Component {
   constructor(props){
     super(props);
     this.state = {
-      resultNum: this.props.list.length,
     } 
   }
+  renderFooter = (
+    <View
+      style={{
+        paddingVertical: 20,
+        // borderTopWidth: 1,
+        // borderColor: "#CED0CE"
+      }}
+    >
+      <ActivityIndicator animating size="large" />
+    </View>
+  );
+
+  _keyExtractor = (item, index) => item._id;
 
   render(){
-    const { resultNum } = this.state;
-    const { result, list } = this.props;
+    const { result, list, loading, refreshing, count, init } = this.props;
 
     return(
       <Wrap>
-        {list.length === 0 ? (
+        {count === 0 ? (
           <ResultBox>
             <ResultText>"{result}"에 대한 글쓴이 검색 결과가 없습니다.</ResultText>
           </ResultBox>
           ) : (
           <View>
             <ResultBox>
-              <ResultText>"{result}" 글쓴이 검색결과 {list.length}건</ResultText>
+              <ResultText>"{result}" 글쓴이 검색결과 {count}건</ResultText>
             </ResultBox>
-            {list.map((item) => {
-              return (
-                <WriterItem {...item} key={item._id}/>
-              )
-            })}
+            <FlatList
+              data={list} 
+              renderItem={({item}) => <WriterItem {...item} key={item._id}/>}
+              extraData={this.state}
+              keyExtractor={this._keyExtractor}
+              ListFooterComponent={loading ? this.renderFooter : null}
+              refreshing={refreshing}
+              onRefresh={this.props.handleRefresh}
+              onEndReached={this.props.handleLoadMore}
+              onEndReachedThreshold={0}
+              />
           </View>
           )}       
       </Wrap>
