@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Animated, Dimensions, StatusBar, View, ActivityIndicator, FlatList } from 'react-native';
+import { Animated, Dimensions, StatusBar, View, Image, ActivityIndicator, FlatList } from 'react-native';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { setLikeIcon } from '../../actions'  
@@ -11,6 +11,13 @@ import { domain } from '../../config';
 import WriterViewItem from './WriterViewItem';
 
 const { height, width } = Dimensions.get("window");
+
+HEADER_MAX_HEIGHT = 200;
+HEADER_MIN_HEIGHT = 50;
+PROFILE_IMG_MAX_SIZE = 100;
+PROFILE_IMG_MIN_SIZE = 0;
+MARGIN_MAX_SIZE = 20;
+MARGIN_MIN_SIZE = 0;
 
 class WriterView extends Component {
   constructor(props){
@@ -99,21 +106,29 @@ class WriterView extends Component {
   render(){  
     const { message, data, refreshing, loading, init, scrollY } = this.state;
     const { token, nickname } = this.props.login;
-    const scale = scrollY.interpolate({
-      inputRange: [-100, 0, 40, 50],
-      outputRange : [1.2, 1, 0.9, 0]
+
+    const headerHeight = scrollY.interpolate({
+      inputRange: [0, HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT],
+      outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
+      extrapolate: "clamp",       
     });
-    const scale2 = scrollY.interpolate({
+    const propfileImgSize = scrollY.interpolate({
+      inputRange: [0, PROFILE_IMG_MAX_SIZE - PROFILE_IMG_MIN_SIZE],
+      outputRange: [PROFILE_IMG_MAX_SIZE, PROFILE_IMG_MIN_SIZE],
+      extrapolate: "clamp",       
+    });
+    const marginVertical = scrollY.interpolate({
+      inputRange: [0, MARGIN_MAX_SIZE - MARGIN_MIN_SIZE],
+      outputRange: [MARGIN_MAX_SIZE, MARGIN_MIN_SIZE],
+      extrapolate: "clamp",       
+    });
+    const scale = scrollY.interpolate({
       inputRange: [-100, 0, 40, 50],
       outputRange : [1, 1, 0.9, 0]
     });
     const opacity = scrollY.interpolate({
       inputRange: [0, 40, 50],
       outputRange : [1, 0.9, 0]
-    });
-    const _size = scrollY.interpolate({
-      inputRange: [-100, 0, 40, 50],
-      outputRange : [100, 100, 90, 0]
     });
 
     return(
@@ -123,32 +138,45 @@ class WriterView extends Component {
             <BtnIcon onPress={() => this.props.navigation.navigate('Home')}>
               <Ionicons name="ios-arrow-round-back" color="#333" size={45} />
             </BtnIcon> 
-          </FixedHeaderBox>
-          <HeaderConBox>
-            <ProfileBox>
-              <Animated.Image style={{
-                opacity,
-                transform : [{scale}],
-                height: _size,
-                width : _size,
-                borderRadius : 50,
+          </FixedHeaderBox>          
+          <ProfileBox>
+            <Animated.View style={{
+              opacity,
+              overflow: "hidden",
+              marginTop: marginVertical,
+              height: propfileImgSize,
+              width : propfileImgSize,
+              borderRadius : PROFILE_IMG_MAX_SIZE / 2,             
+            }}>
+              <Image style={{
+                flex: 1, width: null, height: null,
                 backgroundColor : "#ccc",
                 borderWidth: 1,
-                borderColor: "#e5e5e5"
+                borderColor: "#e5e5e5",
               }} 
                 source={{uri: this.state.writer.profileImg}}
               />
+            </Animated.View>
+            <NicknameBox>
               <Nickname>{this.state.writer.nickname}</Nickname>
-              <Animated.View style={{
-                opacity, 
-                transform : [{scale:scale2}],
-                marginBottom: 10,
-                }}>
-                <ArticleNum>글수 {this.state.writer.articleLength}</ArticleNum>
-              </Animated.View>
-            </ProfileBox> 
-          </HeaderConBox>
-          <ConBox>
+            </NicknameBox>
+            <Animated.View style={{
+              opacity, 
+              transform : [{scale:scale}],
+              marginBottom: marginVertical,
+            }}>
+              <ArticleNum>글수 {this.state.writer.articleLength}</ArticleNum>
+            </Animated.View>
+          </ProfileBox> 
+          <Contents>
+            <Animated.View style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              height: headerHeight,
+            }}>           
+            </Animated.View> 
+            <ConBox>
             {data.length === 0
                 ? (<Loading><ActivityIndicator animating size="large" /></Loading>)
                 : <FlatList
@@ -168,6 +196,7 @@ class WriterView extends Component {
                     onRefresh={this.handleRefresh}
                     onEndReached={this.handleLoadMore}
                     onEndReachedThreshold={0}
+                    scrollEventThrottle={16}
                     onScroll={Animated.event([
                       { nativeEvent: { contentOffset: { y: scrollY } } },
                     ])}
@@ -175,6 +204,7 @@ class WriterView extends Component {
               }
               {init ? <NoDataBox><NoDataText>{message}</NoDataText></NoDataBox> : null}
             </ConBox>
+          </Contents>  
         </Wrap>
       )
   }
@@ -214,19 +244,30 @@ const FixedHeaderBox = styled.View`
 `;
 
 
-const HeaderConBox = styled.View`
-  position:relative;
-  z-index:5;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-`;
+// const HeaderConBox = styled.View`
+//   position:relative;
+//   z-index:5;
+//   flex-direction: row;
+//   align-items: center;
+//   justify-content: space-between;
+// `;
 
 const BtnIcon = styled.TouchableOpacity`  
 `;
 
 const ProfileBox = styled.View`
+  z-index: 50;
+  position: absolute;
+  top:0; 
+  left:0;
+  right:0;
   width: 100%;
+  align-items: center;
+  justify-content: center;
+`;
+
+const NicknameBox = styled.View`
+  height: 50px;
   align-items: center;
   justify-content: center;
 `;
@@ -243,9 +284,15 @@ const ArticleNum = styled.Text`
   color:#999;
 `;
 
+const Contents = styled.View`
+  flex: 1;
+  background: #fff;
+`;
+
 const ConBox = styled.View`
   flex: 1;
-  background: #f7f7f7;
+  padding-bottom: 6%;
+  background: #f7f7f7;  
 `;
 
 const Loading = styled.View`
