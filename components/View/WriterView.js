@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Dimensions, StatusBar, Text } from 'react-native';
+import { Animated, Dimensions, StatusBar, View, ActivityIndicator, FlatList } from 'react-native';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { setLikeIcon } from '../../actions'  
@@ -16,9 +16,17 @@ class WriterView extends Component {
   constructor(props){
     super(props);
     this.state = {
-      items: {},
+      writer : {},
+      loading: false,
       data: [],
-      message: "로딩 중...",
+      page: 1,
+      seed: 1,
+      endYn : false,
+      error: null,
+      refreshing: false,
+      message : '로딩중',
+      init : false,
+      scrollY : new Animated.Value(0),
     }
   }
   
@@ -27,95 +35,146 @@ class WriterView extends Component {
   }
 
   getList() {
-    axios.post(domain + '/api/article/getWriterList', {_id : this.props.navigation.getParam('writer_id')})
+    const { page, seed, data } = this.state;
+
+    axios.post(domain + '/api/article/getWriterList', {_id : this.props.navigation.getParam('writer_id'), page, seed})
     .then((res)=>{
-        if(res.data.status === 'WRITER_GET_SUCCESSED'){
-          this.setState({
-              ...this.state,
-              items: res.data.list,
-              data: res.data.data,
-          },()=>{
-            // alert(JSON.stringify(this.state.data))
-          });
+      if(res.data.status === 'WRITER_GET_SUCCESSED'){
+        let newState = {
+          data: page === 1 ? res.data.list : [...data, ...res.data.list],
+          error: res.data.message || null,
+          loading: false,
+          refreshing: false,
+          endYn : res.data.endYn,
+          init : true,
+          writer : res.data.writer
         }
+        if(res.data.length == 0 ) {
+          newState.init = false;
+          newState.message = "게시물이 없습니다.";
+        }else newState.message = "";
+
+        this.setState(newState);
+      }else{
+        alert('ERROR');
+      }
     })
-    .catch((err)=>{})
-  }
-
-  renderFixedHeader() {
-    return(
-      <FixedHeaderBox>
-        <BtnIcon onPressOut={() => this.props.navigation.navigate('Home')}>
-          <Ionicons name="ios-arrow-round-back" color="#333" size={45} />
-        </BtnIcon> 
-      </FixedHeaderBox>
-    )
-  }
-
-  renderSticky(){
-    return(
-      <StickyBox>
-        <Nickname style={{marginTop: 5}}>{this.state.data.nickname}</Nickname>
-      </StickyBox>
-    )
-  }
-
-  renderHeaderContent(){
-    return(
-      <HeaderConBox>
-        <ProfileBox>
-          <ProfileImgBox source={{uri: this.state.data.profileImg}} />
-          <Nickname>{this.state.data.nickname}</Nickname>
-          <ArticleNum>글수 {this.state.data.articleLength}</ArticleNum>
-        </ProfileBox> 
-      </HeaderConBox>
-    )
-  }
-
-  _getItemList () {
-    if(Object.keys(this.state.items).length === 0) return '';
-    var indents = [];
-    Object.values(this.state.items).forEach((e, i) => {
-      indents.push(
-        <WriterViewItem 
-          key={i} {...e} 
-          token={this.props.login.token} 
-          nickname={this.props.login.nickname} 
-          // setLikeIcon={this.props.setLikeIcon} 
-          // _handleLike={(_id) => {this.handleLike(_id)}} 
-          />);
-    })
-
-    return indents;
+    .catch((err)=>{ alert("err")})
   }
  
+  renderFooter = (
+    <View
+      style={{
+        paddingTop: 20
+      }}
+    >
+      <ActivityIndicator animating size="large" />
+    </View>
+  );
+
+  handleLoadMore = () => {
+    if (!this.state.loading && !this.state.endYn){
+      this.setState({
+        page : this.state.page + 1,
+        loading : true
+      },() => {
+        this.getList();
+      });
+    }
+  }
+
+  handleRefresh = () => {
+    this.setState({
+      page : 1,
+      seed : this.state.seed + 1,
+      refreshing : true,
+      endYn : false
+    },()=>{
+      this.getList();
+    });
+  }
+
+  _keyExtractor = (item, index) => item._id;
 
   render(){  
-    const { items, message } = this.state;
+    const { message, data, refreshing, loading, init, scrollY } = this.state;
+    const { token, nickname } = this.props.login;
+    const scale = scrollY.interpolate({
+      inputRange: [-100, 0, 40, 50],
+      outputRange : [1.2, 1, 0.9, 0]
+    });
+    const scale2 = scrollY.interpolate({
+      inputRange: [-100, 0, 40, 50],
+      outputRange : [1, 1, 0.9, 0]
+    });
+    const opacity = scrollY.interpolate({
+      inputRange: [0, 40, 50],
+      outputRange : [1, 0.9, 0]
+    });
+    const _size = scrollY.interpolate({
+      inputRange: [-100, 0, 40, 50],
+      outputRange : [100, 100, 90, 0]
+    });
 
     return(
         <Wrap>         
           <StatusBar hidden={false} />
-          <ParallaxScrollView
-            style={{ flex: 1}}
-            backgroundColor="transparent"
-            contentBackgroundColor="#f7f7f7"
-            stickyHeaderHeight={60}
-            parallaxHeaderHeight={220}
-            fadeOutForeground={true}
-            // onChangeHeaderVisibility={() => {this.setState({headerVisibility})}}
-            renderFixedHeader={() => this.renderFixedHeader()}
-            renderStickyHeader={() => this.renderSticky()}
-            renderForeground={() => this.renderHeaderContent()}
-            >
-            <ConBox>
-              {/* <Text>{JSON.stringify(this.state.items)}</Text> */}
-              {Object.keys(items).length === 0 
-              ? (<NoDataBox><NoDataText>{message}</NoDataText></NoDataBox>)
-              : this._getItemList()
-            }
+          <FixedHeaderBox>
+            <BtnIcon onPress={() => this.props.navigation.navigate('Home')}>
+              <Ionicons name="ios-arrow-round-back" color="#333" size={45} />
+            </BtnIcon> 
+          </FixedHeaderBox>
+          <HeaderConBox>
+            <ProfileBox>
+              <Animated.Image style={{
+                opacity,
+                transform : [{scale}],
+                height: _size,
+                width : _size,
+                borderRadius : 50,
+                backgroundColor : "#ccc",
+                borderWidth: 1,
+                borderColor: "#e5e5e5"
+              }} 
+                source={{uri: this.state.writer.profileImg}}
+              />
+              <Nickname>{this.state.writer.nickname}</Nickname>
+              <Animated.View style={{
+                opacity, 
+                transform : [{scale:scale2}],
+                marginBottom: 10,
+                }}>
+                <ArticleNum>글수 {this.state.writer.articleLength}</ArticleNum>
+              </Animated.View>
+            </ProfileBox> 
+          </HeaderConBox>
+          <ConBox>
+            {data.length === 0
+                ? (<Loading><ActivityIndicator animating size="large" /></Loading>)
+                : <FlatList
+                    style={{flex:1, padding:'7%'}}
+                    data={data} 
+                    renderItem={({item}) => 
+                      <WriterViewItem
+                        {...item}
+                        token={token}
+                        nickname={nickname}
+                      />
+                    }
+                    extraData={this.state}
+                    keyExtractor={this._keyExtractor}
+                    ListFooterComponent={loading ? this.renderFooter : null}
+                    refreshing={refreshing}
+                    onRefresh={this.handleRefresh}
+                    onEndReached={this.handleLoadMore}
+                    onEndReachedThreshold={0}
+                    onScroll={Animated.event([
+                      { nativeEvent: { contentOffset: { y: scrollY } } },
+                    ])}
+                  />
+              }
+              {init ? <NoDataBox><NoDataText>{message}</NoDataText></NoDataBox> : null}
             </ConBox>
-          </ParallaxScrollView> 
         </Wrap>
       )
   }
@@ -142,17 +201,6 @@ const Wrap = styled.View`
   margin:8% 0 -8%;
 `;
 
-const StickyBox = styled.View`
-  position: relative;
-  height:50px;
-  align-items: center;
-  justify-content: center;
-  background-color: #fff;
-  border-bottom-width:1px;
-  border-bottom-color: #dedede;
-  box-shadow: 0px 3px 2px rgba(0,0,0,0.08);
-`;
-
 const FixedHeaderBox = styled.View`
   position:absolute;
   left: 0;
@@ -169,49 +217,39 @@ const FixedHeaderBox = styled.View`
 const HeaderConBox = styled.View`
   position:relative;
   z-index:5;
-  padding: 30px 0 20px;
-  height:220px;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  background: #fff;
 `;
 
 const BtnIcon = styled.TouchableOpacity`  
 `;
 
 const ProfileBox = styled.View`
-  width: ${width};
+  width: 100%;
   align-items: center;
   justify-content: center;
 `;
 
-
-const ProfileImgBox = styled.Image`
-  width : 100px;
-  height : 100px;
-  border-radius : 50px;
-  background-color : #ccc;
-  border-width: 1px;
-  border-color: #e5e5e5;
-`;
-
 const Nickname = styled.Text`
-  margin-top:15px;
   font-family: 'hd-bold';
   font-size:20px;
   color:#333;
 `;
 
 const ArticleNum = styled.Text`
-  margin-top:5px;  
   font-family: 'hd-regular';
   font-size:13px;
   color:#999;
 `;
 
 const ConBox = styled.View`
-  padding:7%;
+  flex: 1;
+  background: #f7f7f7;
+`;
+
+const Loading = styled.View`
+  margin-top : 7%;
 `;
 
 const NoDataBox = styled.View`
