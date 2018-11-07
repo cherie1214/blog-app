@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { CameraRoll, Dimensions } from 'react-native';
+import { CameraRoll, Dimensions, Text, View, TouchableOpacity } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons, Feather, Foundation } from '@expo/vector-icons';
 import { connect } from 'react-redux';
@@ -7,6 +7,7 @@ import { signOut, changeNicknameRequest, setNotifyIcon, setLikeIcon, clearLikeIc
 // import CameraRollPicker from 'react-native-camera-roll-picker';
 // import { userInfo } from 'os';
 // import Camera from 'react-native-camera';
+import { Camera, Permissions } from 'expo';
 
 const { height, width } = Dimensions.get("window");
 
@@ -18,18 +19,18 @@ class Mypage extends Component {
     }
   }
 
-  _handleCameraRoll = () => {
-   CameraRoll.getPhotos({
-       first: 20,
-       assetType: 'Photos',
-     })
-     .then(r => {
-       this.setState({ photos: r.edges });
-     })
-     .catch((err) => {
-        //Error Loading Images
-     });
-   };
+  // _handleCameraRoll = () => {
+  //  CameraRoll.getPhotos({
+  //      first: 20,
+  //      assetType: 'Photos',
+  //    })
+  //    .then(r => {
+  //      this.setState({ photos: r.edges });
+  //    })
+  //    .catch((err) => {
+  //       //Error Loading Images
+  //    });
+  //  };
 
    _handleChangeNickname(isEditing){
     const data = {
@@ -69,17 +70,16 @@ class Mypage extends Component {
     return(
         <Wrap>
           <HeaderBox>
-            <BtnIcon onPressOut={() => this.props.navigation.navigate('Home')}>
+            <BtnIcon onPress={() => this.props.navigation.navigate('Home')}>
               <Ionicons name="ios-arrow-round-back" color="#333" size={45}/>
             </BtnIcon>
             <H1>My Travel</H1>
-            {/* <H1>{this.props.auth.login.token}</H1> */}
           </HeaderBox>
           <Contents>
             <ProfileBox>
               <ImgBox>
                 <ProfileImgBox source={require('../../assets/bonobono.jpg')}/>
-                <PhotoEditBtn onPress={this._handleCameraRoll}>
+                <PhotoEditBtn onPress={() => this.props.navigation.navigate('CameraRoll')}>
                   <Feather name="camera" color="#fff" size={20}/>
                 </PhotoEditBtn>
               </ImgBox>
@@ -98,7 +98,7 @@ class Mypage extends Component {
                    )
                 }
               </NicknameBox>
-              <BtnEdit onPressOut={() => this._handleChangeNickname(isEditing)}>
+              <BtnEdit onPress={() => this._handleChangeNickname(isEditing)}>
                 {!isEditing ? (
                   <Foundation name="pencil" color="#666" size={20} />
                 ) : (
@@ -108,20 +108,13 @@ class Mypage extends Component {
             </ProfileBox>
             <BorderBox></BorderBox>
             <BtnBox>
-              <Button borderType onPressOut={() => this.props.navigation.navigate('ChangePw')}>
+              <Button borderType onPress={() => this.props.navigation.navigate('ChangePw')}>
                 <BtnText borderType>비밀번호 변경</BtnText>
               </Button>
-              <Button onPressOut={() => this.props.signOut()}>
+              <Button onPress={() => this.props.signOut()}>
                 <BtnText>Sign Out</BtnText>
               </Button>
             </BtnBox>
-            {/* <CameraRollPicker
-                callback={this.getSelectedImages} /> */}
-            {/* <Camera
-              ref={(cam) => {
-                this.camera = cam;
-              }}>
-            </Camera> */}
           </Contents>
         </Wrap>
       )

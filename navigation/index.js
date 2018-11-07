@@ -26,6 +26,8 @@ import ChangePw from '../components/My/ChangePw';
 import Write from '../components/Article/Write';
 import Edit from '../components/Article/Edit';
 import List from '../components/Article/List';
+import Camera from '../components/Photo/Camera';
+import CameraRoll from '../components/Photo/CameraRoll';
 
 
 const DrawerNavi = createDrawerNavigator(
@@ -107,6 +109,12 @@ export const SwitchNavi = createSwitchNavigator(
     },
     List: {
       screen: List,
+    }, 
+    Camera: {
+      screen: Camera,
+    },
+    CameraRoll: {
+      screen: CameraRoll,
     },
   },
   {
