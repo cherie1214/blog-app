@@ -24,14 +24,14 @@ class WriterView extends Component {
     super(props);
     this.state = {
       writer : {},
-      loading: false,
+      loading: true,
       data: [],
       page: 1,
       seed: 1,
       endYn : false,
       error: null,
       refreshing: false,
-      message : '로딩중',
+      message : '로딩 중...',
       init : false,
       scrollY : new Animated.Value(0),
     }
@@ -40,33 +40,37 @@ class WriterView extends Component {
   componentDidMount(){
     this.getList();
   }
-
+  
   getList() {
     const { page, seed, data } = this.state;
-
-    axios.post(domain + '/api/article/getWriterList', {_id : this.props.navigation.getParam('writer_id'), page, seed})
-    .then((res)=>{
-      if(res.data.status === 'WRITER_GET_SUCCESSED'){
-        let newState = {
-          data: page === 1 ? res.data.list : [...data, ...res.data.list],
-          error: res.data.message || null,
-          loading: false,
-          refreshing: false,
-          endYn : res.data.endYn,
-          init : true,
-          writer : res.data.writer
+    
+    setTimeout(() => {
+      axios.post(domain + '/api/article/getWriterList', {_id : this.props.navigation.getParam('writer_id'), page, seed})
+      .then((res)=>{
+        if(res.data.status === 'WRITER_GET_SUCCESSED'){
+          let newState = {
+            data: page === 1 ? res.data.list : [...data, ...res.data.list],
+            error: res.data.message || null,
+            loading: false,
+            refreshing: false,
+            endYn : res.data.endYn,
+            init : true,
+            writer : res.data.writer
+          }
+          if(res.data.list.length == 0 ) {
+            newState.init = true;
+            newState.loading = false;
+            newState.message = "게시물이 없습니다.";
+          }else newState.message = null;
+          
+          this.setState(newState);
+        }else{
+          alert('ERROR');
         }
-        if(res.data.length == 0 ) {
-          newState.init = false;
-          newState.message = "게시물이 없습니다.";
-        }else newState.message = "";
+      })
+      .catch((err)=>{ alert("err")})
 
-        this.setState(newState);
-      }else{
-        alert('ERROR');
-      }
-    })
-    .catch((err)=>{ alert("err")})
+    }, 2000)
   }
  
   renderFooter = (
@@ -177,9 +181,9 @@ class WriterView extends Component {
             }}>           
             </Animated.View> 
             <ConBox>
-            {data.length === 0
-                ? (<Loading><ActivityIndicator animating size="large" /></Loading>)
-                : <FlatList
+            {data.length !== 0
+                ? (
+                  <FlatList
                     style={{flex:1, padding:'7%'}}
                     data={data} 
                     renderItem={({item}) => 
@@ -200,9 +204,16 @@ class WriterView extends Component {
                     onScroll={Animated.event([
                       { nativeEvent: { contentOffset: { y: scrollY } } },
                     ])}
-                  />
-              }
-              {init ? <NoDataBox><NoDataText>{message}</NoDataText></NoDataBox> : null}
+                  />                  
+                ) : init ? (
+                <NoDataBox><NoDataText>{message}</NoDataText></NoDataBox> 
+                ) : null }   
+                {!init ? 
+                  <NoDataBox>
+                    <Loading><ActivityIndicator animating size="large" /></Loading>
+                    <NoDataText>{message}</NoDataText>
+                  </NoDataBox>
+                : null} 
             </ConBox>
           </Contents>  
         </Wrap>
@@ -296,15 +307,17 @@ const ConBox = styled.View`
 `;
 
 const Loading = styled.View`
-  margin-top : 7%;
+  margin-top: 7%;
 `;
 
-const NoDataBox = styled.View`
+const NoDataBox = styled.View`  
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 `;
 
 const NoDataText = styled.Text`
+  margin-top : 5%;
   color:#666;
   font-size:16px;
   font-family: 'hd-regular';

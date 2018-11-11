@@ -33,11 +33,6 @@ class EditItem extends Component {
   render(){
     const { _id, text, updatedDate, title, bgStyle, startDate, finishDate, weather, published, handleModal } = this.props;
 
-    // bgStyle.backgroundColor = ""
-    // bgStyle.photoUrl = "http://holotrip.co.kr/wp-content/uploads/2017/05/%EC%97%90%ED%8E%A01.jpg";
-    // bgStyle.backgroundColor = "#ccc"
-    // bgStyle.photoUrl = ""
-
     return (
       <Wrap>
         <Wrapper bg={!bgStyle.photoUrl ? 
@@ -49,7 +44,7 @@ class EditItem extends Component {
             </BgBox>
           ) : null }
           <ControlBox>
-          <BtnPublishing onPressOut={() => this._handleUpdate({published : !published})} visual={published}>
+          <BtnPublishing onPress={() => this._handleUpdate({published : !published})} visual={published}>
               <TextPublishing visual={published} color={!bgStyle.photoUrl ? bgStyle.backgroundColor : "#444"}>{!published ? ("발행") : ("발행 취소")}</TextPublishing>
             </BtnPublishing>
             <BtnEdit onPress={() => handleModal(_id)}>
@@ -58,7 +53,7 @@ class EditItem extends Component {
           </ControlBox>
           <FirstRow>
             <DateBox>
-              <DateText>{startDate ? startDate.split('T')[0] : ''}{finishDate? ' - '+finishDate.split('T')[0] : ''}</DateText>
+              <DateText>{startDate ? startDate.split('T')[0] : null}{finishDate? ' - '+finishDate.split('T')[0] : null}</DateText>
             </DateBox>
             <WeatherBox>
               {weather ? 

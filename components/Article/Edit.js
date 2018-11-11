@@ -26,9 +26,6 @@ class Edit extends Component {
       error: null,
       refreshing: false,
       message: "로딩 중...",
-      // items: {},
-      // loading: true,
-      // message: "로딩 중...",
       buttonShow: false,
       isModalVisible: false,
       _id: null,
@@ -70,7 +67,7 @@ class Edit extends Component {
                     newState.init = true;
                     newState.loading = false;
                     newState.message = "저장한 글이 없습니다.";
-                }else newState.message = "";
+                }else newState.message = null;
           
                 this.setState(newState);
               }
@@ -211,7 +208,7 @@ class Edit extends Component {
         </Modal>
 
         <HeaderBox>
-          <BtnIcon onPressOut={() => this.props.navigation.navigate('Home')}>
+          <BtnIcon onPress={() => this.props.navigation.navigate('Home')}>
             <Ionicons name="ios-arrow-round-back" color="#333" size={45}/>
           </BtnIcon>
           <H1>글 관리</H1>
@@ -237,7 +234,7 @@ class Edit extends Component {
           : init ? (
             <NoDataBox>                
               <NoDataText>{message}</NoDataText>
-              <BtnText noData onPressOut={() => this.props.navigation.navigate('Write')}>
+              <BtnText noData onPress={() => this.props.navigation.navigate('Write')}>
                 <LinkText>글 쓰러 가기</LinkText>
                 <Ionicons name="ios-arrow-round-forward" color="#6093E3" size={24} style={{marginLeft:10}}/>
               </BtnText>
@@ -248,7 +245,7 @@ class Edit extends Component {
             <Loading><ActivityIndicator animating size="large" /></Loading>
             <NoDataText>{message}</NoDataText>
           </NoDataBox>
-          : ''} 
+          : null} 
         </ConBox>
       </Wrap>
       )
@@ -323,7 +320,7 @@ const NoDataBox = styled.View`
 `;
 
 const NoDataText = styled.Text`
-  margin-top : 7%;
+  margin-top : 5%;
   color:#666;
   font-size:16px;
   font-family: 'hd-regular';

@@ -37,21 +37,20 @@ class CameraScreen extends Component {
   };
 
   saveToCameraRollAsync = async () => {
-    // let result = this.state.cameraRollUri;
-    // let saveResult = await CameraRoll.saveToCameraRoll(result, 'photo');
+    let result = this.state.cameraRollUri;
+    let saveResult = await CameraRoll.saveToCameraRoll(result, 'photo');
     // alert(JSON.stringify(saveResult))
+    this.props.navigation.navigate('CameraRoll')   
     
-    const cameraRollUri = this.state.cameraRollUri;
-    alert(JSON.stringify(cameraRollUri))
-    const resultPhoto = await ImageManipulator.manipulate(cameraRollUri, [{
-      rotate: 90
-    }]);
-    alert(JSON.stringify(resultPhoto))
+    // const cameraRollUri = this.state.cameraRollUri;
+    // alert(JSON.stringify(cameraRollUri))
+    // const resultPhoto = await ImageManipulator.manipulate(cameraRollUri, [{
+    //   rotate: 90
+    // }]);
+    // alert(JSON.stringify(resultPhoto))
 
-    let saveResult =  await CameraRoll.saveToCameraRoll(resultPhoto, 'photo');
-    alert(JSON.stringify(saveResult))
-
-   
+    // let saveResult =  await CameraRoll.saveToCameraRoll(resultPhoto, 'photo');
+    // alert(JSON.stringify(saveResult))
 
 
     // const manipResult = await ImageManipulator.manipulate(
@@ -121,7 +120,7 @@ class CameraScreen extends Component {
               </HeaderBox>
               {!cameraRollUri ? (
                 <FooterBox>
-                  <BtnIcon onPress={() => this.props.navigation.navigate('Home')}>
+                  <BtnIcon onPress={() => this.props.navigation.navigate('CameraRoll')}>
                     <BtnTxt>취소</BtnTxt>
                   </BtnIcon>
                   <BtnSnap onPress={this.snapAsync}>

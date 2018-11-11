@@ -31,7 +31,7 @@ export default class WriterViewItem extends Component {
           ) : null }
           <FirstRow>
             <DateBox>
-            <DateText>{startDate ? startDate : ''} {finishDate ? '- ' + finishDate : ''}</DateText>
+            <DateText>{startDate ? startDate : null} {finishDate ? '- ' + finishDate : null}</DateText>
             </DateBox>
             <WeatherBox>
               <MaterialCommunityIcons name={weather} color="#fff" size={20} style={{marginLeft:3}}/>

@@ -47,16 +47,16 @@ class SearchBox extends Component {
         </LogoBox>
           {isSearching ? (
             <BtnBox>
-              <Button onPressOut={() => this._handleSearch()}>
+              <Button onPress={() => this._handleSearch()}>
                 <Feather name="check" color="#666" size={25} />
               </Button>  
-              <Button onPressOut={() => this.setState({ isSearching: false })}>
+              <Button onPress={() => this.setState({ isSearching: false })}>
                 <Feather name="x" color="#bbb" size={25} />
               </Button>
             </BtnBox>
             ) : (
             <BtnBox>
-              <Button onPressOut={() => this.setState({ isSearching: true })}>
+              <Button onPress={() => this.setState({ isSearching: true })}>
                 <Feather name="search" color="#999" size={25} />
               </Button>  
             </BtnBox>

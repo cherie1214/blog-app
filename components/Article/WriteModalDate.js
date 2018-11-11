@@ -110,7 +110,7 @@ export default class ModalDate extends Component {
               this.props.handleDate(null, date, switchOneday);
             }}
           />
-        </ModalRow> : ""
+        </ModalRow> : null
         }
       </ModalWrap>
     )

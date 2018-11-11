@@ -3,12 +3,14 @@ import { CameraRoll, Dimensions, ActivityIndicator, Text, Image, TouchableOpacit
 import styled from 'styled-components';
 import { Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 import { withNavigation } from 'react-navigation';
-import CameraRollPicker from 'react-native-camera-roll-picker';
+
+
+import { Camera, Permissions } from 'expo';
 
 const { height, width } = Dimensions.get("window");
 const width30per = width / 3;
 
-class CameraRollScreen extends Component {
+class CameraRollScreenBak extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -53,21 +55,23 @@ class CameraRollScreen extends Component {
             <SimpleLineIcons name="camera" color="#333" size={29}/>
           </BtnIcon>
         </HeaderBox>
-        <ConBox>
-          <CameraRollPicker
-            // callback={this.getSelectedImages} 
-            // callback={alert("선택함!")} 
-            maximum="1"
-            imageMargin={2}
-            containerWidth={width + 4}
-            />
-        </ConBox>
+        <ScrollView
+          contentContainerStyle={{
+            width: width,
+          }}
+         > 
+          {/* <ConBox> */}
+          {photos
+            ? this._renderPhotos(photos)
+            : <Loading><ActivityIndicator animating size="large" /></Loading>}
+          {/* </ConBox>  */}
+        </ScrollView>
       </Wrap>
     );
   }  
 }
 
-export default withNavigation(CameraRollScreen);
+export default withNavigation(CameraRollScreenBak);
 
 const Wrap = styled.View`
   flex: 1;
@@ -103,8 +107,6 @@ const Loading = styled.View`
 `;
 
 const ConBox = styled.View`
-  flex:1;
-  margin: -2px;
 `;
 
 const ImgBox = styled.View`

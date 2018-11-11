@@ -82,7 +82,7 @@ class CardItem extends Component {
               <MaterialCommunityIcons name={item.weather} color="#fff" size={24} style={{marginLeft:3, marginRight:3}}/>
             </WeatherBox>
             <DateBox>
-              <DateText>{item.startDate ? item.startDate : ''} {item.finishDate ? '- ' + item.finishDate : ''}</DateText>
+              <DateText>{item.startDate ? item.startDate : null} {item.finishDate ? '- ' + item.finishDate : null}</DateText>
             </DateBox>
             <TxtBox>
               <TitText>{item.title}</TitText>
@@ -180,7 +180,7 @@ const ItemBox = styled.View`
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.16)
   ${prop => prop.bg}
-  ${prop => prop.last ? "background: #ccc; align-items: center" : ""}
+  ${prop => prop.last ? "background: #ccc; align-items: center" : null}
 `;
 
 const BgBox = styled.View`

@@ -61,7 +61,7 @@ class Like extends Component {
             }
             if(res.data.length == 0 ) {
                 newState.message = "좋아요가 아직 없습니다.";
-            }else newState.message = "";
+            }else newState.message = null;
       
             this.setState(newState);
           }
@@ -136,7 +136,7 @@ class Like extends Component {
     return(
         <Wrap>
           <HeaderBox>
-            <BtnIcon onPressOut={() => this.props.navigation.navigate('Home')}>
+            <BtnIcon onPress={() => this.props.navigation.navigate('Home')}>
               <Ionicons name="ios-arrow-round-back" color="#333" size={45}/>
             </BtnIcon>
             <H1>좋아요</H1>

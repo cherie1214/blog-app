@@ -1,11 +1,14 @@
 {
   "expo": {
-    "name": "new-blog-app",
+    "name": "new-blog-app3",
     "description": "This project is really great.",
-    "slug": "new-blog-app",
+    "slug": "new-blog-app3",
     "privacy": "public",
     "sdkVersion": "28.0.0",
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

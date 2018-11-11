@@ -24,7 +24,7 @@ class ArticleItem extends Component {
         <Wrapper>
           <FirstRow>
             <DateBox>
-              <DateText>{startDate ? startDate : ''}{finishDate? ' - '+finishDate : ''}</DateText>
+              <DateText>{startDate ? startDate : null}{finishDate? ' - '+finishDate : null}</DateText>
             </DateBox>
             <WeatherBox>
             <MaterialCommunityIcons name={weather} color="#999" size={20} style={{marginLeft:3}}/>

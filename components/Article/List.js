@@ -49,7 +49,7 @@ class List extends Component {
           if(res.data.length == 0 ) {
               newState.init = false;
               newState.message = "게시물이 없습니다.";
-          }else newState.message = "";
+          }else newState.message = null;
     
           this.setState(newState);
         }
@@ -117,7 +117,7 @@ class List extends Component {
         <Wrap>
           <HeaderBox>
             <BtnBox>
-              <BtnIcon onPressOut={() => this.props.navigation.navigate('Home')}>
+              <BtnIcon onPress={() => this.props.navigation.navigate('Home')}>
                 <Ionicons name="ios-arrow-round-back" color="#333" size={45}/>
               </BtnIcon>
             </BtnBox>

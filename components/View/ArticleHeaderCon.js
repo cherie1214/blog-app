@@ -23,7 +23,7 @@ export default class ArticleHeaderCon extends Component {
               <MaterialCommunityIcons name={weather} color="#fff" size={22} style={{marginLeft:3, marginRight:3}}/>
             </WeatherBox>
             <DateBox>
-            <DateText>{startDate ? startDate : ''} {finishDate ? '- ' + finishDate : ''}</DateText>
+            <DateText>{startDate ? startDate : null} {finishDate ? '- ' + finishDate : null}</DateText>
             </DateBox>
             <TitBox>
               <TitText>{title}</TitText>

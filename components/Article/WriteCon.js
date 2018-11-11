@@ -169,7 +169,7 @@ export default class WriteCon extends Component {
           <DateBox>
             <Select onPress={() => this._toggleModal("date")}>   
               <CommonText>날짜</CommonText>      
-              <CommonText>{startDate ? startDate : ''} {finishDate ? '- ' + finishDate : ''}</CommonText>
+              <CommonText>{startDate ? startDate : null} {finishDate ? '- ' + finishDate : null}</CommonText>
             </Select>
           </DateBox>
           <TitBox>
@@ -192,7 +192,7 @@ export default class WriteCon extends Component {
             <Select onPress={() => this._toggleModal("weather")}>
               <CommonText>날씨</CommonText>
               {weather.name ? 
-                (<MaterialCommunityIcons name={weather.name} size={17} color="#fff" />)  : ''};
+                (<MaterialCommunityIcons name={weather.name} size={17} color="#fff" />)  : null};
             </Select>
           </WeatherBox>
           <Row justifyEnd>

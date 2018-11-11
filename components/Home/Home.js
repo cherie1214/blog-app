@@ -43,7 +43,7 @@ class Home extends Component {
     return (
       <Container>
         <HomeMenu>
-          <Button onPressOut={() => this.props.navigation.toggleLeftDrawer()}>
+          <Button onPress={() => this.props.navigation.toggleLeftDrawer()}>
             <Ionicons name="ios-menu" color="#333" size={40} style={{marginLeft:15}}/>
           </Button>
         </HomeMenu>
@@ -54,10 +54,10 @@ class Home extends Component {
           <Card />
         </HomeBody>
         <HomeFooter>
-          <Button footerBtn onPressOut={() => this.handleGoWrite()}>
+          <Button footerBtn onPress={() => this.handleGoWrite()}>
             <SimpleLineIcons name="pencil" color="#fff" size={20} />
           </Button>
-          <Button footerBtn onPressOut={() => this.props.navigation.navigate("List")}>
+          <Button footerBtn onPress={() => this.props.navigation.navigate("List")}>
             <SimpleLineIcons name="list" color="#fff" size={25} />
           </Button>
           <ConfirmDialog

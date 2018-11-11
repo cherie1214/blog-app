@@ -59,7 +59,7 @@ class Notify extends Component {
             }
             if(res.data.length == 0 ) {
                 newState.message = "알림이 없습니다.";
-            }else newState.message = "";
+            }else newState.message = null;
       
             this.setState(newState);
           }
@@ -132,7 +132,7 @@ class Notify extends Component {
     return(
         <Wrap>
           <HeaderBox>
-            <BtnIcon onPressOut={() => this.props.navigation.navigate('Home')}>
+            <BtnIcon onPress={() => this.props.navigation.navigate('Home')}>
               <Ionicons name="ios-arrow-round-back" color="#333" size={45}/>
             </BtnIcon>
             <H1>알림</H1>

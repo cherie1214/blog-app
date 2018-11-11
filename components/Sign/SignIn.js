@@ -67,7 +67,7 @@ class SignIn extends Component {
       >
       <Wrap>
         <CloseBox>
-          <BtnClose onPressOut={() => this.props.navigation.navigate('Home')}>
+          <BtnClose onPress={() => this.props.navigation.navigate('Home')}>
             <Ionicons name="ios-close" color="#fff" size={60} style={{marginLeft:15}}/>
           </BtnClose>
         </CloseBox>
@@ -110,11 +110,11 @@ class SignIn extends Component {
               onFocus={this.scrollOnFocus('input2')}
             />
           </InputWrap>
-          <Button onPressOut={() => this.props.userSignIn(userInfo)} >
+          <Button onPress={() => this.props.userSignIn(userInfo)} >
             <BtnText>Sign In</BtnText>
           </Button>
           <P>Create Your Travel</P>
-          <Button small onPressOut={() => this.props.navigation.navigate('SignUp')}>
+          <Button small onPress={() => this.props.navigation.navigate('SignUp')}>
             <BtnText fs14>Sign Up</BtnText>
           </Button>
         </InputBox>

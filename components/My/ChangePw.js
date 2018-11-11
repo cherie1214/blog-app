@@ -38,7 +38,7 @@ class ChangePw extends Component {
       >
         <Wrap>
           <HeaderBox>
-            <BtnIcon onPressOut={() => this.props.navigation.navigate('Mypage')}>
+            <BtnIcon onPress={() => this.props.navigation.navigate('Mypage')}>
               <Ionicons name="ios-arrow-round-back" color="#333" size={45}/>
             </BtnIcon>
             <H1>비밀번호 변경</H1>
@@ -90,7 +90,7 @@ class ChangePw extends Component {
                 onFocus={this.scrollOnFocus('input3')}
               />
             </InputWrap>
-            <Button onPressOut={() => this.props.userChangePw(UserInfo, Token)}>
+            <Button onPress={() => this.props.userChangePw(UserInfo, Token)}>
               <BtnText>Submit</BtnText>
             </Button>
           </InputBox>
@@ -176,7 +176,8 @@ const InputTextStyle = {
   width: width * 0.7,
   fontFamily: 'hd-regular',
   fontSize: 15,
-  color: "#333"
+  color: "#333",
+
 }
 
 const Button = styled.TouchableOpacity`

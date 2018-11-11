@@ -14,7 +14,7 @@ class RadioButton extends Component{
         onPress = { () => this.props.onClick() } activeOpacity = { 0.8 } >
           <ColorCircle style={{backgroundColor: this.props.button.color}}>
           {(this.props.button.id === this.props.selectedId) ?
-              (<Feather name="check" color="#fff" size={30} />) : ''}
+              (<Feather name="check" color="#fff" size={30} />) : null}
           </ColorCircle>
       </RadioBtn>
     );

@@ -156,7 +156,7 @@ export default class Search extends Component {
     return(
         <Wrap>
           <HeaderBox>
-            <BtnIcon onPressOut={() => this.props.navigation.navigate('Home')}>
+            <BtnIcon onPress={() => this.props.navigation.navigate('Home')}>
               <Ionicons name="ios-arrow-round-back" color="#333" size={45}/>
             </BtnIcon>
             <SearchBox>
@@ -165,16 +165,16 @@ export default class Search extends Component {
                 onChangeText={this._handleTextChange}
                 placeholder="Search"
               />
-              <BtnIcon onPressOut={() => this._handleSearch()}>
+              <BtnIcon onPress={() => this._handleSearch()}>
                 <Feather name="search" color="#afafaf" size={20}/>
               </BtnIcon>
             </SearchBox>
           </HeaderBox>
           <TabBox>
-            <Tab visual={on} onPressOut={() => this._handleTabChange1(tab)}>
+            <Tab visual={on} onPress={() => this._handleTabChange1(tab)}>
               <TabText visual={on}>글</TabText>
             </Tab>
-            <Tab visual={!on} onPressOut={() => this._handleTabChange2(tab)}>
+            <Tab visual={!on} onPress={() => this._handleTabChange2(tab)}>
               <TabText visual={!on}>글쓴이</TabText>
             </Tab>
           </TabBox>

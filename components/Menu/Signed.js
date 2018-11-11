@@ -20,7 +20,7 @@ class SignedMenu extends Component {
         {/*StatusBar hidden={true} />*/}
         <CloseBox>
           <BtnClose
-            onPressOut={() => this.props.navigation.closeDrawer()}>
+            onPress={() => this.props.navigation.closeDrawer()}>
             <Ionicons
               name="ios-close"
               color="#333"
@@ -30,25 +30,25 @@ class SignedMenu extends Component {
           </BtnClose>
         </CloseBox>
         <ProfileBox
-          onPressOut={() => this.props.navigation.navigate('Mypage')}>
+          onPress={() => this.props.navigation.navigate('Mypage')}>
           <ProfileImgBox source={{uri: 'https://i.pinimg.com/564x/23/9d/64/239d649cbeaf9466a17620a1209c6f92.jpg'}} />
           <UserNickname>{auth.login.nickname}</UserNickname>
         </ProfileBox>
         <BorderBox />
         <BtnBox>
           <Button
-            onPressOut={() => this.props.navigation.navigate('Write')}>
+            onPress={() => this.props.navigation.navigate('Write')}>
             <BtnText>글 쓰기</BtnText>
           </Button>
           <Button
-            onPressOut={() => this.props.navigation.navigate('Edit')}>
+            onPress={() => this.props.navigation.navigate('Edit')}>
             <BtnText>글 관리</BtnText>
           </Button>
         </BtnBox>
         <IconBox>
           <IconBtn
-            onPressOut={() => this.props.navigation.navigate('Notify')}>
-            {notifyIcon ? <IconNew yellow /> : ''}
+            onPress={() => this.props.navigation.navigate('Notify')}>
+            {notifyIcon ? <IconNew yellow /> : null}
             <MaterialCommunityIcons
               name="bell-outline"
               color="#fff"
@@ -56,8 +56,8 @@ class SignedMenu extends Component {
             />
           </IconBtn>
           <IconBtn
-            onPressOut={() => this.props.navigation.navigate('Like')}>
-            {likeIcon ? <IconNew pink /> : ''}
+            onPress={() => this.props.navigation.navigate('Like')}>
+            {likeIcon ? <IconNew pink /> : null}
             <MaterialCommunityIcons
               name="heart-outline"
               color="#fff"
