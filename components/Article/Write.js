@@ -19,7 +19,7 @@ class Write extends Component {
           _id : null,
           isModalVisible: false,
           modalType : '',
-          isCameraRollVisible: false,
+          cameraRollVisible: false,
         },
         _editId: this.props.navigation.getParam('itemId','new'),
     };
@@ -36,7 +36,7 @@ class Write extends Component {
     this.setState({ 
       isModalVisible: false,
       modalType : '',
-      isCameraRollVisible: !this.state.isCameraRollVisible,
+      cameraRollVisible: !this.state.cameraRollVisible,
     });
   };
 
@@ -58,11 +58,11 @@ class Write extends Component {
   }
 
   render(){  
-    const { isCameraRollVisible, article, _editId } = this.state;
+    const { cameraRollVisible, article, _editId } = this.state;
 
     return(
       <Container>
-      {!isCameraRollVisible ? (
+      {!cameraRollVisible ? (
         <Wrap>
           <WriteHeader handleState={this._handleState} article={article} _editId={_editId}/>
           <ConBox>           

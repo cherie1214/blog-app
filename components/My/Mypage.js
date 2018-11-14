@@ -1,13 +1,10 @@
 import React, { Component } from 'react'
-import { CameraRoll, Dimensions, Text, View, TouchableOpacity } from 'react-native';
+import { Dimensions, Text, View, TouchableOpacity } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons, Feather, Foundation } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { signOut, changeNicknameRequest, setNotifyIcon, setLikeIcon, clearLikeIconRepeat } from '../../actions';
-// import CameraRollPicker from 'react-native-camera-roll-picker';
-// import { userInfo } from 'os';
-// import Camera from 'react-native-camera';
-import { Camera, Permissions } from 'expo';
+import CameraRoll from '../Photo/CameraRoll';
 
 const { height, width } = Dimensions.get("window");
 
@@ -16,21 +13,9 @@ class Mypage extends Component {
     super(props);
     this.state = {
       isEditing: false,
+      cameraRollVisible: false,
     }
   }
-
-  // _handleCameraRoll = () => {
-  //  CameraRoll.getPhotos({
-  //      first: 20,
-  //      assetType: 'Photos',
-  //    })
-  //    .then(r => {
-  //      this.setState({ photos: r.edges });
-  //    })
-  //    .catch((err) => {
-  //       //Error Loading Images
-  //    });
-  //  };
 
    _handleChangeNickname(isEditing){
     const data = {
@@ -62,62 +47,75 @@ class Mypage extends Component {
     }    
   }
 
+  _toggleCamera = () => {
+    this.setState({
+      ...this.state,
+      cameraRollVisible: !this.state.cameraRollVisible,
+    })
+  }
+
   
   render(){
-    const { isEditing } = this.state;
+    const { isEditing, cameraRollVisible } = this.state;
     const auth = this.props.auth;
     
     return(
-        <Wrap>
-          <HeaderBox>
-            <BtnIcon onPress={() => this.props.navigation.navigate('Home')}>
-              <Ionicons name="ios-arrow-round-back" color="#333" size={45}/>
-            </BtnIcon>
-            <H1>My Travel</H1>
-          </HeaderBox>
-          <Contents>
-            <ProfileBox>
-              <ImgBox>
-                <ProfileImgBox source={require('../../assets/bonobono.jpg')}/>
-                <PhotoEditBtn onPress={() => this.props.navigation.navigate('CameraRoll')}>
-                  <Feather name="camera" color="#fff" size={20}/>
-                </PhotoEditBtn>
-              </ImgBox>
-              <NicknameBox>
-               {!isEditing ? (
-                   <UserNickname>{auth.login.nickname}</UserNickname>
-                   ) : (
-                    <Input 
-                      inputRef="NicknameInput"
-                      value={this.props.auth.login.nickname}
-                      placeholder={this.props.auth.login.nickname}
-                      placeholderTextColor="#999"
-                      autoFocus={true}
-                      onChangeText={(nickname) => this.setState({nickname: nickname})}
-                    />
-                   )
-                }
-              </NicknameBox>
-              <BtnEdit onPress={() => this._handleChangeNickname(isEditing)}>
+      <Container>
+        {!cameraRollVisible ? (      
+          <Wrap>
+            <HeaderBox>
+              <BtnIcon onPress={() => this.props.navigation.navigate('Home')}>
+                <Ionicons name="ios-arrow-round-back" color="#333" size={45}/>
+              </BtnIcon>
+              <H1>My Travel</H1>
+            </HeaderBox>
+            <Contents>
+              <ProfileBox>
+                <ImgBox>
+                  <ProfileImgBox source={require('../../assets/bonobono.jpg')}/>
+                  <PhotoEditBtn onPress={() => this._toggleCamera()}>
+                    <Feather name="camera" color="#fff" size={20}/>
+                  </PhotoEditBtn>
+                </ImgBox>
+                <NicknameBox>
                 {!isEditing ? (
-                  <Foundation name="pencil" color="#666" size={20} />
-                ) : (
-                  <Feather name="check" color="#666" size={23} />
-                )}
-              </BtnEdit>
-            </ProfileBox>
-            <BorderBox></BorderBox>
-            <BtnBox>
-              <Button borderType onPress={() => this.props.navigation.navigate('ChangePw')}>
-                <BtnText borderType>비밀번호 변경</BtnText>
-              </Button>
-              <Button onPress={() => this.props.signOut()}>
-                <BtnText>Sign Out</BtnText>
-              </Button>
-            </BtnBox>
-          </Contents>
-        </Wrap>
-      )
+                    <UserNickname>{auth.login.nickname}</UserNickname>
+                    ) : (
+                      <Input 
+                        inputRef="NicknameInput"
+                        value={this.props.auth.login.nickname}
+                        placeholder={this.props.auth.login.nickname}
+                        placeholderTextColor="#999"
+                        autoFocus={true}
+                        onChangeText={(nickname) => this.setState({nickname: nickname})}
+                      />
+                    )
+                  }
+                </NicknameBox>
+                <BtnEdit onPress={() => this._handleChangeNickname(isEditing)}>
+                  {!isEditing ? (
+                    <Foundation name="pencil" color="#666" size={20} />
+                  ) : (
+                    <Feather name="check" color="#666" size={23} />
+                  )}
+                </BtnEdit>
+              </ProfileBox>
+              <BorderBox></BorderBox>
+              <BtnBox>
+                <Button borderType onPress={() => this.props.navigation.navigate('ChangePw')}>
+                  <BtnText borderType>비밀번호 변경</BtnText>
+                </Button>
+                <Button onPress={() => this.props.signOut()}>
+                  <BtnText>Sign Out</BtnText>
+                </Button>
+              </BtnBox>
+            </Contents>
+          </Wrap>
+        ) : (
+          <CameraRoll />
+        )}  
+      </Container>  
+    )
   }
 }
 
@@ -153,6 +151,10 @@ const mapDispatchToProps = (dispatch) => {
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(Mypage);
+
+const Container = styled.View`
+  flex: 1;
+`;
 
 const Wrap = styled.View`
   flex: 1;
