@@ -7,6 +7,7 @@ import ModalDate from './WriteModalDate';
 import ModalWeather from './WriteModalWeather';
 import ModalBg from './WriteModalBg';
 
+
 const { height, width } = Dimensions.get("window");
 
 export default class WriteCon extends Component {
@@ -14,8 +15,8 @@ export default class WriteCon extends Component {
     super(props);
     this.state = {
       _id: this.props._id,
-      isModalVisible: false,
-      modalType: "",
+      // isModalVisible: false,
+      // modalType: "",
       switchOneday: false,
       startDate: "",
       finishDate: "",
@@ -137,22 +138,19 @@ export default class WriteCon extends Component {
       {this._renderModalType(
         <ModalDate parentState={this.state} handleDate={this._handleDate} />, 
         <ModalWeather parentState={this.state} handleWeather={this._handleWeather}/>,
-        <ModalBg parentState={this.state} handleBg={this._handleBg}/>
+        <ModalBg parentState={this.state} handleBg={this._handleBg} handleCameraModal={this.props.handleModal}/>
       )} 
     </View>
   );
-  
+ 
   render(){
     const { isModalVisible, startDate, finishDate, title, weather, bg, text } = this.state;
-    // bg.color.value = ""
-    // bg.photo = "http://holotrip.co.kr/wp-content/uploads/2017/05/%EC%97%90%ED%8E%A01.jpg";
-    // bg.color.value = "#ccc";
-    // bg.photo = "";
 
     return (
       <Wrap>
         <Modal 
           isVisible={isModalVisible} 
+          onModalHide={this.modalHide}
           onBackdropPress={() => this.setState({ isModalVisible: false })}
           style={{ justifyContent: 'flex-end', margin:0 }}>
           {this._renderModalContent()}
@@ -202,8 +200,6 @@ export default class WriteCon extends Component {
           </Row>
         </HeaderConBox>
         <TextareaBox>
-          {/* <Text>{JSON.stringify(this.props.article,0,2)}</Text>
-          <Text>{JSON.stringify(this.state,0,2)}</Text> */}
           <Textarea
             multiline={true}
             onChangeText={(text) => this.setState({text})}
@@ -217,6 +213,7 @@ export default class WriteCon extends Component {
 }
     
 const Wrap = styled.View`
+  position:relative;
   flex: 1;
 `;
 

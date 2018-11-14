@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Dimensions } from 'react-native';
+import { Dimensions, View } from 'react-native';
 import styled from 'styled-components';
 import { Feather } from '@expo/vector-icons';
 
@@ -78,12 +78,11 @@ export default class ModalBg extends Component {
     });
   }
 
-  
   render(){    
     return(
       <ModalWrap>
         <ModalRow>
-          <Btn>
+          <Btn onPress={() => this.props.handleCameraModal()}>
             <ModalLabel underline>Photo</ModalLabel>
           </Btn>
         </ModalRow>
@@ -94,7 +93,6 @@ export default class ModalBg extends Component {
               <RadioButton key = { key } button = { item } selectedId ={this.state.selectedId}  onClick = { this.changeActiveRadioButton.bind( this, key ) }/>
             ))}
           </RadioBox>
-          {/* <Text style={{height:30}}>id: {this.state.selectedId}, bgColor: {this.state.selectedColor}</Text> */}
         </ColorBox>
       </ModalWrap>
     )
@@ -103,6 +101,7 @@ export default class ModalBg extends Component {
 
 
 const ModalWrap = styled.View`
+  position:relative;
   background-color: #fff;
 `;
 

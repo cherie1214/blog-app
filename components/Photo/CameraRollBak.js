@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { CameraRoll, Dimensions, ActivityIndicator, Text, Image, TouchableOpacity, ScrollView, StatusBar } from 'react-native';
+import { CameraRoll, Dimensions, ActivityIndicator, View, Text, Image, TouchableOpacity, ScrollView, StatusBar } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 import { withNavigation } from 'react-navigation';
@@ -25,7 +25,7 @@ class CameraRollScreenBak extends Component {
   }
 
   async _getPhotosAsync() {
-    let photos = await CameraRoll.getPhotos({ first: 30 });
+    let photos = await CameraRoll.getPhotos({first: 50});
     this.setState({ photos });
   }
 
@@ -56,15 +56,13 @@ class CameraRollScreenBak extends Component {
           </BtnIcon>
         </HeaderBox>
         <ScrollView
-          contentContainerStyle={{
-            width: width,
-          }}
+           style={{backgroundColor: 'blue'}}
          > 
-          {/* <ConBox> */}
+         <View style={{flexDirection: 'row', width:'100%', height:'100%'}}>
           {photos
             ? this._renderPhotos(photos)
             : <Loading><ActivityIndicator animating size="large" /></Loading>}
-          {/* </ConBox>  */}
+          </View>
         </ScrollView>
       </Wrap>
     );
@@ -115,7 +113,7 @@ const ImgBox = styled.View`
   padding: 1px;
   width: ${width30per};
   height: ${width30per};
-  background: #fff;
+  background: red;
 `;
 
 const Img = styled.Image`

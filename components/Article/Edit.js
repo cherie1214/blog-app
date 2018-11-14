@@ -162,8 +162,6 @@ class Edit extends Component {
     <View
       style={{
         paddingVertical: 20,
-        // borderTopWidth: 1,
-        // borderColor: "#CED0CE"
       }}
     >
       <ActivityIndicator animating size="large" />

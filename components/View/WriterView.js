@@ -24,14 +24,14 @@ class WriterView extends Component {
     super(props);
     this.state = {
       writer : {},
-      loading: true,
+      loading: false,
       data: [],
       page: 1,
       seed: 1,
       endYn : false,
       error: null,
-      refreshing: false,
       message : '로딩 중...',
+      refreshing: false,
       init : false,
       scrollY : new Animated.Value(0),
     }
@@ -206,7 +206,7 @@ class WriterView extends Component {
                     ])}
                   />                  
                 ) : init ? (
-                <NoDataBox><NoDataText>{message}</NoDataText></NoDataBox> 
+                  <NoDataBox><NoDataText>{message}</NoDataText></NoDataBox> 
                 ) : null }   
                 {!init ? 
                   <NoDataBox>
@@ -311,7 +311,6 @@ const Loading = styled.View`
 `;
 
 const NoDataBox = styled.View`  
-  flex-direction: column;
   align-items: center;
   justify-content: center;
 `;

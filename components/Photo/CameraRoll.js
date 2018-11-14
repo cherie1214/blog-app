@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 import { withNavigation } from 'react-navigation';
 import CameraRollPicker from 'react-native-camera-roll-picker';
+import Camera from './Camera'
 
 const { height, width } = Dimensions.get("window");
 const width30per = width / 3;
@@ -13,6 +14,7 @@ class CameraRollScreen extends Component {
     super(props);
     this.state = {
       photos: null,
+      cameraVisible: false,
     }
   }
 
@@ -39,35 +41,52 @@ class CameraRollScreen extends Component {
     return images;
   }
 
+  _toggleCamera = () => {
+    this.setState({
+      ...this.state,
+      cameraVisible: !this.state.cameraVisible
+    })
+  }
+
   render() {
-    let { photos } = this.state;
+    let { photos, cameraVisible } = this.state;
     return (
-      <Wrap>
-        <StatusBar hidden={false} />
-        <HeaderBox>
-          <BtnIcon onPress={() => this.props.navigation.navigate('Home')}>
-            <Ionicons name="ios-arrow-round-back" color="#333" size={45}/>
-          </BtnIcon>
-          <H1>카메라롤</H1>
-          <BtnIcon onPress={() => this.props.navigation.navigate('Camera')}>
-            <SimpleLineIcons name="camera" color="#333" size={29}/>
-          </BtnIcon>
-        </HeaderBox>
-        <ConBox>
-          <CameraRollPicker
-            // callback={this.getSelectedImages} 
-            // callback={alert("선택함!")} 
-            maximum="1"
-            imageMargin={2}
-            containerWidth={width + 4}
-            />
-        </ConBox>
-      </Wrap>
+      <Container>
+        {!cameraVisible ? (
+          <Wrap>
+            <StatusBar hidden={false} />
+            <HeaderBox>
+              <BtnIcon onPress={() => this.props.navigation.navigate('Home')}>
+                <Ionicons name="ios-arrow-round-back" color="#333" size={45}/>
+              </BtnIcon>
+              <H1>카메라롤</H1>
+              <BtnIcon onPress={() => this._toggleCamera()}>
+                <SimpleLineIcons name="camera" color="#333" size={29}/>
+              </BtnIcon>
+            </HeaderBox>
+            <ConBox>
+              <CameraRollPicker
+                // callback={this.getSelectedImages} 
+                // callback={alert("선택함!")} 
+                maximum="1"
+                imageMargin={2}
+                containerWidth={width + 4}
+                />
+            </ConBox>
+          </Wrap>
+        ) : (
+          <Camera handleCameraClose={this._toggleCamera}/>
+        )}
+      </Container>
     );
   }  
 }
 
 export default withNavigation(CameraRollScreen);
+
+const Container = styled.View`
+  flex: 1;
+`;
 
 const Wrap = styled.View`
   flex: 1;

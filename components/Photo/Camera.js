@@ -40,7 +40,7 @@ class CameraScreen extends Component {
     let result = this.state.cameraRollUri;
     let saveResult = await CameraRoll.saveToCameraRoll(result, 'photo');
     // alert(JSON.stringify(saveResult))
-    this.props.navigation.navigate('CameraRoll')   
+    this.props.handleCameraClose();
     
     // const cameraRollUri = this.state.cameraRollUri;
     // alert(JSON.stringify(cameraRollUri))
@@ -120,7 +120,7 @@ class CameraScreen extends Component {
               </HeaderBox>
               {!cameraRollUri ? (
                 <FooterBox>
-                  <BtnIcon onPress={() => this.props.navigation.navigate('CameraRoll')}>
+                  <BtnIcon onPress={() => this.props.handleCameraClose()}>
                     <BtnTxt>취소</BtnTxt>
                   </BtnIcon>
                   <BtnSnap onPress={this.snapAsync}>
@@ -146,8 +146,7 @@ class CameraScreen extends Component {
                     <BtnTxt>사진 사용</BtnTxt>
                   </BtnIcon>
                 </FooterBox>                 
-              )}
-                           
+              )}                           
             </CameraBox>
           </Camera>
         </Wrap>

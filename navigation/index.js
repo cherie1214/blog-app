@@ -28,6 +28,7 @@ import Edit from '../components/Article/Edit';
 import List from '../components/Article/List';
 import Camera from '../components/Photo/Camera';
 import CameraRoll from '../components/Photo/CameraRoll';
+import CameraRollBak from '../components/Photo/CameraRollBak';
 
 
 const DrawerNavi = createDrawerNavigator(
@@ -115,6 +116,9 @@ export const SwitchNavi = createSwitchNavigator(
     },
     CameraRoll: {
       screen: CameraRoll,
+    },
+    CameraRollBak: {
+      screen: CameraRollBak,
     },
   },
   {

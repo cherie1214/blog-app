@@ -33,36 +33,38 @@ class List extends Component {
   }
 
   getList() {
-    const { page, seed, data } = this.state;
-    axios.post(domain + '/api/article/getAllList', {page, seed})
-    .then((res)=>{
+
+    setTimeout(() => {
+      const { page, seed, data } = this.state;
+      axios.post(domain + '/api/article/getAllList', {page, seed})
+      .then((res)=>{
         if(res.data.status === 'ALL_ARTICLE_GET_SUCCESSED'){
           // alert(page)
           let newState = {
             data: page === 1 ? res.data.list : [...data, ...res.data.list],
             error: res.message || null,
-            loading: false,
             refreshing: false,
             endYn : res.data.endYn,
-            init : true
+            init : true,
+            loading: false,
           }
-          if(res.data.length == 0 ) {
-              newState.init = false;
-              newState.message = "게시물이 없습니다.";
+          if(res.data.list.length == 0 ) {
+            newState.init = true;
+            newState.loading = false;
+            newState.message = "게시물이 없습니다.";
           }else newState.message = null;
-    
+          
           this.setState(newState);
         }
-    })
-    .catch((err)=>{})
+      })
+      .catch((err)=>{ alert(err)})
+    }, 0)
   }
 
   renderFooter = (
     <View
       style={{
         paddingVertical: 20,
-        // borderTopWidth: 1,
-        // borderColor: "#CED0CE"
       }}
     >
       <ActivityIndicator animating size="large" />
@@ -93,23 +95,6 @@ class List extends Component {
 
   _keyExtractor = (item, index) => item._id;
   
-  // _getItemList () {
-  //   if(Object.keys(this.state.items).length === 0) return '';
-  //   var indents = [];
-  //   Object.values(this.state.items).forEach((e, i) => {
-  //     indents.push(
-  //     <ListItem 
-  //       key={i} {...e} 
-  //       token={this.props.login.token} 
-  //       nickname={this.props.login.nickname} 
-  //       setLikeIcon={this.props.setLikeIcon} 
-  //       _handleLike={(_id) => {this.handleLike(_id)}}
-  //       />);
-  //   })
-
-  //   return indents;
-  // }
-
   render(){
     const { message, data, refreshing, loading, init } = this.state;
 
@@ -126,9 +111,9 @@ class List extends Component {
             </LogoBox>
           </HeaderBox>
           <ConBox>
-            {data.length === 0
-              ? (<Loading ><ActivityIndicator animating size="large" /></Loading>)
-              : <FlatList
+            {data.length !== 0
+              ? (
+                <FlatList
                   style={{padding: "7%"}}
                   data={data} 
                   renderItem={({item}) => <ListItem 
@@ -146,8 +131,15 @@ class List extends Component {
                   onEndReached={this.handleLoadMore}
                   onEndReachedThreshold={0}
                 />
-              }
-              {!init ? <NoDataBox><NoDataText>{message}</NoDataText></NoDataBox> : null}
+              ) : init ? (
+                <NoDataBox><NoDataText>{message}</NoDataText></NoDataBox> 
+              ) : null }
+              {!init ? 
+                <NoDataBox>
+                  <Loading><ActivityIndicator animating size="large" /></Loading>
+                  <NoDataText>{message}</NoDataText>
+                </NoDataBox>
+              : null} 
           </ConBox>
         </Wrap>
       )
@@ -215,19 +207,20 @@ const Logo = styled.Text`
 
 const ConBox = styled.View`
   flex:1;
-  padding-bottom: 7%;
+  padding-bottom: 6%;
 `;
 
 const Loading = styled.View`
   margin-top : 7%;
 `;
 
-const NoDataBox = styled.View`
+const NoDataBox = styled.View`  
   align-items: center;
   justify-content: center;
 `;
 
 const NoDataText = styled.Text`
+  margin-top : 5%;
   color:#666;
   font-size:16px;
   font-family: 'hd-regular';
