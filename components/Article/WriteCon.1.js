@@ -13,128 +13,138 @@ const { height, width } = Dimensions.get("window");
 export default class WriteCon extends Component {
   constructor(props){
     super(props);
-    this.state = {      
+    this.state = {
+      _id: this.props._id,
+      // isModalVisible: false,
+      // modalType: "",
+      switchOneday: false,
+      startDate: "",
+      finishDate: "",
+      title: null,
+      text: null,
+      weather: {
+        id: 1,
+        name: "",
+      },
+      bg : {
+        photo : this.props.article.selectedImg,
+        color : {
+          id : 1,
+          value : "#6B5ED1"
+        }
+      },
       loaded : false
     };
     this._toggleModal = this._toggleModal.bind(this);
     this._renderModalType = this._renderModalType.bind(this);
     this._renderModalContent = this._renderModalContent.bind(this);
-    this._handleDate = this._handleDate.bind(this);
-    this._handleBg = this._handleBg.bind(this);
-    this._handleWeather = this._handleWeather.bind(this);
   }
 
-  // componentDidUpdate( prevProps, prevState) {
-  //   if(prevProps._id !== this.state._id) {
-  //     this.setState({
-  //       ...this.state, 
-  //       _id : this.props._id
-  //     })
-  //   }
-  //   if(JSON.stringify(prevState) !== JSON.stringify(this.state)) this.props.handleState(this.state);
-  //   // alert(JSON.stringify(prevState,0,2))
-  //   if(this.props._editId !== "new" && !this.state.loaded){
-  //     this.setState({
-  //       ...this.state,
-  //       _id: this.props._editId,
-  //       startDate: this.props.article.startDate,
-  //       finishDate: this.props.article.finishDate,
-  //       title: this.props.article.title,
-  //       text: this.props.article.text,
-  //       weather: {
-  //         ...this.state.weather,
-  //         name: this.props.article.weather,
-  //       },
-  //       bg: {
-  //         photo : this.props.article.bgStyle.photoUrl,
-  //         color : {
-  //           ...this.state.bg.color,
-  //           value : this.props.article.bgStyle.backgroundColor,
-  //         }
-  //       },
-  //       loaded : true,
-  //       published: this.props.article.published,
-  //       delYn: this.props.article.delYn,
-  //     });
-  //   }    
-  // }
+  componentDidUpdate( prevProps, prevState) {
+    if(prevProps._id !== this.state._id) {
+      this.setState({
+        ...this.state, 
+        _id : this.props._id
+      })
+    }
+    if(JSON.stringify(prevState) !== JSON.stringify(this.state)) this.props.handleState(this.state);
+    // alert(JSON.stringify(prevState,0,2))
+    if(this.props._editId !== "new" && !this.state.loaded){
+      this.setState({
+        ...this.state,
+        _id: this.props._editId,
+        startDate: this.props.article.startDate,
+        finishDate: this.props.article.finishDate,
+        title: this.props.article.title,
+        text: this.props.article.text,
+        weather: {
+          ...this.state.weather,
+          name: this.props.article.weather,
+        },
+        bg: {
+          photo : this.props.article.bgStyle.photoUrl,
+          color : {
+            ...this.state.bg.color,
+            value : this.props.article.bgStyle.backgroundColor,
+          }
+        },
+        loaded : true,
+        published: this.props.article.published,
+        delYn: this.props.article.delYn,
+      });
+    }    
+  }
 
   _handleDate = (startDate, finishDate, switchOneday) => {
-    let obj = {
-      ...this.props.article,
-    };
     if(startDate){
-      obj.startDate = startDate;
+      this.setState({
+        startDate
+      })
     }
     if(finishDate){
-      obj.finishDate = finishDate;
+      this.setState({
+        finishDate
+      })
     }
     if(finishDate === "remove"){
-      obj.finishDate = null;
+      this.setState({
+        finishDate : null
+      });
     }
-    switchOneday 
-    ? obj.switchOneday = true
-    : obj.switchOneday = false
-    this.props.handleState(obj);
+    switchOneday ? 
+    this.setState({
+      switchOneday : true
+    })
+    :this.setState({
+      switchOneday : false
+    });
   }
 
   _handleWeather = (value) => {
-    const obj = {
-      ...this.props.article,
-      weather: {
-        ...this.props.article.weather,
-        ...value
-      }
-    }
-    this.props.handleState(obj);
+    this.setState({
+      weather : value
+    })
   }
 
   _handleBg = (value) => {
-    const obj = {
-      ...this.props.article,
-      ...value
-    }  
-    this.props.handleState(obj);
+    this.setState({
+      bg : value
+    });
   }
 
   _toggleModal = (type) => {
-    this.props.handleState({ 
-      ...this.state.article,
+    this.setState({ 
       isModalVisible: !this.state.isModalVisible, 
       modalType: type 
     });
   };
 
   _renderModalType(date, weather, bg){
-      switch (this.props.article.modalType) {
+      switch (this.state.modalType) {
         case "date":   return date;
         case "weather": return weather;
         case "bg":  return bg;
     }
   }
 
-  _renderModalContent = () => {
-    const article = this.props.article;
-    return(
-      <View>    
-        <ModalHeader>
-          <ModalTit>
-            {this._renderModalType("날짜", "날씨", "카드 배경")} 선택하기
-          </ModalTit>
-          <Button value="cancle" title="닫기" onPress={() => this._toggleModal('')}/>
-        </ModalHeader>
-        {this._renderModalType(
-          <ModalDate parentState={article} handleDate={this._handleDate} />, 
-          <ModalWeather parentState={article} handleWeather={this._handleWeather} />,
-          <ModalBg article={article} handleBg={this._handleBg} handleCameraModal={this.props.handleModal} />
-        )} 
-      </View>
-    )
-  };
+  _renderModalContent = () => (
+    <View>    
+      <ModalHeader>
+        <ModalTit>
+          {this._renderModalType("날짜", "날씨", "카드 배경")} 선택하기
+        </ModalTit>
+        <Button value="cancle" title="닫기" onPress={() => this._toggleModal('')}/>
+      </ModalHeader>
+      {this._renderModalType(
+        <ModalDate parentState={this.state} handleDate={this._handleDate} />, 
+        <ModalWeather parentState={this.state} handleWeather={this._handleWeather}/>,
+        <ModalBg parentState={this.state} handleBg={this._handleBg} handleCameraModal={this.props.handleModal}/>
+      )} 
+    </View>
+  );
  
   render(){
-    const article = this.props.article;
-    const { startDate, finishDate, weather, bg, title, text, isModalVisible, selectedImg } = this.props.article;
+    const { isModalVisible, startDate, finishDate, title, weather, bg, text } = this.state;
 
     return (
       <Wrap>
@@ -146,11 +156,11 @@ export default class WriteCon extends Component {
           {this._renderModalContent()}
         </Modal>
 
-        <HeaderConBox bg={!selectedImg ? 
+        <HeaderConBox bg={!bg.photo ? 
           ( "background-color:" + bg.color.value) : null }>
-          {selectedImg ? (
+          {bg.photo ? (
             <BgBox>
-              <BgImage source={{ uri: selectedImg[0].uri }} />
+              <BgImage source={{ uri: bg.photo }} />
               <BgMask></BgMask>
             </BgBox>
           ) : null }
@@ -164,7 +174,7 @@ export default class WriteCon extends Component {
             <Row> 
               <CommonText>제목</CommonText>
               <TitInput
-                onChangeText={(text) => this.props.handleState({...article, title: text})}
+                onChangeText={(title) => this.setState({title})}
                 value={title}
                 maxLength={45}
                 autoCapitalize={"none"}
@@ -191,8 +201,8 @@ export default class WriteCon extends Component {
         </HeaderConBox>
         <TextareaBox>
           <Textarea
-            onChangeText={(text) => this.props.handleState({...article,text})}
             multiline={true}
+            onChangeText={(text) => this.setState({text})}
             placeholder="당신의 여행은 어땠나요?"
             placeholderStyle={{color:"#999", fontSize:15}}
             value={text}/>

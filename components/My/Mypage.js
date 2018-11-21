@@ -5,6 +5,8 @@ import { Ionicons, Feather, Foundation } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { signOut, changeNicknameRequest, setNotifyIcon, setLikeIcon, clearLikeIconRepeat } from '../../actions';
 import CameraRoll from '../Photo/CameraRoll';
+import axios from 'axios';
+import { domain } from '../../config';
 
 const { height, width } = Dimensions.get("window");
 
@@ -14,7 +16,23 @@ class Mypage extends Component {
     this.state = {
       isEditing: false,
       cameraRollVisible: false,
+      profileUri: this.props.auth.login.profileImg,
     }
+  }
+  
+  componentDidMount(){
+    // const profileImg = this.props.auth.login.profileImg;
+    // this.setState({
+    //   profileUri: profileImg,
+    // })
+  }
+
+  _handleImage = (cameraRollUri) => {
+    this.setState({ profileUri: cameraRollUri[0].uri })
+  }
+
+  _closeCameraRoll = () => {
+    this.setState({ cameraRollVisible: !this.state.cameraRollVisible })
   }
 
    _handleChangeNickname(isEditing){
@@ -56,7 +74,7 @@ class Mypage extends Component {
 
   
   render(){
-    const { isEditing, cameraRollVisible } = this.state;
+    const { isEditing, cameraRollVisible, profileUri } = this.state;
     const auth = this.props.auth;
     
     return(
@@ -72,7 +90,8 @@ class Mypage extends Component {
             <Contents>
               <ProfileBox>
                 <ImgBox>
-                  <ProfileImgBox source={require('../../assets/bonobono.jpg')}/>
+                  {/* <ProfileImgBox source={{uri: this.props.auth.login.profileImg}} /> */}
+                  <ProfileImgBox source={{ uri: profileUri }} />
                   <PhotoEditBtn onPress={() => this._toggleCamera()}>
                     <Feather name="camera" color="#fff" size={20}/>
                   </PhotoEditBtn>
@@ -112,7 +131,7 @@ class Mypage extends Component {
             </Contents>
           </Wrap>
         ) : (
-          <CameraRoll />
+          <CameraRoll parentName={"mypage"} handleClose={this._closeCameraRoll} handleImage={this._handleImage} />
         )}  
       </Container>  
     )

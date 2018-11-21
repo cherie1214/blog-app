@@ -9,13 +9,18 @@ import { connect } from 'react-redux';
 import { withNavigation } from 'react-navigation';
 
 class SignedMenu extends Component {
+  componentDidMount(){
+    //  alert(JSON.stringify(this.props.auth.login))
+  }
   
   render() {
     const auth = this.props.auth;
     const notifyIcon = this.props.notifyIcon;
     const likeIcon = this.props.likeIcon;
-
+    // alert(JSON.stringify(this.props.auth.login))
+    
     return (
+      
       <Wrap>
         {/*StatusBar hidden={true} />*/}
         <CloseBox>
@@ -31,7 +36,7 @@ class SignedMenu extends Component {
         </CloseBox>
         <ProfileBox
           onPress={() => this.props.navigation.navigate('Mypage')}>
-          <ProfileImgBox source={{uri: 'https://i.pinimg.com/564x/23/9d/64/239d649cbeaf9466a17620a1209c6f92.jpg'}} />
+          <ProfileImgBox source={{uri: auth.login.profileImg}} />
           <UserNickname>{auth.login.nickname}</UserNickname>
         </ProfileBox>
         <BorderBox />

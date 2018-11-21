@@ -18,6 +18,7 @@ import {
   AUTH_CHANGE_PW_FAILURE,
 
   CHANGE_NICKNAME,
+  CHANGE_PROFILE_IMG,
 
   AUTH_INIT,
 } from './ActionTypes';
@@ -52,12 +53,13 @@ export function signInError() {
 
     };
 }
-export function signInSuccess(id, _id, nickname, token) {
+export function signInSuccess(id, _id, nickname, profileImg, token) {
     return {
         type: AUTH_SIGNIN_SUCCESS,
         id,
         _id,
         nickname,
+        profileImg,
         token
     };
 }
@@ -103,7 +105,7 @@ export function signout(){
     }
 }
 
-//change password
+//change
 export function changePw(pw){
     return {
         type: AUTH_CHANGE_PW,
@@ -122,6 +124,13 @@ export function changeNickname(nickname){
     return{
         type: CHANGE_NICKNAME,
         nickname
+    }
+}
+
+export function changeProfileImg(profileImg){
+    return{
+        type: CHANGE_PROFILE_IMG,
+        profileImg
     }
 }
 
@@ -148,10 +157,12 @@ export function userSignIn(userInfo) {
             const nickname = res.data.nickname;
             const id = res.data.id;
             const _id = res.data._id;
+            const profileImg = res.data.profileImg;
+            // const profileImg = "https://i.pinimg.com/564x/23/9d/64/239d649cbeaf9466a17620a1209c6f92.jpg";
             const token = res.data.token;
 
             // alert(token);
-            // alert(JSON.stringify(userInfo));          
+            // alert(JSON.stringify(profileImg));          
 
             switch(status){
                 case "SIGNIN_ERROR" : dispatch(signInError());
@@ -164,12 +175,13 @@ export function userSignIn(userInfo) {
                             id, 
                             _id,
                             nickname,
+                            profileImg,
                             token
                         }))
                     } catch(error) {
                         alert("Storage Error: " + error)
                     } finally {
-                        dispatch(signInSuccess(id, _id, nickname, token));
+                        dispatch(signInSuccess(id, _id, nickname, profileImg, token));
                         break;       
 
                     }
@@ -251,8 +263,8 @@ export function getStorage(){
             const _storedData = await AsyncStorage.getItem('@BlogApp.Auth');
             if(_storedData){
                 _storedData = JSON.parse(_storedData);
-                // alert(_storedData.token)
-                dispatch(signInSuccess(_storedData.id, _storedData._id, _storedData.nickname, _storedData.token));
+                // alert(JSON.stringify(_storedData))
+                dispatch(signInSuccess(_storedData.id, _storedData._id, _storedData.nickname, _storedData.profileImg, _storedData.token ));
             }
         } catch(error) {
             alert("ERROR RETRIEVEING data: " + error);
@@ -312,3 +324,48 @@ export function changeNicknameRequest (userInfo, token) {
         });
     }
 }
+
+// change profileImg
+// export function changeProfileImgRequest (userInfo, token) {
+//     return (dispatch) => {
+//         dispatch(getting());
+
+//         const header = {
+//             headers : {
+//                 'x-access-token' : token
+//             }
+//         }
+
+//         // alert(userInfo + token)
+
+//         // API REQUEST
+//         return axios.post(domain + '/api/auth/changeProfileImg', userInfo, header)
+//         .then((res) => {
+//             if(res.data.status === "CHANGE_NICKNAME_ERROR"){
+//                 alert("ERORR");
+//             }else if(res.data.status === "CHANGE_NICKNAME_DUPLICATED"){
+//                 // alert("이미 존재하는 닉네임입니다.");
+//             }else if(res.data.status === "CHANGE_NICKNAME_SUCCESSED"){
+//                 try {
+//                     AsyncStorage.setItem('@BlogApp.Auth', JSON.stringify({
+//                         id : userInfo.id,
+//                         nickname : userInfo.nickname,
+//                         token
+//                     }));
+//                 } catch (error) {
+//                     alert("Storage Error : " + error);
+//                 } finally {
+//                     // alert("변경되었습니다.");
+//                     // alert(userInfo.nickname)
+//                     dispatch(changeNickname(userInfo.nickname));
+//                 }
+//             }else{
+//                 alert("ERORR");
+//             }
+//             // dispatch(authInit());
+//         }).catch((error) => {
+//             // FAILED
+//             dispatch(getFailure());
+//         });
+//     }
+// }

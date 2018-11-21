@@ -23,26 +23,9 @@ class Write extends Component {
           isModalVisible: false,
           modalType : '',
           cameraRollVisible: false,
-          switchOneday: false,
-          startDate: "",
-          finishDate: "",
-          title: null,
-          text: null,
-          weather: {
-            id: 1,
-            name: "",
-          },
-          bg : {
-            photo : null,
-            color : {
-              id : 1,
-              value : "#6B5ED1"
-            }
-          },
           selectedImg: null,
-          delYn : false,
-          published : false,
         },
+        bgUri: null,
         _editId: this.props.navigation.getParam('itemId','new'),
     };
   }
@@ -78,35 +61,10 @@ class Write extends Component {
     if(_editId !== "new"){
       axios.post(domain + '/api/article/getEditArticle', {_editId})
       .then((res) => {
-        if(res.data.status === "ARTICLE_GET_FAILED"){
-          alert("ERROR\n"+res.data.message);
-        }else if(res.data.status === "ARTICLE_GET_SUCCESSED"){  
-          // this.setState({article: res.data.data})
-          const article = res.data.data;
-            this.setState({
-              ...this.state,
-              article : {
-                ...this.state.article,
-                _id : article._id,
-                startDate: article.startDate,
-                finishDate: article.finishDate,
-                title : article.title,
-                text: article.text,
-                weather : {
-                  id : null,
-                  name : article.weather
-                },
-                bg : {
-                  photo : article.bgStyle.photoUrl,
-                  color : {
-                  id : null,
-                  value : article.bgStyle.backgroundColor
-                  }
-                },
-                delYn : article.delYn,
-                published : article.published
-              },
-            })  
+          if(res.data.status === "ARTICLE_GET_FAILED"){
+              alert("ERROR\n"+res.data.message);
+          }else if(res.data.status === "ARTICLE_GET_SUCCESSED"){  
+            this.setState({article: res.data.data})
           }
       }).catch((error) => {
         alert("ERROR\n"+res.data.message);

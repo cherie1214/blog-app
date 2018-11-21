@@ -20,6 +20,7 @@ export const AUTH_CHANGE_PW_FAILURE = "AUTH_CHANGE_PW_FAILURE";
 export const AUTH_INIT = "AUTH_INIT";
 
 export const CHANGE_NICKNAME = "CHANGE_NICKNAME";
+export const CHANGE_PROFILE_IMG = "CHANGE_PROFILE_IMG";
 
 
 // article

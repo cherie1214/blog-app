@@ -25,7 +25,7 @@ class CameraRollScreen extends Component {
   }
 
   async _getPhotosAsync() {
-    let photos = await CameraRoll.getPhotos({ first: 30 });
+    let photos = await CameraRoll.getPhotos({ first: 15 });
     this.setState({ photos });
   }
 
@@ -48,6 +48,14 @@ class CameraRollScreen extends Component {
     })
   }
 
+  handleSelected = (seletedImg) => {
+    if(seletedImg.length != 0){
+      this.props.handleImage(seletedImg);
+      this.props.handleClose();
+      return false;
+    }
+  }
+
   render() {
     let { photos, cameraVisible } = this.state;
     return (
@@ -66,11 +74,15 @@ class CameraRollScreen extends Component {
             </HeaderBox>
             <ConBox>
               <CameraRollPicker
-                // callback={this.getSelectedImages} 
-                // callback={alert("선택함!")} 
+                callback={(seletedImg) => this.handleSelected(seletedImg)} 
+                // groupTypes={'Album'}
+                selected={[]}
+                selectSingleItem={true}
                 maximum="1"
                 imageMargin={2}
                 containerWidth={width + 4}
+                selectedMarker={null}
+                removeClippedSubViews={true}
                 />
             </ConBox>
           </Wrap>

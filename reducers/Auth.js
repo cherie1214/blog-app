@@ -15,6 +15,7 @@ const initialState = {
         _id: "",
         nickname: "",
         token: "",
+        profileImg: "",
     }
 };
 
@@ -79,6 +80,7 @@ export default function auth(state = initialState, action) {
                 id: action.id,
                 _id: action._id,
                 nickname: action.nickname,
+                profileImg: action.profileImg,
                 token: action.token,
             }
         };    
@@ -132,6 +134,7 @@ export default function auth(state = initialState, action) {
                     id: "",
                     _id: "",
                     nickname: "",
+                    profileImg: "",
                 }
             }
 
@@ -159,6 +162,20 @@ export default function auth(state = initialState, action) {
                 login: {
                     ...state.login,
                     nickname: action.nickname,                    
+                }
+            }  
+            
+        //change profileImg
+        case types.CHANGE_PROFILE_IMG:
+            return {
+                ...state,
+                http: {
+                    status: 'SUCCESS',
+                    result: 'SUCCESS'
+                },
+                login: {
+                    ...state.login,
+                    profileImg: action.profileImg,                    
                 }
             }      
 
