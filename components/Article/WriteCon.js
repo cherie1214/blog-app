@@ -24,41 +24,6 @@ export default class WriteCon extends Component {
     this._handleWeather = this._handleWeather.bind(this);
   }
 
-  // componentDidUpdate( prevProps, prevState) {
-  //   if(prevProps._id !== this.state._id) {
-  //     this.setState({
-  //       ...this.state, 
-  //       _id : this.props._id
-  //     })
-  //   }
-  //   if(JSON.stringify(prevState) !== JSON.stringify(this.state)) this.props.handleState(this.state);
-  //   // alert(JSON.stringify(prevState,0,2))
-  //   if(this.props._editId !== "new" && !this.state.loaded){
-  //     this.setState({
-  //       ...this.state,
-  //       _id: this.props._editId,
-  //       startDate: this.props.article.startDate,
-  //       finishDate: this.props.article.finishDate,
-  //       title: this.props.article.title,
-  //       text: this.props.article.text,
-  //       weather: {
-  //         ...this.state.weather,
-  //         name: this.props.article.weather,
-  //       },
-  //       bg: {
-  //         photo : this.props.article.bgStyle.photoUrl,
-  //         color : {
-  //           ...this.state.bg.color,
-  //           value : this.props.article.bgStyle.backgroundColor,
-  //         }
-  //       },
-  //       loaded : true,
-  //       published: this.props.article.published,
-  //       delYn: this.props.article.delYn,
-  //     });
-  //   }    
-  // }
-
   _handleDate = (startDate, finishDate, switchOneday) => {
     let obj = {
       ...this.props.article,
@@ -99,8 +64,8 @@ export default class WriteCon extends Component {
 
   _toggleModal = (type) => {
     this.props.handleState({ 
-      ...this.state.article,
-      isModalVisible: !this.state.isModalVisible, 
+      ...this.props.article,
+      isModalVisible: !this.props.article.isModalVisible,
       modalType: type 
     });
   };
@@ -115,6 +80,7 @@ export default class WriteCon extends Component {
 
   _renderModalContent = () => {
     const article = this.props.article;
+
     return(
       <View>    
         <ModalHeader>

@@ -16,13 +16,17 @@ export default class ModalDate extends Component {
   }
 
   render(){
-    const { switchOneday, startDate, finishDate } = this.state;
+    const {switchOneday} = this.props.parentState;
+    const startDate = this.props.parentState.startDate ? this.props.parentState.startDate.split('T')[0] : null;
+    const finishDate = this.props.parentState.finishDate ? this.props.parentState.finishDate.split('T')[0] : null;
+    const today = new Date().toISOString().slice(0, 10);
 
-    const date = new Date();
-    const yy = date.getFullYear();
-    const mm = ( '00' + (date.getMonth() + 1) ).substr(-2);
-    const dd = ( '00' + (date.getDate() ) ).substr(-2);
-    const today = yy + "." +  mm + "." + dd;
+    // const { switchOneday, startDate, finishDate } = this.state;
+    // const date = new Date();
+    // const yy = date.getFullYear();
+    // const mm = ( '00' + (date.getMonth() + 1) ).substr(-2);
+    // const dd = ( '00' + (date.getDate() ) ).substr(-2);
+    // const today = yy + "." +  mm + "." + dd;
 
     return(
       <ModalWrap>
@@ -42,7 +46,7 @@ export default class ModalDate extends Component {
             />
         </ModalRow>
         <ModalRow>
-          <ModalLabel>{this.state.switchOneday ? "Date" : "Start"}</ModalLabel>
+          <ModalLabel>{switchOneday ? "Date" : "Start"}</ModalLabel>
           <DatePicker
             style={{width: 200}}
             date={startDate}
@@ -75,7 +79,7 @@ export default class ModalDate extends Component {
             }}
           />
         </ModalRow>
-        { !this.state.switchOneday ?
+        { !switchOneday ?
         <ModalRow>
           <ModalLabel>Finish</ModalLabel>
           <DatePicker

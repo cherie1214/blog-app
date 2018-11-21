@@ -131,7 +131,7 @@ class Mypage extends Component {
             </Contents>
           </Wrap>
         ) : (
-          <CameraRoll parentName={"mypage"} handleClose={this._closeCameraRoll} handleImage={this._handleImage} />
+          <CameraRoll handleClose={this._closeCameraRoll} handleImage={this._handleImage} />
         )}  
       </Container>  
     )

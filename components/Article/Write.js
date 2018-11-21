@@ -47,31 +47,6 @@ class Write extends Component {
     };
   }
 
-  _handleState = (article) => {
-    this.setState({
-        ...this.state,
-        article
-    });
-  }
-
-  _handleImage = (selectedImg) => {
-    this.setState({
-      ...this.state,
-      article: {
-        ...this.state.article,
-        selectedImg
-      }
-    })
-  }
-
-  _ToggleModal = () => {
-    this.setState({ 
-      isModalVisible: false,
-      modalType : '',
-      cameraRollVisible: !this.state.cameraRollVisible,
-    });
-  };
-
   componentDidMount(){
     const _editId = this.state._editId;
 
@@ -99,8 +74,8 @@ class Write extends Component {
                 bg : {
                   photo : article.bgStyle.photoUrl,
                   color : {
-                  id : null,
-                  value : article.bgStyle.backgroundColor
+                    id : null,
+                    value : article.bgStyle.backgroundColor
                   }
                 },
                 delYn : article.delYn,
@@ -114,6 +89,31 @@ class Write extends Component {
     }
   }
 
+  _handleState = (article) => {
+    this.setState({
+        ...this.state,
+        article
+    });
+  }
+
+  _handleImage = (selectedImg) => {
+    this.setState({
+      ...this.state,
+      article: {
+        ...this.state.article,
+        selectedImg
+      }
+    })
+  }
+
+  _ToggleModal = () => {
+    this.setState({ 
+      isModalVisible: false,
+      modalType : '',
+      cameraRollVisible: !this.state.cameraRollVisible,
+    });
+  };
+
   render(){  
     const { cameraRollVisible, article, _editId } = this.state;
 
@@ -121,18 +121,18 @@ class Write extends Component {
       <Container>
       {!cameraRollVisible ? (
         <Wrap>
-          <WriteHeader handleState={this._handleState} article={article} _editId={_editId}/>
+          <WriteHeader article={article} _editId={_editId} handleState={this._handleState} />
           <ConBox>           
             <WriteCon 
-              handleState={this._handleState} 
-              handleModal={this._ToggleModal}
               article={article}
               _id={this.state.article._id}
               _editId={this.state._editId}
+              handleState={this._handleState} 
+              handleModal={this._ToggleModal}
               />
           </ConBox>
         </Wrap>  
-      ) : <CameraRoll parentName={"write"} handleClose={this._ToggleModal} handleImage={this._handleImage} />}
+      ) : <CameraRoll handleClose={this._ToggleModal} handleImage={this._handleImage} />}
       </Container>
       )
   }
