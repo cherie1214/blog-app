@@ -103,6 +103,9 @@ export const SwitchNavi = createStackNavigator(
     },
     Write: {
       screen: Write,
+      navigationOptions: () => ({
+        gesturesEnabled: false,
+      }),
     },
     Edit: {
       screen: Edit,

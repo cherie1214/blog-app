@@ -135,7 +135,10 @@ class Edit extends Component {
   _renderModalContent = (_id) => (
     <ModalWrap>    
       <ModalSelect>
-        <ModalOption first onPress={() => this.props.navigation.navigate("Write", {_id})}>
+        <ModalOption first onPress={() => {
+          this.setState({ isModalVisible: false });
+          this.props.navigation.navigate("Write", {_id});
+        }}>
           <ModalBtnText>수정</ModalBtnText>
         </ModalOption>
         <ModalOption onPress={() => {
@@ -207,7 +210,7 @@ class Edit extends Component {
         </Modal>
 
         <HeaderBox>
-          <BtnIcon onPress={() => this.props.navigation.navigate('Home')}>
+          <BtnIcon onPress={() => this.props.navigation.goBack(null)}>
             <Ionicons name="ios-arrow-round-back" color="#333" size={45}/>
           </BtnIcon>
           <H1>글 관리</H1>

@@ -14,7 +14,7 @@ class ArticleHeaderCon extends Component {
   }
 
   componentDidMount(){
-    alert(JSON.stringify(this.props.state))
+    alert(JSON.stringify(this.props.state.__id))
   }
 
   render(){

@@ -47,7 +47,7 @@ class WriteHeader extends Component {
 
   handleBackYes = (_editId) => {
     _editId === "new" 
-    ? this.props.navigation.navigate('Home') 
+    ? this.props.navigation.goBack(null) 
     : this.props.navigation.navigate('Edit')
   }
 
@@ -87,7 +87,10 @@ class WriteHeader extends Component {
           visible={this.state.backConfirmVisible}
           positiveButton={{
               title: "네",
-              onPress: () => this.handleBackYes(_editId)
+              onPress: () => {
+                this.setState({backConfirmVisible: false})
+                this.handleBackYes(_editId)
+              }
           }}
           negativeButton={{
               title: "아니오",
@@ -105,7 +108,10 @@ class WriteHeader extends Component {
           visible={this.state.saveConfirmVisible}
           positiveButton={{
               title: "네",
-              onPress: () => this.props.navigation.navigate('Edit') 
+              onPress: () => {
+                this.setState({saveConfirmVisible: false})
+                this.props.navigation.navigate('Edit') 
+              }
           }}
           negativeButton={{
               title: "아니오",
