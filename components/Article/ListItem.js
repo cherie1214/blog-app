@@ -47,7 +47,7 @@ class ListItem extends Component {
             </WeatherBox>
           </FirstRow>
           <LinkView onPress={() => {
-            alert(JSON.stringify(this.props))
+            // alert(JSON.stringify(this.props))
             this.props.navigation.navigate('ArticleView',{item : this.props})
           }}>
             <TitBox>

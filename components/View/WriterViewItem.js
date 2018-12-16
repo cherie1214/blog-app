@@ -39,7 +39,7 @@ class WriterViewItem extends Component {
             </WeatherBox>
           </FirstRow>
           <TouchableOpacity onPress={() => {
-            alert(JSON.stringify(this.props))
+            // alert(JSON.stringify(this.props))
             this.props.navigation.push('ArticleView',{item : this.props})
           }}>
             <TitBox>
