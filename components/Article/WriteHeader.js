@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { requestSaveArticle, articleInit, setNotifyIcon } from '../../actions';
 import { ConfirmDialog } from 'react-native-simple-dialogs';
 import { withNavigation } from 'react-navigation';
+import { newBgPhoto } from '../../lib/postPicture';
 
 const { height, width } = Dimensions.get("window");
 
@@ -22,13 +23,13 @@ class WriteHeader extends Component {
   componentDidUpdate(prevProps) {
     if(prevProps.http !== this.props.http) {
         if(this.props.http.status === "SUCCESS" || this.props.http.status === "UPDATED") {
-          this.props.articleInit();
-
+          
           this.props.handleState({
-              ...this.props.article,
-              _id : this.props.http.result
+            ...this.props.article,
+            _id : this.props.http.result
           });
-
+          
+          this.props.articleInit();
           this.setState({
             saveConfirmVisible : true,
           });
@@ -48,6 +49,26 @@ class WriteHeader extends Component {
     _editId === "new" 
     ? this.props.navigation.navigate('Home') 
     : this.props.navigation.navigate('Edit')
+  }
+
+  async saveArticle() {
+    const article = this.props.article;
+    const token = this.props.login.token;
+    
+    if(article.selectedImg && article.selectedImg[0]){
+      const post = newBgPhoto(article.selectedImg[0], token);
+      post.then(res => res.json())
+      .then(data => {
+          if(data.result !== 'SUCCESS'){
+              alert("File upload Error");
+              return false;
+          }
+          const toUploadObj = { ...article, bg : {...article.bg, photo : data.url} };
+          this.props.requestSaveArticle(toUploadObj, token);
+      });
+    }else{
+        this.props.requestSaveArticle(article, token);
+    }
   }
 
   render(){  
@@ -76,7 +97,7 @@ class WriteHeader extends Component {
         <H1>{_editId === "new" ? "글 쓰기" : "글 수정"}</H1>
         <BtnSave 
           title="저장" 
-          onPress={()=>{this.props.requestSaveArticle(article, token)}}
+          onPress={() => this.saveArticle()}
           />
         <ConfirmDialog
           title="글이 저장 되었습니다."

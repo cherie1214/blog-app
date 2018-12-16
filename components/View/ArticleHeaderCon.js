@@ -2,14 +2,19 @@ import React, { Component } from 'react';
 import { Dimensions } from 'react-native';
 import styled from 'styled-components';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { withNavigation } from 'react-navigation';
 
 const { height, width } = Dimensions.get("window");
 
-export default class ArticleHeaderCon extends Component {
+class ArticleHeaderCon extends Component {
   constructor(props){
     super(props);
     this.state = {
     }
+  }
+
+  componentDidMount(){
+    alert(JSON.stringify(this.props.state))
   }
 
   render(){
@@ -31,7 +36,7 @@ export default class ArticleHeaderCon extends Component {
             </TitBox>
           </ConBox>
           <Row>
-            <WriterBox>
+          <WriterBox onPress={() => this.props.navigation.navigate('WriterView',{writer_id : __id._id})}>
               <ProfileImgBox source={{ uri: __id.profileImg }} />
               <WriterNickname>{__id.nickname}</WriterNickname> 
             </WriterBox>              
@@ -40,6 +45,8 @@ export default class ArticleHeaderCon extends Component {
       )
   }
 }
+
+export default withNavigation(ArticleHeaderCon);
 
 const Wrap = styled.View`
   flex: 1;

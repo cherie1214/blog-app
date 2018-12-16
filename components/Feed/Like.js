@@ -185,6 +185,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(likeWithNavigation);
 const Wrap = styled.View`
   flex: 1;
   margin:8% 0 -5%;
+  background: #fff;
 `;
 
 const HeaderBox = styled.View`

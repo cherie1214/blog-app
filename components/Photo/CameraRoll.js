@@ -64,7 +64,7 @@ class CameraRollScreen extends Component {
           <Wrap>
             <StatusBar hidden={false} />
             <HeaderBox>
-              <BtnIcon onPress={() => this.props.navigation.navigate('Home')}>
+              <BtnIcon onPress={() => this.props.handleClose()}>
                 <Ionicons name="ios-arrow-round-back" color="#333" size={45}/>
               </BtnIcon>
               <H1>카메라롤</H1>

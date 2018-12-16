@@ -27,22 +27,22 @@ class CardItem extends Component {
 
   componentDidMount(){
     this.getList();
-    
   }
-
+  
   getList() {
     // const _this = this;
     axios.get(domain + '/api/article/getMainList')
     .then((res)=>{
-        if(res.data.status === 'MAIN_ARTICLE_GET_SUCCESSED'){
-          let arr = res.data.list;
-          arr.push({})
-            this.setState({
-                ...this.state,
-                cardCon : arr,
-            },()=>{
-            });
-        }
+      if(res.data.status === 'MAIN_ARTICLE_GET_SUCCESSED'){
+        let arr = res.data.list;
+        arr.push({})
+        this.setState({
+          ...this.state,
+          cardCon : arr,
+          },()=>{
+            // alert(JSON.stringify(this.state.cardCon))
+        });
+      }
     })
     .catch((err)=>{})
   }
@@ -70,7 +70,7 @@ class CardItem extends Component {
       <ItemBox bg={!item.bgStyle.photoUrl ? 
         ( "background-color:" + item.bgStyle.backgroundColor) : null
         }>
-        {!item.bgStyle.backgroundColor ? (
+        {item.bgStyle.photoUrl ? (
           <BgBox>
             <BgImage source={{ uri: item.bgStyle.photoUrl }} />
             <BgMask></BgMask>

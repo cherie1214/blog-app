@@ -51,11 +51,16 @@ export function requestSaveArticle(oriArticle, token){
 
         let article = Object.assign({},oriArticle);
         article.bgStyle = {};
-        article.bgStyle.backgroundColor = article.bg ? article.bg.color.value : article.bgStyle.backgroundColor || "#6B5ED1";
-        article.bgStyle.photoUrl = article.bg ?  article.bg.photo : (article.bgStyle ? article.bgStyle.photoUrl : null) || null;
+        article.bgStyle.backgroundColor = article.bg.color.value || article.bgStyle.backgroundColor || null;
+        article.bgStyle.photoUrl = article.bg.photo || (article.bgStyle ? article.bgStyle.photoUrl : null) || null;
+        if(!article.bgStyle.photoUrl){
+            article.bgStyle.backgroundColor = article.bgStyle.backgroundColor || "#6B5ED1";
+        }else{
+            article.bgStyle.backgroundColor = null;
+        }
         article.weather = article.weather && article.weather.name ? article.weather.name : null;
 
-        let feed = Object.assign({},article)         
+        let feed = Object.assign({},article)   
 
         // API REQUEST
         return axios.post(domain + '/api/article/write', article, header)

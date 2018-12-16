@@ -52,6 +52,7 @@ class Edit extends Component {
       setTimeout(() => {
         axios.post(domain + '/api/article/getArticles', {page, seed, ...obj})
           .then((res) => {
+            // alert(JSON.stringify(res))
               if(res.data.status === "ARTICLE_GET_FAILED"){
                   alert("ERROR\n"+res.data.message);
               }else if(res.data.status === "ARTICLE_GET_SUCCESSED"){  
@@ -134,7 +135,7 @@ class Edit extends Component {
   _renderModalContent = (_id) => (
     <ModalWrap>    
       <ModalSelect>
-        <ModalOption first onPress={() => this.props.navigation.navigate("Write", {'itemId': _id})}>
+        <ModalOption first onPress={() => this.props.navigation.navigate("Write", {_id})}>
           <ModalBtnText>수정</ModalBtnText>
         </ModalOption>
         <ModalOption onPress={() => {
@@ -273,6 +274,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(Edit);
 const Wrap = styled.View`
   flex: 1;
   margin:8% 0 -8%;
+  background: #fff;
 `;
 
 const HeaderBox = styled.View`

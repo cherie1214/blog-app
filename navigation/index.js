@@ -28,7 +28,6 @@ import Edit from '../components/Article/Edit';
 import List from '../components/Article/List';
 import Camera from '../components/Photo/Camera';
 import CameraRoll from '../components/Photo/CameraRoll';
-import CameraRollBak from '../components/Photo/CameraRollBak';
 
 
 const DrawerNavi = createDrawerNavigator(
@@ -56,21 +55,21 @@ const DrawerNavi = createDrawerNavigator(
   }
 );
 
-const SearchTabNavi = createStackNavigator(
-  {
-    ArticleTab: {
-      screen: ArticleTab,
-    },
-    WriterTab: {
-      screen: WriterTab,
-    }    
-  },
-  {
-    initialRouteName : 'ArticleTab',
-  }
-)
+// const SearchTabNavi = createStackNavigator(
+//   {
+//     ArticleTab: {
+//       screen: ArticleTab,
+//     },
+//     WriterTab: {
+//       screen: WriterTab,
+//     }    
+//   },
+//   {
+//     initialRouteName : 'ArticleTab',
+//   }
+// )
 
-export const SwitchNavi = createSwitchNavigator(
+export const SwitchNavi = createStackNavigator(
   {
     Home : {
       screen : DrawerNavi,
@@ -117,11 +116,17 @@ export const SwitchNavi = createSwitchNavigator(
     CameraRoll: {
       screen: CameraRoll,
     },
-    CameraRollBak: {
-      screen: CameraRollBak,
-    },
   },
   {
     initialRouteName : 'Home',
+    navigationOptions: ({ navigation }) => ({
+      header: null,
+      headerMode: 'none',
+      headerBackground: '#fff',
+      headerTintColor: '#fff',
+    }),
+    cardStyle: {
+      backgroundColor: '#fff',
+    }
   }
 )

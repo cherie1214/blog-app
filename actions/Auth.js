@@ -304,8 +304,10 @@ export function changeNicknameRequest (userInfo, token) {
                 try {
                     AsyncStorage.setItem('@BlogApp.Auth', JSON.stringify({
                         id : userInfo.id,
+                        _id : userInfo._id,
                         nickname : userInfo.nickname,
-                        token
+                        profileImg : userInfo.profileImg,
+                        token,
                     }));
                 } catch (error) {
                     alert("Storage Error : " + error);
@@ -326,46 +328,46 @@ export function changeNicknameRequest (userInfo, token) {
 }
 
 // change profileImg
-// export function changeProfileImgRequest (userInfo, token) {
-//     return (dispatch) => {
-//         dispatch(getting());
-
-//         const header = {
-//             headers : {
-//                 'x-access-token' : token
-//             }
-//         }
-
-//         // alert(userInfo + token)
-
-//         // API REQUEST
-//         return axios.post(domain + '/api/auth/changeProfileImg', userInfo, header)
-//         .then((res) => {
-//             if(res.data.status === "CHANGE_NICKNAME_ERROR"){
-//                 alert("ERORR");
-//             }else if(res.data.status === "CHANGE_NICKNAME_DUPLICATED"){
-//                 // alert("이미 존재하는 닉네임입니다.");
-//             }else if(res.data.status === "CHANGE_NICKNAME_SUCCESSED"){
-//                 try {
-//                     AsyncStorage.setItem('@BlogApp.Auth', JSON.stringify({
-//                         id : userInfo.id,
-//                         nickname : userInfo.nickname,
-//                         token
-//                     }));
-//                 } catch (error) {
-//                     alert("Storage Error : " + error);
-//                 } finally {
-//                     // alert("변경되었습니다.");
-//                     // alert(userInfo.nickname)
-//                     dispatch(changeNickname(userInfo.nickname));
-//                 }
-//             }else{
-//                 alert("ERORR");
-//             }
-//             // dispatch(authInit());
-//         }).catch((error) => {
-//             // FAILED
-//             dispatch(getFailure());
-//         });
-//     }
-// }
+export function changeProfileImgRequest (userInfo, token) {
+    return (dispatch) => {
+        dispatch(getting());
+        
+        const header = {
+            headers : {
+                'x-access-token' : token
+            }
+        }
+        
+        // alert(userInfo + token)
+        
+        // API REQUEST
+        return axios.post(domain + '/api/auth/changeProfileImg', userInfo, header)
+        .then((res) => {
+            console.log("aa")
+            if(res.data.status === "CHANGE_PROFILEIMG_FAILED"){
+                alert("ERORR");
+            }else if(res.data.status === "CHANGE_PROFILEIMG_SUCCESSED"){
+                try {
+                    AsyncStorage.setItem('@BlogApp.Auth', JSON.stringify({
+                        id : userInfo.id,
+                        _id : userInfo._id,
+                        nickname : userInfo.nickname,
+                        profileImg : userInfo.profileImg,
+                        token,
+                    }));
+                } catch (error) {
+                    alert("Storage Error : " + error);
+                } finally {
+                    alert("변경되었습니다.");
+                    dispatch(changeProfileImg(userInfo.profileImg));
+                }
+            }else{
+                alert("ERORR");
+            }
+            dispatch(authInit());
+        }).catch((error) => {
+            // FAILED
+            dispatch(getFailure());
+        });
+    }
+}

@@ -48,45 +48,46 @@ class Write extends Component {
   }
 
   componentDidMount(){
-    const _editId = this.state._editId;
+    const _id = this.props.navigation.getParam("_id");
+    if(!_id) return false;
 
-    if(_editId !== "new"){
-      axios.post(domain + '/api/article/getEditArticle', {_editId})
+      axios.post(domain + '/api/article/getEditArticle', {_id})
       .then((res) => {
         if(res.data.status === "ARTICLE_GET_FAILED"){
           alert("ERROR\n"+res.data.message);
         }else if(res.data.status === "ARTICLE_GET_SUCCESSED"){  
-          // this.setState({article: res.data.data})
+
           const article = res.data.data;
-            this.setState({
+          let obj = {
               ...this.state,
               article : {
-                ...this.state.article,
-                _id : article._id,
-                startDate: article.startDate,
-                finishDate: article.finishDate,
-                title : article.title,
-                text: article.text,
-                weather : {
-                  id : null,
-                  name : article.weather
-                },
-                bg : {
-                  photo : article.bgStyle.photoUrl,
-                  color : {
-                    id : null,
-                    value : article.bgStyle.backgroundColor
-                  }
-                },
-                delYn : article.delYn,
-                published : article.published
+                  ...this.state.article,
+                  _id : article._id,
+                  startDate: article.startDate,
+                  finishDate: article.finishDate,
+                  title : article.title,
+                  text: article.text,
+                  weather : {
+                      id : null,
+                      name : article.weather
+                  },
+                  bg : {
+                      photo : article.bgStyle.photoUrl,
+                      color : {
+                      id : null,
+                      value : article.bgStyle.backgroundColor
+                      }
+                  },
+                  delYn : article.delYn,
+                  published : article.published
               },
-            })  
+          }
+          if(article.bgStyle.photoUrl) obj.article.selectedImg = [{uri : article.bgStyle.photoUrl}];
+          this.setState(obj);
           }
       }).catch((error) => {
         alert("ERROR\n"+res.data.message);
       });
-    }
   }
 
   _handleState = (article) => {
@@ -142,6 +143,7 @@ export default Write;
 
 const Container = styled.View`
   flex: 1;
+  background: #fff;
 `;
 
 const Wrap = styled.View`

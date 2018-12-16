@@ -24,6 +24,10 @@ export default class WriteCon extends Component {
     this._handleWeather = this._handleWeather.bind(this);
   }
 
+  componentDidMount(){
+    // alert(JSON.stringify(this.props.article))
+  }
+
   _handleDate = (startDate, finishDate, switchOneday) => {
     let obj = {
       ...this.props.article,
@@ -114,7 +118,7 @@ export default class WriteCon extends Component {
 
         <HeaderConBox bg={!selectedImg ? 
           ( "background-color:" + bg.color.value) : null }>
-          {selectedImg ? (
+          { selectedImg ? (
             <BgBox>
               <BgImage source={{ uri: selectedImg[0].uri }} />
               <BgMask></BgMask>

@@ -121,6 +121,7 @@ const Wrap = styled.View`
   flex: 1;
   margin-top: 8%;
   height: ${height - (height * 0.08)};
+  background: #fff;
 `;
 
 const HeaderBox = styled.View`

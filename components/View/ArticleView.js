@@ -100,7 +100,7 @@ class ArticleView extends Component {
           ) : (
             isScrolling ? ('#fff') : ('transparent')
           )}>
-        <BtnIcon onPress={() => this.props.navigation.navigate('Home')}>
+        <BtnIcon onPress={() => this.props.navigation.goBack(null)}>
           <Ionicons name="ios-arrow-round-back" color={isScrolling ? ("#333") : ("#fff")} size={45}/>
         </BtnIcon>
         <Row>    

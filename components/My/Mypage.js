@@ -3,10 +3,11 @@ import { Dimensions, Text, View, TouchableOpacity } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons, Feather, Foundation } from '@expo/vector-icons';
 import { connect } from 'react-redux';
-import { signOut, changeNicknameRequest, setNotifyIcon, setLikeIcon, clearLikeIconRepeat } from '../../actions';
+import { signOut, changeNicknameRequest, changeProfileImgRequest, setNotifyIcon, setLikeIcon, clearLikeIconRepeat } from '../../actions';
 import CameraRoll from '../Photo/CameraRoll';
 import axios from 'axios';
 import { domain } from '../../config';
+import { newBgPhoto } from '../../lib/postPicture';
 
 const { height, width } = Dimensions.get("window");
 
@@ -15,30 +16,51 @@ class Mypage extends Component {
     super(props);
     this.state = {
       isEditing: false,
-      cameraRollVisible: false,
-      profileUri: this.props.auth.login.profileImg,
-    }
+      isCameraRollVisible: false,
+      selectedImg: null,
+      profileImg: this.props.login.profileImg,
+    };
+    this._handleImage = this._handleImage.bind(this);
   }
   
-  componentDidMount(){
-    // const profileImg = this.props.auth.login.profileImg;
-    // this.setState({
-    //   profileUri: profileImg,
-    // })
-  }
-
-  _handleImage = (cameraRollUri) => {
-    this.setState({ profileUri: cameraRollUri[0].uri })
+  _handleImage = (selectedImg) => {
+    const { token, id, _id, nickname } = this.props.login;
+    this.setState({
+      ...this.state,
+      selectedImg
+    },() => {
+      if(selectedImg && selectedImg[0]){
+        const post = newBgPhoto(selectedImg[0], token);
+        post.then(res => res.json())
+        .then(data => {
+          if(data.result !== 'SUCCESS'){
+            alert("File upload Error");
+            return false;
+          }
+          const toUploadObj = { 
+            id: id,
+            _id: _id,
+            nickname : nickname,
+            profileImg : data.url
+          };
+          this.props.changeProfileImgRequest(toUploadObj, token);
+          this.setState({
+            ...this.state,
+            isCameraRollVisible : false
+          })
+        });
+      }
+    });
   }
 
   _closeCameraRoll = () => {
-    this.setState({ cameraRollVisible: !this.state.cameraRollVisible })
+    this.setState({ isCameraRollVisible: !this.state.isCameraRollVisible })
   }
 
    _handleChangeNickname(isEditing){
     const data = {
-      id : this.props.auth.login.id,
-      nickname : this.state.nickname
+      ...this.props.login,  
+      nickname : this.state.nickname,
     }
     const token = this.props.auth.login.token;
     this.setState(function(prevState){
@@ -68,18 +90,19 @@ class Mypage extends Component {
   _toggleCamera = () => {
     this.setState({
       ...this.state,
-      cameraRollVisible: !this.state.cameraRollVisible,
+      isCameraRollVisible: !this.state.isCameraRollVisible,
     })
   }
 
   
   render(){
-    const { isEditing, cameraRollVisible, profileUri } = this.state;
+    const { isEditing, isCameraRollVisible } = this.state;
     const auth = this.props.auth;
+    const { profileImg } = this.props.login;
     
     return(
       <Container>
-        {!cameraRollVisible ? (      
+        {!isCameraRollVisible ? (      
           <Wrap>
             <HeaderBox>
               <BtnIcon onPress={() => this.props.navigation.navigate('Home')}>
@@ -90,8 +113,7 @@ class Mypage extends Component {
             <Contents>
               <ProfileBox>
                 <ImgBox>
-                  {/* <ProfileImgBox source={{uri: this.props.auth.login.profileImg}} /> */}
-                  <ProfileImgBox source={{ uri: profileUri }} />
+                  <ProfileImgBox source={{ uri: profileImg }} />
                   <PhotoEditBtn onPress={() => this._toggleCamera()}>
                     <Feather name="camera" color="#fff" size={20}/>
                   </PhotoEditBtn>
@@ -156,6 +178,9 @@ const mapDispatchToProps = (dispatch) => {
     changeNicknameRequest: (userInfo, token) => {
       return dispatch(changeNicknameRequest(userInfo, token));
     },
+    changeProfileImgRequest: (userInfo, token) => {
+      return dispatch(changeProfileImgRequest(userInfo, token));
+    },
     setNotifyIcon: (bool) => {
       return dispatch(setNotifyIcon(bool));
     },
@@ -173,11 +198,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(Mypage);
 
 const Container = styled.View`
   flex: 1;
+  background: #fff;
 `;
 
 const Wrap = styled.View`
   flex: 1;
   margin:8% 0 -8%;
+  background: #fff;
 `;
 
 const HeaderBox = styled.View`

@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import { Dimensions } from 'react-native';
+import { Dimensions, TouchableOpacity } from 'react-native';
 import styled from 'styled-components';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import timeAgo from '../../lib/timeAgo';
+import { withNavigation } from 'react-navigation';
 import ToggleLike from '../Common/ToggleLike';
 
 const { height, width } = Dimensions.get("window");
 
-export default class WriterViewItem extends Component {
+class WriterViewItem extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -23,7 +24,7 @@ export default class WriterViewItem extends Component {
       <Wrap>  
         <Wrapper bg={!bgStyle.photoUrl ? 
           ( "background-color:" + bgStyle.backgroundColor) : null }>
-          {!bgStyle.backgroundColor ? (
+          {bgStyle.photoUrl ? (
             <BgBox>
               <BgImage source={{ uri: bgStyle.photoUrl }} />
               <BgMask></BgMask>
@@ -37,13 +38,15 @@ export default class WriterViewItem extends Component {
               <MaterialCommunityIcons name={weather} color="#fff" size={20} style={{marginLeft:3}}/>
             </WeatherBox>
           </FirstRow>
-          <TitBox>
-            <TitText>{title}</TitText>
-            <BorderBox></BorderBox>
-          </TitBox>
-          <TextBox>
-            <ConText numberOfLines={2}>{text}</ConText>
-          </TextBox>
+          <TouchableOpacity onPress={() => this.props.navigation.navigate('ArticleView',{item : this.props})}>
+            <TitBox>
+              <TitText>{title}</TitText>
+              <BorderBox></BorderBox>
+            </TitBox>
+            <TextBox>
+              <ConText numberOfLines={2}>{text}</ConText>
+            </TextBox>
+          </TouchableOpacity>
           <LastRow>
             <ToggleLike iconSize={13} iconColor="#fff" numSize={12} textColor="#fff" isLiked={isLiked} _id={_id} />
             {/* <UpdatedDate>{JSON.stringify(_id)}</UpdatedDate> */}
@@ -54,7 +57,9 @@ export default class WriterViewItem extends Component {
     )
   }
 }
-    
+ 
+export default withNavigation(WriterViewItem);
+
 const Wrap = styled.View`
   margin-bottom:8%;
 `;

@@ -63,7 +63,9 @@ export default class Root extends Component {
     }
     return (
       <Provider store={store}>
-        <AppWithNavigationState />
+        {/* <View style={{flex: 1, backgroundColor:'#fff'}}> */}
+          <AppWithNavigationState />
+        {/* </View> */}
       </Provider>
     )
   }   

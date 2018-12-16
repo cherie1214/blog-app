@@ -101,6 +101,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(HomeWithNavigation);
 const Container = styled.View`
     flex: 1;
     justify-content: flex-start;
+    background: #fff;
 `;
 
 const HomeMenu = styled.View`
