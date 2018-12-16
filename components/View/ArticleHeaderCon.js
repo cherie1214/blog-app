@@ -36,7 +36,7 @@ class ArticleHeaderCon extends Component {
             </TitBox>
           </ConBox>
           <Row>
-          <WriterBox onPress={() => this.props.navigation.navigate('WriterView',{writer_id : __id._id})}>
+          <WriterBox onPress={() => this.props.navigation.push('WriterView',{writer_id : __id._id})}>
               <ProfileImgBox source={{ uri: __id.profileImg }} />
               <WriterNickname>{__id.nickname}</WriterNickname> 
             </WriterBox>              

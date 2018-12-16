@@ -142,6 +142,9 @@ class WriterView extends Component {
             <BtnIcon onPress={() => this.props.navigation.goBack(null)}>
               <Ionicons name="ios-arrow-round-back" color="#333" size={45} />
             </BtnIcon> 
+            <BtnIcon onPress={() => this.props.navigation.navigate('Home')}>
+              <Ionicons name="ios-home" color="#666" size={28}/>
+            </BtnIcon>
           </FixedHeaderBox>          
           <ProfileBox>
             <Animated.View style={{
@@ -247,21 +250,13 @@ const FixedHeaderBox = styled.View`
   left: 0;
   z-index:100;
   padding: 0 15px;
+  width: 100%;
   height:50px;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   background-color: transparent;  
 `;
-
-
-// const HeaderConBox = styled.View`
-//   position:relative;
-//   z-index:5;
-//   flex-direction: row;
-//   align-items: center;
-//   justify-content: space-between;
-// `;
 
 const BtnIcon = styled.TouchableOpacity`  
 `;

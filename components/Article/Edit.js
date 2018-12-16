@@ -214,6 +214,9 @@ class Edit extends Component {
             <Ionicons name="ios-arrow-round-back" color="#333" size={45}/>
           </BtnIcon>
           <H1>글 관리</H1>
+          <BtnIcon onPress={() => this.props.navigation.navigate('Home')}>
+            <Ionicons name="ios-home" color="#666" size={28}/>
+          </BtnIcon>
         </HeaderBox>
           <ConBox>
           {data.length !== 0

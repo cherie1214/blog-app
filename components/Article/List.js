@@ -109,6 +109,11 @@ class List extends Component {
             <LogoBox>
               <Logo>Travel</Logo>
             </LogoBox>
+            <BtnBox home>
+              <BtnIcon onPress={() => this.props.navigation.navigate('Home')}>
+                <Ionicons name="ios-home" color="#666" size={28}/>
+              </BtnIcon>
+            </BtnBox>
           </HeaderBox>
           <ConBox>
             {data.length !== 0
@@ -188,6 +193,8 @@ const BtnBox = styled.View`
   padding: 0 15px;
   height:50px;
   align-items: center;
+  justify-content: center;
+  ${prop =>  prop.home ? `left: auto; right:0;` : null}
 `;
 
 const BtnIcon = styled.TouchableOpacity`  

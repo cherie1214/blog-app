@@ -46,7 +46,10 @@ class ListItem extends Component {
               <MaterialCommunityIcons name={weather} color="#fff" size={20} style={{marginLeft:3}}/>
             </WeatherBox>
           </FirstRow>
-          <LinkView onPress={() => this.props.navigation.navigate('ArticleView',{item : this.props})}>
+          <LinkView onPress={() => {
+            alert(JSON.stringify(this.props))
+            this.props.navigation.navigate('ArticleView',{item : this.props})
+          }}>
             <TitBox>
               <TitText>{title}</TitText>
               <BorderBox></BorderBox>
