@@ -13,10 +13,6 @@ class ArticleHeaderCon extends Component {
     }
   }
 
-  componentDidMount(){
-    alert(JSON.stringify(this.props.state.__id))
-  }
-
   render(){
 
     const { weather, startDate, finishDate, title, __id } = this.props.state;

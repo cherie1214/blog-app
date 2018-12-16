@@ -70,7 +70,7 @@ class WriterView extends Component {
       })
       .catch((err)=>{ alert("err")})
 
-    }, 2000)
+    }, 0)
   }
  
   renderFooter = (
