@@ -7,7 +7,6 @@ import ModalDate from './WriteModalDate';
 import ModalWeather from './WriteModalWeather';
 import ModalBg from './WriteModalBg';
 import Editor from "../Editor";
-import { ScrollViewSmart } from 'react-native-scrollview-smart';
 
 const { height, width } = Dimensions.get("window");
 
@@ -18,7 +17,9 @@ export default class WriteCon extends Component {
       loaded : false,
       optionsType: "text",
       textOpt: null,
-      textAlign: 0,
+      textAlign: 0,     
+      editorReq: null, 
+      fontColor: '#333',
     };
     this._toggleModal = this._toggleModal.bind(this);
     this._renderModalType = this._renderModalType.bind(this);
@@ -26,6 +27,15 @@ export default class WriteCon extends Component {
     this._handleDate = this._handleDate.bind(this);
     this._handleBg = this._handleBg.bind(this);
     this._handleWeather = this._handleWeather.bind(this);
+  }
+  
+  sendToEditor(type, value) {
+    var req = JSON.stringify({type, value});
+    this.setState({ editorReq: req })
+
+    if(type === 'color'){
+      this.setState({ fontColor: value })
+    }
   }
 
   componentDidMount(){
@@ -111,16 +121,16 @@ export default class WriteCon extends Component {
     switch (this.state.textOpt) {
       case 1: return (
           <TextOpt>
-            <BtnOpt fs>
+            <BtnOpt fs onPress={() => this.sendToEditor('size','small')}>
               <OptSize style={{fontSize: 13}}>작게</OptSize>
             </BtnOpt>
-            <BtnOpt fs>
+            <BtnOpt fs onPress={() => this.sendToEditor('size','normal')}>
               <OptSize on style={{fontSize: 15}}>보통</OptSize>
             </BtnOpt>
-            <BtnOpt fs>
+            <BtnOpt fs onPress={() => this.sendToEditor('size','large')}>
               <OptSize style={{fontSize: 18}}>크게</OptSize>
             </BtnOpt>
-            <BtnOpt fs>
+            <BtnOpt fs onPress={() => this.sendToEditor('size','huge')}>
               <OptSize style={{fontSize: 20}}>아주 크게</OptSize>
             </BtnOpt>
           </TextOpt>
@@ -128,31 +138,31 @@ export default class WriteCon extends Component {
       case 2: return (
         <TextOpt color>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{padding: 0}}>
-          <BtnOpt>
+          <BtnOpt onPress={() => this.sendToEditor('color','#333')}>
             <OptColor style={{backgroundColor: '#333'}}></OptColor>
           </BtnOpt>
-          <BtnOpt>
+          <BtnOpt onPress={() => this.sendToEditor('color','#999')}>
             <OptColor style={{backgroundColor: '#999'}}></OptColor>
           </BtnOpt>
-          <BtnOpt>
+          <BtnOpt onPress={() => this.sendToEditor('color','#ec4c6a')}>
             <OptColor style={{backgroundColor: '#ec4c6a'}}></OptColor>
           </BtnOpt>
-          <BtnOpt>
+          <BtnOpt onPress={() => this.sendToEditor('color','#f6665b')}>
             <OptColor style={{backgroundColor: '#f6665b'}}></OptColor>
           </BtnOpt>
-          <BtnOpt>
+          <BtnOpt onPress={() => this.sendToEditor('color','#f4c216')}>
             <OptColor style={{backgroundColor: '#f4c216'}}></OptColor>
           </BtnOpt>
-          <BtnOpt>
+          <BtnOpt onPress={() => this.sendToEditor('color','#15b06c')}>
             <OptColor style={{backgroundColor: '#15b06c'}}></OptColor>
           </BtnOpt>
-          <BtnOpt>
+          <BtnOpt onPress={() => this.sendToEditor('color','#00c4bd')}>
             <OptColor style={{backgroundColor: '#00c4bd'}}></OptColor>
           </BtnOpt>
-          <BtnOpt>
+          <BtnOpt onPress={() => this.sendToEditor('color','#2e84b6')}>
             <OptColor style={{backgroundColor: '#2e84b6'}}></OptColor>
           </BtnOpt>
-          <BtnOpt>
+          <BtnOpt onPress={() => this.sendToEditor('color','#5b5bb2')}>
             <OptColor style={{backgroundColor: '#5b5bb2'}}></OptColor>
           </BtnOpt>
           </ScrollView>
@@ -160,16 +170,16 @@ export default class WriteCon extends Component {
       );
       case 3:  return (
         <TextOpt>
-          <BtnOpt>
+          <BtnOpt onPress={() => this.sendToEditor('align','left')}>
             <MaterialIcons name="format-align-left" color="#666" size={22} />
           </BtnOpt>
-          <BtnOpt>
+          <BtnOpt onPress={() => this.sendToEditor('align','center')}>
             <MaterialIcons name="format-align-center" color="#666" size={22} />
           </BtnOpt>
-          <BtnOpt>
+          <BtnOpt onPress={() => this.sendToEditor('align','right')}>
             <MaterialIcons name="format-align-right" color="#666" size={22} />
           </BtnOpt>
-          <BtnOpt>
+          <BtnOpt onPress={() => this.sendToEditor('align','justify')}>
             <MaterialIcons name="format-align-justify" color="#666" size={22} />
           </BtnOpt>
         </TextOpt>
@@ -187,16 +197,11 @@ export default class WriteCon extends Component {
   }
  
   render(){
-    const { optionsType, textOpt, textAlign } = this.state;
+    const { optionsType, editorReq, fontColor } = this.state;
     const article = this.props.article;
     const { startDate, finishDate, weather, bg, title, text, isModalVisible, selectedImg } = this.props.article;
 
     return (
-      // <ScrollViewSmart
-      //   ref={e => (this.scroll = e)}
-      //   style={{flex: 1}}
-      //   keyboardShouldPersistTaps={'never'}
-      // >
       <Wrap>
         <Modal 
           isVisible={isModalVisible} 
@@ -252,7 +257,7 @@ export default class WriteCon extends Component {
           </HeaderConInner>
         </HeaderConBox>
         <EditorBox>
-          <Editor></Editor>
+          <Editor _editorReq={editorReq}></Editor>
         </EditorBox>
         {/* <TextareaBox>        
           <Textarea
@@ -264,8 +269,6 @@ export default class WriteCon extends Component {
         </TextareaBox> */}
         </ScrollView>        
         <KeyboardAvoidingView 
-          // behavior="padding" 
-          // keyboardVerticalOffset={80}
           behavior={Platform.OS === "ios" ? "padding" : null}
           keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
           style={{position:'fixed', bottom:0, width: '100%', borderTopWidth: 1, borderTopColor: '#dfdfdf'}}
@@ -285,26 +288,26 @@ export default class WriteCon extends Component {
                   </BtnOpt>
                   <BtnOpt onPress={() => this.setState({textOpt: 2})}>
                     <MaterialCommunityIcons name="format-color-text" color="#333" size={25} style={{marginTop:5}}/>
-                    <MaterialCommunityIcons name="water" color="#333" size={16} 
+                    <MaterialCommunityIcons name="water" size={16} color={fontColor}
                       style={{position: 'absolute', top: 10, right: 5}}
                       />
                   </BtnOpt>
-                  <BtnOpt onPress={() => this.setState({textOpt: null})}>
+                  <BtnOpt onPress={() => { this.sendToEditor('bold'); this.setState({textOpt: null}); }}>
                     <MaterialIcons name="format-bold" color="#333" size={26} />
                   </BtnOpt>
-                  <BtnOpt onPress={() => this.setState({textOpt: null})}>
+                  <BtnOpt onPress={() => { this.sendToEditor('strike'); this.setState({textOpt: null}); }}>
                     <MaterialIcons name="strikethrough-s" color="#333" size={22} />
                   </BtnOpt>
-                  <BtnOpt onPress={() => this.setState({textOpt: null})}>
+                  <BtnOpt onPress={() => { this.sendToEditor('underline'); this.setState({textOpt: null}); }}>
                     <MaterialIcons name="format-underlined" color="#333" size={22} />
                   </BtnOpt>
-                  <BtnOpt onPress={() => this.setState({textOpt: null})}>
+                  <BtnOpt onPress={() => { this.sendToEditor('blockquote'); this.setState({textOpt: null}); }}>
                     <FontAwesome name="quote-right" color="#333" size={18} />
                   </BtnOpt>
-                  <BtnOpt onPress={() => this.setState({textOpt: null})}>
+                  <BtnOpt onPress={() => { this.sendToEditor('bullet'); this.setState({textOpt: null}); }}>
                     <MaterialIcons name="format-list-bulleted" color="#333" size={24} />
                   </BtnOpt>
-                  <BtnOpt onPress={() => this.setState({textOpt: null})}>
+                  <BtnOpt onPress={() => { this.sendToEditor('ordered'); this.setState({textOpt: null}); }}>
                     <MaterialIcons name="format-list-numbered" color="#333" size={24} />
                   </BtnOpt>
                   <BtnOpt onPress={() => this.setState({textOpt: 3})}>
@@ -322,10 +325,10 @@ export default class WriteCon extends Component {
                 </BtnOpt>
                 <VerticalLine></VerticalLine>
                 <OptRow>
-                  <BtnOpt>
+                  <BtnOpt onPress={() => this.sendToEditor('image')}>
                     <SimpleLineIcons name="picture" color="#333" size={22} />
                   </BtnOpt>
-                  <BtnOpt>
+                  <BtnOpt onPress={() => this.sendToEditor('link')}>
                     <Ionicons name="ios-link" color="#333" size={22} />
                   </BtnOpt>
                 </OptRow>
@@ -333,7 +336,6 @@ export default class WriteCon extends Component {
             </EditorOptions>
           )}          
         </KeyboardAvoidingView>
-        {/* </ScrollViewSmart> */}
       </Wrap>
     )
   }

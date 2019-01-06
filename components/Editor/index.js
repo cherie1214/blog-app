@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import styled from 'styled-components';
+import styled, { consolidateStreamedStyles } from 'styled-components';
 import { WebView, View, Dimensions, Button, Text, ScrollView, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
 import { SimpleLineIcons, MaterialIcons, MaterialCommunityIcons, Ionicons, Feather } from '@expo/vector-icons';
 
@@ -8,24 +8,39 @@ const { height, width } = Dimensions.get("window");
 export default class MyWeb extends Component {
   constructor(props){
     super(props);
-    this.state = {      
-      optionsType: "text",
-    };
+    this.state = {
+      req: null,
+    }
+    this.onMessage = this.onMessage.bind(this);
   }
 
+  componentDidUpdate(){
+    if(this.props._editorReq != this.state.req) {
+      this.setState({ 
+        req: this.props._editorReq
+      }, () => {
+        console.log(this.state.req)
+        this.webView.postMessage(this.state.req);
+      })
+    }    
+  }
+
+  onMessage( event ) {
+    let data = event.nativeEvent.data;
+    data = JSON.parse(data)
+    console.log(JSON.stringify(data))
+  }
+
+
   render() {
-    const { optionsType } = this.state;
 
     return (
       <Wrap>
         <WebView
           source={require("./WebView.html")}
-          style={{width : '100%', height: '100%'}}
-          onMessage={(event)=>{
-            const x= event.nativeEvent.data;
-            console.log("x: ",x);
-            console.log("Type is: ",typeof(x));
-        }}
+          style={{width : '100%'}}
+          onMessage={this.onMessage}
+          ref={( webView ) => this.webView = webView}
         />
       </Wrap>
     );

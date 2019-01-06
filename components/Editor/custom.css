@@ -23,7 +23,7 @@ body {
   height:1px;
   text-indent: -999999%;
   /* position: absolute;
-  top:400px;
+  top:250px;
   height: auto; */
 }
 #toolbar .ql-picker-options{
@@ -34,6 +34,8 @@ body {
 #editor {
   font-family: 'HdRegular' !important;
   border: none !important;
+  color: #333;
+  font-size: 15px;
 }
 
 #editor strong {
