@@ -32,6 +32,7 @@ class Home extends Component {
 
     if(auth.login.loggedIn){
       this.props.navigation.navigate("Write")
+      // this.props.navigation.navigate("WebViewExample")      
     } else {
       this.setState({ confirmVisible: true })
     }

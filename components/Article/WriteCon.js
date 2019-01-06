@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { View, Dimensions, Button, Text } from 'react-native';
+import { View, Dimensions, Button, Text, ScrollView, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
 import styled from 'styled-components';
-import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Entypo, FontAwesome, SimpleLineIcons, MaterialIcons, MaterialCommunityIcons, Ionicons, Feather } from '@expo/vector-icons';
 import Modal from "react-native-modal";
 import ModalDate from './WriteModalDate';
 import ModalWeather from './WriteModalWeather';
 import ModalBg from './WriteModalBg';
-
+import Editor from "../Editor";
+import { ScrollViewSmart } from 'react-native-scrollview-smart';
 
 const { height, width } = Dimensions.get("window");
 
@@ -14,7 +15,10 @@ export default class WriteCon extends Component {
   constructor(props){
     super(props);
     this.state = {      
-      loaded : false
+      loaded : false,
+      optionsType: "text",
+      textOpt: null,
+      textAlign: 0,
     };
     this._toggleModal = this._toggleModal.bind(this);
     this._renderModalType = this._renderModalType.bind(this);
@@ -26,6 +30,7 @@ export default class WriteCon extends Component {
 
   componentDidMount(){
     // alert(JSON.stringify(this.props.article))
+    this._handleTextAlign();
   }
 
   _handleDate = (startDate, finishDate, switchOneday) => {
@@ -101,12 +106,97 @@ export default class WriteCon extends Component {
       </View>
     )
   };
+
+  _renderTextOption = () => {  
+    switch (this.state.textOpt) {
+      case 1: return (
+          <TextOpt>
+            <BtnOpt fs>
+              <OptSize style={{fontSize: 13}}>작게</OptSize>
+            </BtnOpt>
+            <BtnOpt fs>
+              <OptSize on style={{fontSize: 15}}>보통</OptSize>
+            </BtnOpt>
+            <BtnOpt fs>
+              <OptSize style={{fontSize: 18}}>크게</OptSize>
+            </BtnOpt>
+            <BtnOpt fs>
+              <OptSize style={{fontSize: 20}}>아주 크게</OptSize>
+            </BtnOpt>
+          </TextOpt>
+        );
+      case 2: return (
+        <TextOpt color>
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{padding: 0}}>
+          <BtnOpt>
+            <OptColor style={{backgroundColor: '#333'}}></OptColor>
+          </BtnOpt>
+          <BtnOpt>
+            <OptColor style={{backgroundColor: '#999'}}></OptColor>
+          </BtnOpt>
+          <BtnOpt>
+            <OptColor style={{backgroundColor: '#ec4c6a'}}></OptColor>
+          </BtnOpt>
+          <BtnOpt>
+            <OptColor style={{backgroundColor: '#f6665b'}}></OptColor>
+          </BtnOpt>
+          <BtnOpt>
+            <OptColor style={{backgroundColor: '#f4c216'}}></OptColor>
+          </BtnOpt>
+          <BtnOpt>
+            <OptColor style={{backgroundColor: '#15b06c'}}></OptColor>
+          </BtnOpt>
+          <BtnOpt>
+            <OptColor style={{backgroundColor: '#00c4bd'}}></OptColor>
+          </BtnOpt>
+          <BtnOpt>
+            <OptColor style={{backgroundColor: '#2e84b6'}}></OptColor>
+          </BtnOpt>
+          <BtnOpt>
+            <OptColor style={{backgroundColor: '#5b5bb2'}}></OptColor>
+          </BtnOpt>
+          </ScrollView>
+        </TextOpt>
+      );
+      case 3:  return (
+        <TextOpt>
+          <BtnOpt>
+            <MaterialIcons name="format-align-left" color="#666" size={22} />
+          </BtnOpt>
+          <BtnOpt>
+            <MaterialIcons name="format-align-center" color="#666" size={22} />
+          </BtnOpt>
+          <BtnOpt>
+            <MaterialIcons name="format-align-right" color="#666" size={22} />
+          </BtnOpt>
+          <BtnOpt>
+            <MaterialIcons name="format-align-justify" color="#666" size={22} />
+          </BtnOpt>
+        </TextOpt>
+      );
+    } 
+    
+  }
+
+  _handleTextAlign(){
+    switch (this.state.textAlign) {
+      case 0:  return "format-align-left";
+      case 1:  return "format-align-center";
+      case 2:  return "format-align-right";
+    }
+  }
  
   render(){
+    const { optionsType, textOpt, textAlign } = this.state;
     const article = this.props.article;
     const { startDate, finishDate, weather, bg, title, text, isModalVisible, selectedImg } = this.props.article;
 
     return (
+      // <ScrollViewSmart
+      //   ref={e => (this.scroll = e)}
+      //   style={{flex: 1}}
+      //   keyboardShouldPersistTaps={'never'}
+      // >
       <Wrap>
         <Modal 
           isVisible={isModalVisible} 
@@ -115,58 +205,135 @@ export default class WriteCon extends Component {
           style={{ justifyContent: 'flex-end', margin:0 }}>
           {this._renderModalContent()}
         </Modal>
-
-        <HeaderConBox bg={!selectedImg ? 
-          ( "background-color:" + bg.color.value) : null }>
-          { selectedImg ? (
-            <BgBox>
-              <BgImage source={{ uri: selectedImg[0].uri }} />
-              <BgMask></BgMask>
-            </BgBox>
-          ) : null }
-          <DateBox>
-            <Select onPress={() => this._toggleModal("date")}>   
-              <CommonText>날짜</CommonText>      
-              <CommonText>{startDate ? startDate : null} {finishDate ? '- ' + finishDate : null}</CommonText>
-            </Select>
-          </DateBox>
-          <TitBox>
-            <Row> 
-              <CommonText>제목</CommonText>
-              <TitInput
-                onChangeText={(text) => this.props.handleState({...article, title: text})}
-                value={title}
-                maxLength={45}
-                autoCapitalize={"none"}
-                autoFocus={true}
-                selectionColor="#fff"
-                placeholder="45이내로 입력해 주세요."
-                multiline={true}   
-                numberOfLines={2}
-              />
-             </Row> 
-          </TitBox>
-          <WeatherBox>
-            <Select onPress={() => this._toggleModal("weather")}>
-              <CommonText>날씨</CommonText>
-              {weather.name ? 
-                (<MaterialCommunityIcons name={weather.name} size={17} color="#fff" />)  : null};
-            </Select>
-          </WeatherBox>
-          <Row justifyEnd>
-            <Btn onPress={() => this._toggleModal("bg")}>
-              <Entypo name="dots-three-vertical" color="#fff" size={25} /> 
-            </Btn>
-          </Row>
+        
+        <ScrollView style={{flex:1}}>
+        <HeaderConBox bg={!selectedImg ? ( "background-color:" + bg.color.value) : null }>
+          <HeaderConInner>
+            { selectedImg ? (
+              <BgBox>
+                <BgImage source={{ uri: selectedImg[0].uri }} />
+                <BgMask></BgMask>
+              </BgBox>
+            ) : null }
+            <DateBox>
+              <Select onPress={() => this._toggleModal("date")}>   
+                <CommonText>날짜</CommonText>      
+                <CommonText>{startDate ? startDate : null} {finishDate ? '- ' + finishDate : null}</CommonText>
+              </Select>
+            </DateBox>
+            <TitBox>
+              <Row> 
+                <CommonText>제목</CommonText>
+                <TitInput
+                  onChangeText={(text) => this.props.handleState({...article, title: text})}
+                  value={title}
+                  maxLength={45}
+                  autoCapitalize={"none"}
+                  autoFocus={true}
+                  selectionColor="#fff"
+                  placeholder="45이내로 입력해 주세요."
+                  multiline={true}   
+                  numberOfLines={2}
+                  />
+              </Row> 
+            </TitBox>
+            <WeatherBox>
+              <Select onPress={() => this._toggleModal("weather")}>
+                <CommonText>날씨</CommonText>
+                {weather.name ? 
+                  (<MaterialCommunityIcons name={weather.name} size={17} color="#fff" />)  : null};
+              </Select>
+            </WeatherBox>
+            <Row justifyEnd>
+              <Btn onPress={() => this._toggleModal("bg")}>
+                <Entypo name="dots-three-vertical" color="#fff" size={25} /> 
+              </Btn>
+            </Row>            
+          </HeaderConInner>
         </HeaderConBox>
-        <TextareaBox>
+        <EditorBox>
+          <Editor></Editor>
+        </EditorBox>
+        {/* <TextareaBox>        
           <Textarea
             onChangeText={(text) => this.props.handleState({...article,text})}
             multiline={true}
             placeholder="당신의 여행은 어땠나요?"
             placeholderStyle={{color:"#999", fontSize:15}}
             value={text}/>
-        </TextareaBox>
+        </TextareaBox> */}
+        </ScrollView>        
+        <KeyboardAvoidingView 
+          // behavior="padding" 
+          // keyboardVerticalOffset={80}
+          behavior={Platform.OS === "ios" ? "padding" : null}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
+          style={{position:'fixed', bottom:0, width: '100%', borderTopWidth: 1, borderTopColor: '#dfdfdf'}}
+          >
+          {optionsType === "text" ? (
+            <EditorOptions>
+              {this._renderTextOption()}
+              <View style={{flexDirection:'row'}}>
+                <BtnOpt onPress={() => this.setState({optionsType: "add"})}>
+                  <Feather name="plus-square" color="#333" size={25} />
+                </BtnOpt>
+                <VerticalLine></VerticalLine>
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                <OptRow>
+                  <BtnOpt onPress={() => this.setState({textOpt: 1})}>
+                    <MaterialIcons name="format-size" color="#333" size={22} />
+                  </BtnOpt>
+                  <BtnOpt onPress={() => this.setState({textOpt: 2})}>
+                    <MaterialCommunityIcons name="format-color-text" color="#333" size={25} style={{marginTop:5}}/>
+                    <MaterialCommunityIcons name="water" color="#333" size={16} 
+                      style={{position: 'absolute', top: 10, right: 5}}
+                      />
+                  </BtnOpt>
+                  <BtnOpt onPress={() => this.setState({textOpt: null})}>
+                    <MaterialIcons name="format-bold" color="#333" size={26} />
+                  </BtnOpt>
+                  <BtnOpt onPress={() => this.setState({textOpt: null})}>
+                    <MaterialIcons name="strikethrough-s" color="#333" size={22} />
+                  </BtnOpt>
+                  <BtnOpt onPress={() => this.setState({textOpt: null})}>
+                    <MaterialIcons name="format-underlined" color="#333" size={22} />
+                  </BtnOpt>
+                  <BtnOpt onPress={() => this.setState({textOpt: null})}>
+                    <FontAwesome name="quote-right" color="#333" size={18} />
+                  </BtnOpt>
+                  <BtnOpt onPress={() => this.setState({textOpt: null})}>
+                    <MaterialIcons name="format-list-bulleted" color="#333" size={24} />
+                  </BtnOpt>
+                  <BtnOpt onPress={() => this.setState({textOpt: null})}>
+                    <MaterialIcons name="format-list-numbered" color="#333" size={24} />
+                  </BtnOpt>
+                  <BtnOpt onPress={() => this.setState({textOpt: 3})}>
+                    <MaterialIcons name="format-align-left" color="#333" size={22} />
+                  </BtnOpt>
+                </OptRow>
+                </ScrollView>
+              </View>
+            </EditorOptions>
+          ) : (
+            <EditorOptions>
+              <View style={{flexDirection: 'row'}}>
+                <BtnOpt onPress={() => this.setState({optionsType: "text"})}>
+                  <MaterialCommunityIcons name="format-text" color="#333" size={25}/>
+                </BtnOpt>
+                <VerticalLine></VerticalLine>
+                <OptRow>
+                  <BtnOpt>
+                    <SimpleLineIcons name="picture" color="#333" size={22} />
+                  </BtnOpt>
+                  <BtnOpt>
+                    <Ionicons name="ios-link" color="#333" size={22} />
+                  </BtnOpt>
+                </OptRow>
+              </View>
+            </EditorOptions>
+          )}          
+        </KeyboardAvoidingView>
+        {/* </ScrollViewSmart> */}
       </Wrap>
     )
   }
@@ -179,18 +346,23 @@ const Wrap = styled.View`
 
 
 const HeaderConBox = styled.View`
-  padding: 7%; 
+  flex:1;
   ${prop => prop.bg}
 `;
+  
+const HeaderConInner = styled.View`
+  flex: 1;
+  padding: 7%; 
+`
 
 const BgBox = styled.View`
   flex: 1;
   overflow:hidden;
   position:absolute;
   top:0;
-  bottom: 0;
   left:0;
   right:0;
+  bottom:0;
 `;
 
 const BgImage = styled.Image`
@@ -211,12 +383,14 @@ const Select = styled.TouchableOpacity`
 `
 
 const Row = styled.View`
+  flex:1;
   flex-direction: row;
   align-items: flex-start;
   justify-content: ${props => props.justifyEnd ? "flex-end" : "flex-start"};
 `;
 
 const DateBox = styled.View`
+  flex:1;
 `;
 
 const CommonText = styled.Text`
@@ -229,10 +403,12 @@ const CommonText = styled.Text`
 
 
 const WeatherBox = styled.View`
+  flex:1;
   margin-bottom:25px;
 `;
 
 const TitBox = styled.View`
+  flex:1;
   margin: 25px 0;
 `;
 
@@ -247,15 +423,10 @@ const TitInput = styled.TextInput`
 const Btn = styled.TouchableOpacity`
 `;
 
-const TextareaBox = styled.View`
+const EditorBox = styled.View`
   flex: 1;
-  padding:7%;
-`;
-
-const Textarea = styled.TextInput`
-  color: #333;
-  font-size:15px;
-  font-family: 'hd-regular';
+  width:100%;
+  min-height:600px;
 `;
 
 const ModalHeader = styled.View`
@@ -271,4 +442,58 @@ const ModalTit = styled.Text`
   color:#999;
   font-family: 'hd-regular';
   font-size:15px;
+`;
+
+const EditorOptions = styled.View`
+  width: 100%;
+  background: #fff;
+`;
+
+const VerticalLine = styled.View`
+  width: 1px;
+  height: 100%;
+  background: #dfdfdf;
+`
+
+const OptRow = styled.View`
+  flex-direction: row;
+  align-items: center;
+  padding: 0 5px;
+  width: auto;
+  background: #fff;
+`;
+
+const TextOpt = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  background:#f7f7f7;
+  border-bottom-width: 1px;
+  border-bottom-color: #dfdfdf;
+  ${props => props.color ? `
+    padding:0;
+  ` : null}
+`;
+
+const BtnOpt = styled.TouchableOpacity`
+  width:50px; 
+  height:50px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  ${props => props.fs ? `
+    width: auto;
+    padding:0 15px;
+  ` : null}
+`;
+
+const OptSize = styled.Text`
+  color: ${props => props.on ? '#06c' : '#666'}  
+`;
+
+const OptColor = styled.View`
+  width:28px; 
+  height:28px;
+  border-radius: 14px;
 `;

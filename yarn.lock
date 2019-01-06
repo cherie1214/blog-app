@@ -1678,7 +1678,7 @@ create-error-class@^3.0.1:
   dependencies:
     capture-stack-trace "^1.0.0"
 
-create-react-class@^15.6.3:
+create-react-class@^15.6.0, create-react-class@^15.6.3:
   version "15.6.3"
   resolved "https://registry.yarnpkg.com/create-react-class/-/create-react-class-15.6.3.tgz#2d73237fb3f970ae6ebe011a9e66f46dbca80036"
   dependencies:
@@ -2044,7 +2044,7 @@ fbjs-scripts@^0.8.1:
     semver "^5.1.0"
     through2 "^2.0.0"
 
-fbjs@^0.8.0, fbjs@^0.8.14, fbjs@^0.8.16, fbjs@^0.8.4, fbjs@^0.8.5, fbjs@^0.8.9:
+fbjs@^0.8.0, fbjs@^0.8.14, fbjs@^0.8.16, fbjs@^0.8.17, fbjs@^0.8.4, fbjs@^0.8.5, fbjs@^0.8.9:
   version "0.8.17"
   resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.17.tgz#c4d598ead6949112653d6588b01a5cdcd9f90fdd"
   dependencies:
@@ -2467,6 +2467,12 @@ inquirer@^3.0.6:
     strip-ansi "^4.0.0"
     through "^2.3.6"
 
+invariant@2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.0.tgz#c8d7e847366a49cc18b622f058a689d481e895f2"
+  dependencies:
+    loose-envify "^1.0.0"
+
 invariant@^2.0.0, invariant@^2.2.0, invariant@^2.2.2:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
@@ -2751,6 +2757,10 @@ jsonfile@^2.1.0:
 jsonify@~0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/jsonify/-/jsonify-0.0.0.tgz#2c74b6ee41d93ca51b7b5aaee8f503631d252a73"
+
+keymirror@0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/keymirror/-/keymirror-0.1.1.tgz#918889ea13f8d0a42e7c557250eee713adc95c35"
 
 kind-of@^1.1.0:
   version "1.1.0"
@@ -3848,6 +3858,10 @@ react-native-infinite@^1.1.8:
   version "1.1.8"
   resolved "https://registry.yarnpkg.com/react-native-infinite/-/react-native-infinite-1.1.8.tgz#3a0d499c1168d9c44600e93d2820ec10d24f9aa1"
 
+react-native-keyboard-spacer@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/react-native-keyboard-spacer/-/react-native-keyboard-spacer-0.4.1.tgz#46f18a320432098a25ea9fa89f5143dd254d332d"
+
 react-native-maps@0.21.0:
   version "0.21.0"
   resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-0.21.0.tgz#005f58e93d7623ad59667e8002101970ddf235c2"
@@ -3946,6 +3960,35 @@ react-native-vector-icons@4.5.0:
     lodash "^4.0.0"
     prop-types "^15.5.10"
     yargs "^8.0.2"
+
+react-native-webview-bridge-updated@^1.0.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-webview-bridge-updated/-/react-native-webview-bridge-updated-1.1.0.tgz#49c1fef5822b5966a0759bdb2a492381a2bc7e09"
+  dependencies:
+    invariant "2.2.0"
+    keymirror "0.1.1"
+
+react-native-webview-bridge@^0.40.1:
+  version "0.40.1"
+  resolved "https://registry.yarnpkg.com/react-native-webview-bridge/-/react-native-webview-bridge-0.40.1.tgz#8a64a108c5687101e1da86e87fd707350a3f89fa"
+  dependencies:
+    create-react-class "^15.6.0"
+    invariant "^2.2.2"
+    keymirror "0.1.1"
+    prop-types "^15.5.10"
+
+react-native-webview@^2.14.3:
+  version "2.14.3"
+  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-2.14.3.tgz#25ed93d4b12659fb330dd21b6d8802b86628f079"
+  dependencies:
+    escape-string-regexp "^1.0.5"
+    fbjs "^0.8.17"
+
+react-native-zss-rich-text-editor@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-zss-rich-text-editor/-/react-native-zss-rich-text-editor-1.1.0.tgz#c197d797a8ca65e46e2ccbe36e73fa2624d07c1c"
+  dependencies:
+    react-native-webview-bridge-updated "^1.0.0"
 
 "react-native@https://github.com/expo/react-native/archive/sdk-28.0.0.tar.gz":
   version "0.55.4"

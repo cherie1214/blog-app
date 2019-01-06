@@ -1,0 +1,42 @@
+@font-face { 
+  font-family: 'HdBold';
+  src: url(../../assets/fonts/hyundai_bold.ttf); 
+  font-weight: normal;
+}
+@font-face { 
+  font-family: 'HdRegular';
+  src: url(../../assets/fonts/hyundai_regular.ttf); 
+  font-weight: normal;
+}
+
+body {
+  width : 100%;
+  height : 100vh;
+  padding:0;
+  margin:0;
+}
+#toolbar{
+  position : absolute;
+  top : -9999999%;
+  left: -9999999%;
+  width: 1px;
+  height:1px;
+  text-indent: -999999%;
+  /* position: absolute;
+  top:400px;
+  height: auto; */
+}
+#toolbar .ql-picker-options{
+  bottom : 100%;
+  top : auto;
+}
+
+#editor {
+  font-family: 'HdRegular' !important;
+  border: none !important;
+}
+
+#editor strong {
+  font-weight: normal;
+  font-family: 'HdBold' !important;
+}
