@@ -15,7 +15,6 @@ export default class WriteCon extends Component {
     super(props);
     this.state = {      
       loaded : false,
-      optionsType: "text",
       textOpt: null,
       textAlign: 0,     
       editorReq: null, 
@@ -36,11 +35,6 @@ export default class WriteCon extends Component {
     if(type === 'color'){
       this.setState({ fontColor: value })
     }
-  }
-
-  componentDidMount(){
-    // alert(JSON.stringify(this.props.article))
-    this._handleTextAlign();
   }
 
   _handleDate = (startDate, finishDate, switchOneday) => {
@@ -184,20 +178,11 @@ export default class WriteCon extends Component {
           </BtnOpt>
         </TextOpt>
       );
-    } 
-    
-  }
-
-  _handleTextAlign(){
-    switch (this.state.textAlign) {
-      case 0:  return "format-align-left";
-      case 1:  return "format-align-center";
-      case 2:  return "format-align-right";
-    }
+    }     
   }
  
   render(){
-    const { optionsType, editorReq, fontColor } = this.state;
+    const { editorReq, fontColor } = this.state;
     const article = this.props.article;
     const { startDate, finishDate, weather, bg, title, text, isModalVisible, selectedImg } = this.props.article;
 
@@ -273,12 +258,11 @@ export default class WriteCon extends Component {
           keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
           style={{position:'fixed', bottom:0, width: '100%', borderTopWidth: 1, borderTopColor: '#dfdfdf'}}
           >
-          {optionsType === "text" ? (
             <EditorOptions>
               {this._renderTextOption()}
               <View style={{flexDirection:'row'}}>
-                <BtnOpt onPress={() => this.setState({optionsType: "add"})}>
-                  <Feather name="plus-square" color="#333" size={25} />
+                <BtnOpt onPress={() => this.sendToEditor('image')}>
+                  <SimpleLineIcons name="picture" color="#333" size={22} />
                 </BtnOpt>
                 <VerticalLine></VerticalLine>
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
@@ -316,25 +300,7 @@ export default class WriteCon extends Component {
                 </OptRow>
                 </ScrollView>
               </View>
-            </EditorOptions>
-          ) : (
-            <EditorOptions>
-              <View style={{flexDirection: 'row'}}>
-                <BtnOpt onPress={() => this.setState({optionsType: "text"})}>
-                  <MaterialCommunityIcons name="format-text" color="#333" size={25}/>
-                </BtnOpt>
-                <VerticalLine></VerticalLine>
-                <OptRow>
-                  <BtnOpt onPress={() => this.sendToEditor('image')}>
-                    <SimpleLineIcons name="picture" color="#333" size={22} />
-                  </BtnOpt>
-                  <BtnOpt onPress={() => this.sendToEditor('link')}>
-                    <Ionicons name="ios-link" color="#333" size={22} />
-                  </BtnOpt>
-                </OptRow>
-              </View>
-            </EditorOptions>
-          )}          
+            </EditorOptions>     
         </KeyboardAvoidingView>
       </Wrap>
     )
