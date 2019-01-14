@@ -160,6 +160,7 @@ const WriteHeaderWithNavigation = withNavigation(WriteHeader)
 export default connect(mapStateToProps, mapDispatchToProps)(WriteHeaderWithNavigation);
 
 const HeaderBox = styled.View`
+  z-index:100;
   position: relative;
   padding: 0 15px;
   height:50px;
@@ -168,6 +169,7 @@ const HeaderBox = styled.View`
   justify-content: space-between;
   border-bottom-color:#ccc;
   border-bottom-width: 1px;
+  background: #fff;
 `;
 
 

@@ -38,10 +38,15 @@ export default class MyWeb extends Component {
       <Wrap>
         <WebView
           source={require("./WebView.html")}
-          style={{width : '100%'}}
+          style={{width : '100%', height: '100%'}}
           onMessage={this.onMessage}
           ref={( webView ) => this.webView = webView}
         />
+        {/* <KeyboardAvoidingView 
+          behavior={Platform.OS === "ios" ? "padding" : null}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
+          style={{position: 'fixed', bottom: 150, width: '100%', height: 50, backgroundColor:'red'}}
+          ></KeyboardAvoidingView> */}
       </Wrap>
     );
   }
@@ -49,6 +54,7 @@ export default class MyWeb extends Component {
 
 const Wrap = styled.View`
   flex: 1;
+  position:relative;
 `
 
 const EditorOptions = styled.SafeAreaView`

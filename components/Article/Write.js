@@ -120,6 +120,7 @@ class Write extends Component {
 
     return(
       <Container>
+        <StatusBar hidden={true} />
       {!cameraRollVisible ? (
         <Wrap>
           <WriteHeader article={article} _editId={_editId} handleState={this._handleState} />
@@ -148,7 +149,6 @@ const Container = styled.View`
 
 const Wrap = styled.View`
   flex: 1;
-  margin:8% 0 -8%;
 `;
 
 const ConBox = styled.View`

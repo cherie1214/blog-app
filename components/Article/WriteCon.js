@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Dimensions, Button, Text, ScrollView, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
+import { Keyboard, View, Dimensions, Button, Text, ScrollView, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
 import styled from 'styled-components';
 import { Entypo, FontAwesome, SimpleLineIcons, MaterialIcons, MaterialCommunityIcons, Ionicons, Feather } from '@expo/vector-icons';
 import Modal from "react-native-modal";
@@ -17,8 +17,11 @@ export default class WriteCon extends Component {
       loaded : false,
       textOpt: null,
       textAlign: 0,     
+      titleFocus: true,
+      editorFocus: false,
       editorReq: null, 
       fontColor: '#333',
+      formet: {},
     };
     this._toggleModal = this._toggleModal.bind(this);
     this._renderModalType = this._renderModalType.bind(this);
@@ -26,6 +29,32 @@ export default class WriteCon extends Component {
     this._handleDate = this._handleDate.bind(this);
     this._handleBg = this._handleBg.bind(this);
     this._handleWeather = this._handleWeather.bind(this);
+    this._keyboardDidShow = this._keyboardDidShow.bind(this);
+    this._keyboardDidHide = this._keyboardDidShow.bind(this);
+    this.sendToEditor = this.sendToEditor.bind(this);
+  }
+
+  componentWillMount () {
+    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+  }
+
+  componentWillUnmount () {
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
+  }
+
+  _keyboardDidShow () {
+    this.setState({editorFocus: true})
+    if(this.state.titleFocus){
+      this.setState({editorFocus: false})
+    }
+    // alert('Keyboard Shown');
+  }
+
+  _keyboardDidHide () {
+    this.setState({editorFocus: false})
+    // alert('Keyboard Hidden');
   }
   
   sendToEditor(type, value) {
@@ -182,7 +211,7 @@ export default class WriteCon extends Component {
   }
  
   render(){
-    const { editorReq, fontColor } = this.state;
+    const { editorFocus, editorReq, fontColor } = this.state;
     const article = this.props.article;
     const { startDate, finishDate, weather, bg, title, text, isModalVisible, selectedImg } = this.props.article;
 
@@ -196,9 +225,9 @@ export default class WriteCon extends Component {
           {this._renderModalContent()}
         </Modal>
         
-        <ScrollView style={{flex:1}}>
-        <HeaderConBox bg={!selectedImg ? ( "background-color:" + bg.color.value) : null }>
-          <HeaderConInner>
+        {/* <ScrollView style={{flex:1}}> */}
+        <HeaderConBox>
+          <HeaderConInner bg={!selectedImg ? ( "background-color:" + bg.color.value) : null }>
             { selectedImg ? (
               <BgBox>
                 <BgImage source={{ uri: selectedImg[0].uri }} />
@@ -216,12 +245,14 @@ export default class WriteCon extends Component {
                 <CommonText>제목</CommonText>
                 <TitInput
                   onChangeText={(text) => this.props.handleState({...article, title: text})}
+                  onFocus={() => this.setState({titleFocus: true})}
+                  onBlur={() => this.setState({titleFocus: false})}
                   value={title}
-                  maxLength={45}
+                  maxLength={40}
                   autoCapitalize={"none"}
                   autoFocus={true}
                   selectionColor="#fff"
-                  placeholder="45이내로 입력해 주세요."
+                  placeholder="40이내로 입력해 주세요."
                   multiline={true}   
                   numberOfLines={2}
                   />
@@ -252,10 +283,11 @@ export default class WriteCon extends Component {
             placeholderStyle={{color:"#999", fontSize:15}}
             value={text}/>
         </TextareaBox> */}
-        </ScrollView>        
+        {/* </ScrollView>    */}
+        {editorFocus ? (        
         <KeyboardAvoidingView 
           behavior={Platform.OS === "ios" ? "padding" : null}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 50 : 0}
           style={{position:'fixed', bottom:0, width: '100%', borderTopWidth: 1, borderTopColor: '#dfdfdf'}}
           >
             <EditorOptions>
@@ -266,42 +298,43 @@ export default class WriteCon extends Component {
                 </BtnOpt>
                 <VerticalLine></VerticalLine>
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                <OptRow>
-                  <BtnOpt onPress={() => this.setState({textOpt: 1})}>
-                    <MaterialIcons name="format-size" color="#333" size={22} />
-                  </BtnOpt>
-                  <BtnOpt onPress={() => this.setState({textOpt: 2})}>
-                    <MaterialCommunityIcons name="format-color-text" color="#333" size={25} style={{marginTop:5}}/>
-                    <MaterialCommunityIcons name="water" size={16} color={fontColor}
-                      style={{position: 'absolute', top: 10, right: 5}}
-                      />
-                  </BtnOpt>
-                  <BtnOpt onPress={() => { this.sendToEditor('bold'); this.setState({textOpt: null}); }}>
-                    <MaterialIcons name="format-bold" color="#333" size={26} />
-                  </BtnOpt>
-                  <BtnOpt onPress={() => { this.sendToEditor('strike'); this.setState({textOpt: null}); }}>
-                    <MaterialIcons name="strikethrough-s" color="#333" size={22} />
-                  </BtnOpt>
-                  <BtnOpt onPress={() => { this.sendToEditor('underline'); this.setState({textOpt: null}); }}>
-                    <MaterialIcons name="format-underlined" color="#333" size={22} />
-                  </BtnOpt>
-                  <BtnOpt onPress={() => { this.sendToEditor('blockquote'); this.setState({textOpt: null}); }}>
-                    <FontAwesome name="quote-right" color="#333" size={18} />
-                  </BtnOpt>
-                  <BtnOpt onPress={() => { this.sendToEditor('bullet'); this.setState({textOpt: null}); }}>
-                    <MaterialIcons name="format-list-bulleted" color="#333" size={24} />
-                  </BtnOpt>
-                  <BtnOpt onPress={() => { this.sendToEditor('ordered'); this.setState({textOpt: null}); }}>
-                    <MaterialIcons name="format-list-numbered" color="#333" size={24} />
-                  </BtnOpt>
-                  <BtnOpt onPress={() => this.setState({textOpt: 3})}>
-                    <MaterialIcons name="format-align-left" color="#333" size={22} />
-                  </BtnOpt>
-                </OptRow>
+                  <OptRow>
+                    <BtnOpt onPress={() => this.setState({textOpt: 1})}>
+                      <MaterialIcons name="format-size" color="#333" size={22} />
+                    </BtnOpt>
+                    <BtnOpt onPress={() => this.setState({textOpt: 2})}>
+                      <MaterialCommunityIcons name="format-color-text" color="#333" size={25} style={{marginTop:5}}/>
+                      <MaterialCommunityIcons name="water" size={16} color={fontColor}
+                        style={{position: 'absolute', top: 10, right: 5}}
+                        />
+                    </BtnOpt>
+                    <BtnOpt onPress={() => { this.sendToEditor('bold'); this.setState({textOpt: null}); }}>
+                      <MaterialIcons name="format-bold" color="#333" size={26} />
+                    </BtnOpt>
+                    <BtnOpt onPress={() => { this.sendToEditor('strike'); this.setState({textOpt: null}); }}>
+                      <MaterialIcons name="strikethrough-s" color="#333" size={22} />
+                    </BtnOpt>
+                    <BtnOpt onPress={() => { this.sendToEditor('underline'); this.setState({textOpt: null}); }}>
+                      <MaterialIcons name="format-underlined" color="#333" size={22} />
+                    </BtnOpt>
+                    <BtnOpt onPress={() => { this.sendToEditor('blockquote'); this.setState({textOpt: null}); }}>
+                      <FontAwesome name="quote-right" color="#333" size={18} />
+                    </BtnOpt>
+                    <BtnOpt onPress={() => { this.sendToEditor('bullet'); this.setState({textOpt: null}); }}>
+                      <MaterialIcons name="format-list-bulleted" color="#333" size={24} />
+                    </BtnOpt>
+                    <BtnOpt onPress={() => { this.sendToEditor('ordered'); this.setState({textOpt: null}); }}>
+                      <MaterialIcons name="format-list-numbered" color="#333" size={24} />
+                    </BtnOpt>
+                    <BtnOpt onPress={() => this.setState({textOpt: 3})}>
+                      <MaterialIcons name="format-align-left" color="#333" size={22} />
+                    </BtnOpt>
+                  </OptRow>
                 </ScrollView>
               </View>
             </EditorOptions>     
         </KeyboardAvoidingView>
+        ) : null}     
       </Wrap>
     )
   }
@@ -312,19 +345,19 @@ const Wrap = styled.View`
   flex: 1;
 `;
 
-
 const HeaderConBox = styled.View`
-  flex:1;
+  position:relative;
+  top: -160px;
+`
+// top: -160px;
+
+const HeaderConInner = styled.View`
+  padding:7% 7% 4%;
   ${prop => prop.bg}
 `;
   
-const HeaderConInner = styled.View`
-  flex: 1;
-  padding: 7%; 
-`
 
 const BgBox = styled.View`
-  flex: 1;
   overflow:hidden;
   position:absolute;
   top:0;
@@ -351,14 +384,12 @@ const Select = styled.TouchableOpacity`
 `
 
 const Row = styled.View`
-  flex:1;
   flex-direction: row;
   align-items: flex-start;
   justify-content: ${props => props.justifyEnd ? "flex-end" : "flex-start"};
 `;
 
 const DateBox = styled.View`
-  flex:1;
 `;
 
 const CommonText = styled.Text`
@@ -371,12 +402,10 @@ const CommonText = styled.Text`
 
 
 const WeatherBox = styled.View`
-  flex:1;
   margin-bottom:25px;
 `;
 
 const TitBox = styled.View`
-  flex:1;
   margin: 25px 0;
 `;
 
@@ -386,15 +415,21 @@ const TitInput = styled.TextInput`
   color: #fff;
   font-size:17px;
   font-family: 'hd-regular';
+  line-height:19px;
+  height: 38px;
+  overflow:hidden;
 `;
 
 const Btn = styled.TouchableOpacity`
 `;
 
 const EditorBox = styled.View`
-  flex: 1;
+  flex:1;
+  position: relative;
   width:100%;
-  min-height:600px;
+  top: -160px;
+  height: 100%;
+  background: red;
 `;
 
 const ModalHeader = styled.View`
