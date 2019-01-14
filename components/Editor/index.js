@@ -20,15 +20,18 @@ export default class MyWeb extends Component {
         req: this.props._editorReq
       }, () => {
         console.log(this.state.req)
-        this.webView.postMessage(this.state.req);
+        this.webView.postMessage(this.state.req.replace("*", ""));
       })
-    }    
+    }  
+      
   }
 
   onMessage( event ) {
     let data = event.nativeEvent.data;
     data = JSON.parse(data)
-    console.log(JSON.stringify(data))
+    if(data.type == 'format'){
+      this.props._handleFormat(data.value);
+    }
   }
 
 

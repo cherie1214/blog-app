@@ -18,10 +18,13 @@ export default class WriteCon extends Component {
       textOpt: null,
       textAlign: 0,     
       titleFocus: true,
-      editorFocus: false,
+      editorFocus: true,
       editorReq: null, 
       fontColor: '#333',
-      formet: {},
+      keyboardUp : false,
+      titleFocus : false,
+      optionShow : false,
+      format : {},
     };
     this._toggleModal = this._toggleModal.bind(this);
     this._renderModalType = this._renderModalType.bind(this);
@@ -29,36 +32,40 @@ export default class WriteCon extends Component {
     this._handleDate = this._handleDate.bind(this);
     this._handleBg = this._handleBg.bind(this);
     this._handleWeather = this._handleWeather.bind(this);
-    this._keyboardDidShow = this._keyboardDidShow.bind(this);
-    this._keyboardDidHide = this._keyboardDidShow.bind(this);
+    this._keyboardWillShow = this._keyboardWillShow.bind(this);
+    this._keyboardWillHide = this._keyboardWillHide.bind(this);
+    this._handleFormat = this._handleFormat.bind(this);
     this.sendToEditor = this.sendToEditor.bind(this);
   }
 
   componentWillMount () {
-    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
-    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+    this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow);
+    this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide);
   }
-
   componentWillUnmount () {
-    this.keyboardDidShowListener.remove();
-    this.keyboardDidHideListener.remove();
+    this.keyboardWillShowListener.remove();
+    this.keyboardWillHideListener.remove();
   }
-
-  _keyboardDidShow () {
-    this.setState({editorFocus: true})
-    if(this.state.titleFocus){
-      this.setState({editorFocus: false})
+  componentDidUpdate (prevProps, prevState) {
+    if(this.state.keyboardUp != prevState.keyboardUp || this.state.titleFocus != prevState.titleFocus){
+      if(this.state.keyboardUp && !this.state.titleFocus) this.setState({...this.state, optionShow : true})
+      else this.setState({...this.state, optionShow : false})
     }
-    // alert('Keyboard Shown');
+  }
+  _keyboardWillShow () {
+    this.setState({...this.state, keyboardUp : true});
   }
 
-  _keyboardDidHide () {
-    this.setState({editorFocus: false})
-    // alert('Keyboard Hidden');
+  _keyboardWillHide () {
+    this.setState({...this.state, keyboardUp : false});
+  }
+  _handleFormat (format = {}) {
+    this.setState({...this.state, format}, () => { console.log(format) })
   }
   
   sendToEditor(type, value) {
     var req = JSON.stringify({type, value});
+    if(this.state.editorReq == req) req = req + "*";
     this.setState({ editorReq: req })
 
     if(type === 'color'){
@@ -141,22 +148,24 @@ export default class WriteCon extends Component {
   };
 
   _renderTextOption = () => {  
+    const active = '#06c';
+    const {format} = this.state;
     switch (this.state.textOpt) {
       case 1: return (
-          <TextOpt>
-            <BtnOpt fs onPress={() => this.sendToEditor('size','small')}>
-              <OptSize style={{fontSize: 13}}>작게</OptSize>
-            </BtnOpt>
-            <BtnOpt fs onPress={() => this.sendToEditor('size','normal')}>
-              <OptSize on style={{fontSize: 15}}>보통</OptSize>
-            </BtnOpt>
-            <BtnOpt fs onPress={() => this.sendToEditor('size','large')}>
-              <OptSize style={{fontSize: 18}}>크게</OptSize>
-            </BtnOpt>
-            <BtnOpt fs onPress={() => this.sendToEditor('size','huge')}>
-              <OptSize style={{fontSize: 20}}>아주 크게</OptSize>
-            </BtnOpt>
-          </TextOpt>
+        <TextOpt>
+          <BtnOpt fs onPress={() => this.sendToEditor('size','small')}>
+            <OptSize on={format.size == 'small'} style={{fontSize: 13}}>작게</OptSize>
+          </BtnOpt>
+          <BtnOpt fs onPress={() => this.sendToEditor('size','normal')}>
+            <OptSize on={format.size == undefined} style={{fontSize: 15}}>보통</OptSize>
+          </BtnOpt>
+          <BtnOpt fs onPress={() => this.sendToEditor('size','large')}>
+            <OptSize on={format.size == 'large'} style={{fontSize: 18}}>크게</OptSize>
+          </BtnOpt>
+          <BtnOpt fs onPress={() => this.sendToEditor('size','huge')}>
+            <OptSize on={format.size == 'huge'} style={{fontSize: 20}}>아주 크게</OptSize>
+          </BtnOpt>
+        </TextOpt>
         );
       case 2: return (
         <TextOpt color>
@@ -194,16 +203,16 @@ export default class WriteCon extends Component {
       case 3:  return (
         <TextOpt>
           <BtnOpt onPress={() => this.sendToEditor('align','left')}>
-            <MaterialIcons name="format-align-left" color="#666" size={22} />
+            <MaterialIcons name="format-align-left" color={!format.align || format.align == 'left' ? active : '#666'} size={22} />
           </BtnOpt>
           <BtnOpt onPress={() => this.sendToEditor('align','center')}>
-            <MaterialIcons name="format-align-center" color="#666" size={22} />
+            <MaterialIcons name="format-align-center" color={format.align == 'center' ? active : '#666'} size={22} />
           </BtnOpt>
           <BtnOpt onPress={() => this.sendToEditor('align','right')}>
-            <MaterialIcons name="format-align-right" color="#666" size={22} />
+            <MaterialIcons name="format-align-right" color={format.align == 'right' ? active : '#666'}size={22} />
           </BtnOpt>
           <BtnOpt onPress={() => this.sendToEditor('align','justify')}>
-            <MaterialIcons name="format-align-justify" color="#666" size={22} />
+            <MaterialIcons name="format-align-justify" color={format.align == 'justify' ? active : '#666'} size={22} />
           </BtnOpt>
         </TextOpt>
       );
@@ -211,7 +220,8 @@ export default class WriteCon extends Component {
   }
  
   render(){
-    const { editorFocus, editorReq, fontColor } = this.state;
+    const active = '#06c';
+    const { editorReq, fontColor, editorFocus, keyboardUp, titleFocus, optionShow, format } = this.state;
     const article = this.props.article;
     const { startDate, finishDate, weather, bg, title, text, isModalVisible, selectedImg } = this.props.article;
 
@@ -273,7 +283,7 @@ export default class WriteCon extends Component {
           </HeaderConInner>
         </HeaderConBox>
         <EditorBox>
-          <Editor _editorReq={editorReq}></Editor>
+          <Editor _editorReq={editorReq} _handleFormat={this._handleFormat}></Editor>
         </EditorBox>
         {/* <TextareaBox>        
           <Textarea
@@ -294,40 +304,40 @@ export default class WriteCon extends Component {
               {this._renderTextOption()}
               <View style={{flexDirection:'row'}}>
                 <BtnOpt onPress={() => this.sendToEditor('image')}>
-                  <SimpleLineIcons name="picture" color="#333" size={22} />
+                  <SimpleLineIcons name="picture" color="#666" size={22} />
                 </BtnOpt>
                 <VerticalLine></VerticalLine>
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                   <OptRow>
                     <BtnOpt onPress={() => this.setState({textOpt: 1})}>
-                      <MaterialIcons name="format-size" color="#333" size={22} />
+                      <MaterialIcons name="format-size" color="#666" size={22} />
                     </BtnOpt>
                     <BtnOpt onPress={() => this.setState({textOpt: 2})}>
-                      <MaterialCommunityIcons name="format-color-text" color="#333" size={25} style={{marginTop:5}}/>
-                      <MaterialCommunityIcons name="water" size={16} color={fontColor}
+                      <MaterialCommunityIcons name="format-color-text" color="#666" size={25} style={{marginTop:5}}/>
+                      <MaterialCommunityIcons name="water" size={16} color={format.color ? format.color : '#333'}
                         style={{position: 'absolute', top: 10, right: 5}}
                         />
                     </BtnOpt>
                     <BtnOpt onPress={() => { this.sendToEditor('bold'); this.setState({textOpt: null}); }}>
-                      <MaterialIcons name="format-bold" color="#333" size={26} />
+                      <MaterialIcons name="format-bold" color={format.bold ? active : '#666'} size={26} />
                     </BtnOpt>
                     <BtnOpt onPress={() => { this.sendToEditor('strike'); this.setState({textOpt: null}); }}>
-                      <MaterialIcons name="strikethrough-s" color="#333" size={22} />
+                      <MaterialIcons name="strikethrough-s" color={format.strike ? active : '#666'} size={22} />
                     </BtnOpt>
                     <BtnOpt onPress={() => { this.sendToEditor('underline'); this.setState({textOpt: null}); }}>
-                      <MaterialIcons name="format-underlined" color="#333" size={22} />
+                      <MaterialIcons name="format-underlined" color={format.underline ? active : '#666'} size={22} />
                     </BtnOpt>
                     <BtnOpt onPress={() => { this.sendToEditor('blockquote'); this.setState({textOpt: null}); }}>
-                      <FontAwesome name="quote-right" color="#333" size={18} />
+                      <FontAwesome name="quote-right" color={format.blockquote ? active : '#666'} size={18} />
                     </BtnOpt>
                     <BtnOpt onPress={() => { this.sendToEditor('bullet'); this.setState({textOpt: null}); }}>
-                      <MaterialIcons name="format-list-bulleted" color="#333" size={24} />
+                      <MaterialIcons name="format-list-bulleted" color={format.list == 'bullet' ? active : '#666'} size={24} />
                     </BtnOpt>
                     <BtnOpt onPress={() => { this.sendToEditor('ordered'); this.setState({textOpt: null}); }}>
-                      <MaterialIcons name="format-list-numbered" color="#333" size={24} />
+                      <MaterialIcons name="format-list-numbered" color={format.list == 'ordered' ? active : '#666'} size={24} />
                     </BtnOpt>
                     <BtnOpt onPress={() => this.setState({textOpt: 3})}>
-                      <MaterialIcons name="format-align-left" color="#333" size={22} />
+                      <MaterialIcons name={!format.align ? "format-align-left" : "format-align-" + format.align} color="#666" size={22} />
                     </BtnOpt>
                   </OptRow>
                 </ScrollView>
@@ -347,7 +357,6 @@ const Wrap = styled.View`
 
 const HeaderConBox = styled.View`
   position:relative;
-  top: -160px;
 `
 // top: -160px;
 
@@ -427,7 +436,6 @@ const EditorBox = styled.View`
   flex:1;
   position: relative;
   width:100%;
-  top: -160px;
   height: 100%;
   background: red;
 `;

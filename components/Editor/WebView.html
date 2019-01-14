@@ -56,12 +56,21 @@
                 toolbar: '#toolbar'
             }
         });
+        
         //보내기
-        quill.on('text-change', function(delta, oldDelta, source) {
-            var height = document.getElementById('editor').offsetHeight;
-            var message = {height};
-            window.postMessage(JSON.stringify(message));
+        quill.on('editor-change', function(eventName, ...args) {
+            try{
+                var value = quill.getFormat();
+                var message = {type : 'format', value};
+                console.log(value)
+                window.postMessage(JSON.stringify(message));
+            }catch(e){}
         });
+        // quill.on('text-change', function(delta, oldDelta, source) {
+        //     var height = document.getElementById('editor').offsetHeight;
+        //     var message = {height};
+        //     window.postMessage(JSON.stringify(message));
+        // });
         //받기
         document.addEventListener("message", function(req) {
             // document.getElementById('editor').innerHTML = req.data;
