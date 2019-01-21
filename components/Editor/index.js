@@ -10,6 +10,7 @@ export default class MyWeb extends Component {
     super(props);
     this.state = {
       req: null,
+      editorTouched: false,
     }
     this.onMessage = this.onMessage.bind(this);
   }
@@ -34,28 +35,32 @@ export default class MyWeb extends Component {
     }
   }
 
+  handleEditorTouch(){
+    // this.setState({ editorTouched: true }, 
+    //   () => {
+    //     this.setState({ editorTouched: false })
+    //   }
+    // )  
+    this.props._editorTouched = true;
+  }
+
 
   render() {
 
     return (
-      <Wrap>
+      <Wrap onPress={() => this.handleEditorTouch()}>
         <WebView
           source={require("./WebView.html")}
           style={{width : '100%', height: '100%'}}
-          onMessage={this.onMessage}
+          onMessage={this.onMessage}          
           ref={( webView ) => this.webView = webView}
         />
-        {/* <KeyboardAvoidingView 
-          behavior={Platform.OS === "ios" ? "padding" : null}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
-          style={{position: 'fixed', bottom: 150, width: '100%', height: 50, backgroundColor:'red'}}
-          ></KeyboardAvoidingView> */}
       </Wrap>
     );
   }
 }
 
-const Wrap = styled.View`
+const Wrap = styled.TouchableOpacity`
   flex: 1;
   position:relative;
 `

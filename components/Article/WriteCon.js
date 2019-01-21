@@ -24,6 +24,7 @@ export default class WriteCon extends Component {
       keyboardUp : false,
       titleFocus : false,
       optionShow : false,
+      editorClick: false,
       format : {},
     };
     this._toggleModal = this._toggleModal.bind(this);
@@ -35,6 +36,7 @@ export default class WriteCon extends Component {
     this._keyboardWillShow = this._keyboardWillShow.bind(this);
     this._keyboardWillHide = this._keyboardWillHide.bind(this);
     this._handleFormat = this._handleFormat.bind(this);
+    this._handleEditorClick = this._handleEditorClick.bind(this);
     this.sendToEditor = this.sendToEditor.bind(this);
   }
 
@@ -51,6 +53,12 @@ export default class WriteCon extends Component {
       if(this.state.keyboardUp && !this.state.titleFocus) this.setState({...this.state, optionShow : true})
       else this.setState({...this.state, optionShow : false})
     }
+
+    if(this.state.editorClick != prevState.editorClick){
+      if(this.state.editorClick == true){
+        this.setState({ ...this.state, textOpt: null})
+      }
+    }
   }
   _keyboardWillShow () {
     this.setState({...this.state, keyboardUp : true});
@@ -63,12 +71,16 @@ export default class WriteCon extends Component {
     this.setState({...this.state, format}, () => { console.log(format) })
   }
   
+  _handleEditorClick(click){
+    // this.setState({...this.state, editorClick: click}, () => { console.log(click) })    
+  }
+  
   sendToEditor(type, value) {
     var req = JSON.stringify({type, value});
     if(this.state.editorReq == req) req = req + "*";
-    this.setState({ editorReq: req })
+    this.setState({ ...this.state, editorReq: req })
 
-    if(type === 'color'){
+    if(type == 'color'){
       this.setState({ fontColor: value })
     }
   }
@@ -221,7 +233,7 @@ export default class WriteCon extends Component {
  
   render(){
     const active = '#06c';
-    const { editorReq, fontColor, editorFocus, keyboardUp, titleFocus, optionShow, format } = this.state;
+    const { editorReq, editorFocus, format } = this.state;
     const article = this.props.article;
     const { startDate, finishDate, weather, bg, title, text, isModalVisible, selectedImg } = this.props.article;
 
@@ -255,8 +267,8 @@ export default class WriteCon extends Component {
                 <CommonText>제목</CommonText>
                 <TitInput
                   onChangeText={(text) => this.props.handleState({...article, title: text})}
-                  onFocus={() => this.setState({titleFocus: true})}
-                  onBlur={() => this.setState({titleFocus: false})}
+                  onFocus={() => this.setState({...this.state, titleFocus: true})}
+                  onBlur={() => this.setState({...this.state, titleFocus: false})}
                   value={title}
                   maxLength={40}
                   autoCapitalize={"none"}
@@ -283,7 +295,7 @@ export default class WriteCon extends Component {
           </HeaderConInner>
         </HeaderConBox>
         <EditorBox>
-          <Editor _editorReq={editorReq} _handleFormat={this._handleFormat}></Editor>
+          <Editor _editorReq={editorReq} _handleFormat={this._handleFormat} _handleEditorClick={this._handleEditorClick}></Editor>
         </EditorBox>
         {/* <TextareaBox>        
           <Textarea
@@ -437,7 +449,6 @@ const EditorBox = styled.View`
   position: relative;
   width:100%;
   height: 100%;
-  background: red;
 `;
 
 const ModalHeader = styled.View`

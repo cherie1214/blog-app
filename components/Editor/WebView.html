@@ -1,6 +1,6 @@
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link href="custom.css" rel="stylesheet">
     <link href="https://cdn.quilljs.com/1.2.6/quill.snow.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
@@ -8,7 +8,7 @@
 </head>
 <body>
     <!-- <div id="test">test</div> -->
-    <div id="editor">
+    <div id="editor" onClick="bodyClick()">
         <p><span style="color:#999;">당신의 여행은 어땠나요?</span></p>
     </div>
     <div id="toolbar">
@@ -50,14 +50,57 @@
         <button class="ql-image"></button>
     </div>
     <script>
+        function imageHandler () {
+            let fileInput = this.container.querySelector('input.ql-image[type=file]');
+            if (fileInput == null) {
+                fileInput = document.createElement('input');
+                fileInput.setAttribute('type', 'file');
+                fileInput.setAttribute('accept', 'image/png, image/gif, image/jpeg, image/bmp, image/x-icon');
+                fileInput.classList.add('ql-image');
+                fileInput.addEventListener('change', () => {
+                if (fileInput.files != null && fileInput.files[0] != null) {
+                    var formData = new FormData();
+                    formData.append("photo", fileInput.files[0]);
+                    $.ajax({
+                        method : 'post',
+                        url : 'http://localhost:9000/api/upload/editorImg',
+                        crossDomain: true,
+                        data : formData,
+                        processData: false,
+                        contentType: false
+                    })
+                    .then(res => {
+                        if(res.result == 'SUCCESS'){
+                            const url = res.url;
+                            alert(url)
+                            let range = quill.getSelection(true);
+                            quill.insertEmbed(range.index, 'image', url);
+                        }else{
+                            alert('Image upload error')
+                        }
+                    })
+                    .catch(e => {
+                        alert(JSON.stringify(e))
+                    });
+                }
+                });
+                this.container.appendChild(fileInput);
+            }
+            fileInput.click();
+        }
+
         var quill = new Quill('#editor', {
             theme: 'snow',
             modules: {
-                toolbar: '#toolbar'
+                toolbar: {
+                    container : '#toolbar',
+                    handlers: {
+                        'image': imageHandler
+                    }
+                }
             }
         });
-        
-        //보내기
+
         quill.on('editor-change', function(eventName, ...args) {
             try{
                 var value = quill.getFormat();
@@ -66,12 +109,7 @@
                 window.postMessage(JSON.stringify(message));
             }catch(e){}
         });
-        // quill.on('text-change', function(delta, oldDelta, source) {
-        //     var height = document.getElementById('editor').offsetHeight;
-        //     var message = {height};
-        //     window.postMessage(JSON.stringify(message));
-        // });
-        //받기
+
         document.addEventListener("message", function(req) {
             // document.getElementById('editor').innerHTML = req.data;
             var data = JSON.parse(req.data);
