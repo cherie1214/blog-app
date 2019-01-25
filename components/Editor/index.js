@@ -32,6 +32,8 @@ export default class MyWeb extends Component {
     data = JSON.parse(data)
     if(data.type == 'format'){
       this.props._handleFormat(data.value);
+    } else if(data.type == 'HTML'){
+      this.props._handleHTML(data.value);
     }
   }
 

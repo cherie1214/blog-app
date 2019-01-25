@@ -117,7 +117,8 @@
             try{
                 var value = quill.getFormat();
                 var message = {type : 'format', value};
-                console.log(value)
+                window.postMessage(JSON.stringify(message));
+                message = {type : 'HTML', value: document.querySelector('.ql-editor').innerHTML};
                 window.postMessage(JSON.stringify(message));
             }catch(e){}
         });

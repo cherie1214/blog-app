@@ -24,6 +24,7 @@ import Notify from '../components/Feed/Notify';
 import Mypage from '../components/My/Mypage';
 import ChangePw from '../components/My/ChangePw';
 import Write from '../components/Article/Write';
+import Edit from '../components/Article/Edit';
 import List from '../components/Article/List';
 import Camera from '../components/Photo/Camera';
 import CameraRoll from '../components/Photo/CameraRoll';
@@ -105,6 +106,9 @@ export const SwitchNavi = createStackNavigator(
       navigationOptions: () => ({
         gesturesEnabled: false,
       }),
+    },
+    Edit: {
+      screen: Edit,
     },
     List: {
       screen: List,

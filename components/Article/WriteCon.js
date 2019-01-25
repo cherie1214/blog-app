@@ -39,6 +39,7 @@ export default class WriteCon extends Component {
     this._editorTouched = this._editorTouched.bind(this);
     this._editorFocused = this._editorFocused.bind(this);
     this.sendToEditor = this.sendToEditor.bind(this);
+    this._handleHTML = this._handleHTML.bind(this);
   }
 
   componentWillMount () {
@@ -61,6 +62,7 @@ export default class WriteCon extends Component {
       }
     }
   }
+
   _keyboardWillShow () {
     this.setState({...this.state, keyboardUp : true});
   }
@@ -68,6 +70,7 @@ export default class WriteCon extends Component {
   _keyboardWillHide () {
     this.setState({...this.state, keyboardUp : false});
   }
+
   _handleFormat (format = {}) {
     this.setState({...this.state, format}, () => { console.log(format) })
   }
@@ -131,6 +134,14 @@ export default class WriteCon extends Component {
       ...this.props.article,
       ...value
     }  
+    this.props.handleState(obj);
+  }
+
+  _handleHTML(text){
+    const obj = {
+      ...this.props.article,
+      text: text,
+    }
     this.props.handleState(obj);
   }
 
@@ -305,8 +316,15 @@ export default class WriteCon extends Component {
             </Row>            
           </HeaderConInner>
         </HeaderConBox>
-        <EditorBox>
-          <Editor _editorReq={editorReq} _handleFormat={this._handleFormat} _editorTouched={this._editorTouched} _editorFocused={this._editorFocused}></Editor>
+         <EditorBox> {/*텍스트를 prop으로 넣기 */}
+          <Editor 
+            _editorReq={editorReq} 
+            _handleFormat={this._handleFormat} 
+            _handleHTML={this._handleHTML}      
+            _editorTouched={this._editorTouched} 
+            _editorFocused={this._editorFocused}
+            >
+          </Editor>
         </EditorBox>
         {/* <TextareaBox>        
           <Textarea
