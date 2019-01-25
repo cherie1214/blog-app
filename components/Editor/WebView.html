@@ -8,7 +8,7 @@
 </head>
 <body>
     <!-- <div id="test">test</div> -->
-    <div id="editor" onClick="bodyClick()">
+    <div id="editor">
         <p><span style="color:#999;">당신의 여행은 어땠나요?</span></p>
     </div>
     <div id="toolbar">
@@ -50,6 +50,18 @@
         <button class="ql-image"></button>
     </div>
     <script>
+        function editorFocus(){
+            quill.focus();
+            console.log("focus")
+        }
+
+        $('#editor').click(function(){
+            var placeHolder = $(this).find('p');
+            if(placeHolder.find('span').text() == "당신의 여행은 어땠나요?" ){
+                placeHolder.remove();
+            }          
+        })
+        
         function imageHandler () {
             let fileInput = this.container.querySelector('input.ql-image[type=file]');
             if (fileInput == null) {

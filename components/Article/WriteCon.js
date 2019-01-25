@@ -15,15 +15,15 @@ export default class WriteCon extends Component {
     super(props);
     this.state = {      
       loaded : false,
-      textOpt: null,
+      headerHeight: 'auto',
       textAlign: 0,     
       titleFocus: true,
-      editorFocus: true,
+      editorFocus: false,
       editorReq: null, 
       fontColor: '#333',
       keyboardUp : false,
-      titleFocus : false,
       optionShow : false,
+      option2depthShow: null,
       editorClick: false,
       format : {},
     };
@@ -36,7 +36,8 @@ export default class WriteCon extends Component {
     this._keyboardWillShow = this._keyboardWillShow.bind(this);
     this._keyboardWillHide = this._keyboardWillHide.bind(this);
     this._handleFormat = this._handleFormat.bind(this);
-    this._handleEditorClick = this._handleEditorClick.bind(this);
+    this._editorTouched = this._editorTouched.bind(this);
+    this._editorFocused = this._editorFocused.bind(this);
     this.sendToEditor = this.sendToEditor.bind(this);
   }
 
@@ -51,12 +52,12 @@ export default class WriteCon extends Component {
   componentDidUpdate (prevProps, prevState) {
     if(this.state.keyboardUp != prevState.keyboardUp || this.state.titleFocus != prevState.titleFocus){
       if(this.state.keyboardUp && !this.state.titleFocus) this.setState({...this.state, optionShow : true})
-      else this.setState({...this.state, optionShow : false})
+      else if (this.state.keyboardUp && this.state.titleFocus) this.setState({...this.state, optionShow : false})
     }
 
     if(this.state.editorClick != prevState.editorClick){
       if(this.state.editorClick == true){
-        this.setState({ ...this.state, textOpt: null})
+        this.setState({ ...this.state, option2depthShow: null})
       }
     }
   }
@@ -71,8 +72,18 @@ export default class WriteCon extends Component {
     this.setState({...this.state, format}, () => { console.log(format) })
   }
   
-  _handleEditorClick(click){
-    // this.setState({...this.state, editorClick: click}, () => { console.log(click) })    
+  _editorTouched(bool, focus){
+    // 에디터를 클릭하면 에디터옵션 2depth가 사라지는 기능
+    if(bool == true && this.state.option2depthShow != null){
+      this.setState({ option2depthShow: null})
+    }
+  }
+  
+  _editorFocused(bool){
+    // if(bool == true){
+    //   this.setState({ headerHeight: 0 }, console.log(this.state.headerHeight))
+    //   return false;
+    // }    
   }
   
   sendToEditor(type, value) {
@@ -162,7 +173,7 @@ export default class WriteCon extends Component {
   _renderTextOption = () => {  
     const active = '#06c';
     const {format} = this.state;
-    switch (this.state.textOpt) {
+    switch (this.state.option2depthShow) {
       case 1: return (
         <TextOpt>
           <BtnOpt fs onPress={() => this.sendToEditor('size','small')}>
@@ -233,7 +244,7 @@ export default class WriteCon extends Component {
  
   render(){
     const active = '#06c';
-    const { editorReq, editorFocus, format } = this.state;
+    const { headerHeight, optionShow, editorReq, editorFocus, format } = this.state;
     const article = this.props.article;
     const { startDate, finishDate, weather, bg, title, text, isModalVisible, selectedImg } = this.props.article;
 
@@ -248,7 +259,7 @@ export default class WriteCon extends Component {
         </Modal>
         
         {/* <ScrollView style={{flex:1}}> */}
-        <HeaderConBox>
+        <HeaderConBox height={headerHeight}>
           <HeaderConInner bg={!selectedImg ? ( "background-color:" + bg.color.value) : null }>
             { selectedImg ? (
               <BgBox>
@@ -295,7 +306,7 @@ export default class WriteCon extends Component {
           </HeaderConInner>
         </HeaderConBox>
         <EditorBox>
-          <Editor _editorReq={editorReq} _handleFormat={this._handleFormat} _handleEditorClick={this._handleEditorClick}></Editor>
+          <Editor _editorReq={editorReq} _handleFormat={this._handleFormat} _editorTouched={this._editorTouched} _editorFocused={this._editorFocused}></Editor>
         </EditorBox>
         {/* <TextareaBox>        
           <Textarea
@@ -306,7 +317,7 @@ export default class WriteCon extends Component {
             value={text}/>
         </TextareaBox> */}
         {/* </ScrollView>    */}
-        {editorFocus ? (        
+        {optionShow ? (        
         <KeyboardAvoidingView 
           behavior={Platform.OS === "ios" ? "padding" : null}
           keyboardVerticalOffset={Platform.OS === "ios" ? 50 : 0}
@@ -321,34 +332,34 @@ export default class WriteCon extends Component {
                 <VerticalLine></VerticalLine>
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                   <OptRow>
-                    <BtnOpt onPress={() => this.setState({textOpt: 1})}>
+                    <BtnOpt onPress={() => this.setState({option2depthShow: 1})}>
                       <MaterialIcons name="format-size" color="#666" size={22} />
                     </BtnOpt>
-                    <BtnOpt onPress={() => this.setState({textOpt: 2})}>
+                    <BtnOpt onPress={() => this.setState({option2depthShow: 2})}>
                       <MaterialCommunityIcons name="format-color-text" color="#666" size={25} style={{marginTop:5}}/>
                       <MaterialCommunityIcons name="water" size={16} color={format.color ? format.color : '#333'}
                         style={{position: 'absolute', top: 10, right: 5}}
                         />
                     </BtnOpt>
-                    <BtnOpt onPress={() => { this.sendToEditor('bold'); this.setState({textOpt: null}); }}>
+                    <BtnOpt onPress={() => { this.sendToEditor('bold'); this.setState({option2depthShow: null}); }}>
                       <MaterialIcons name="format-bold" color={format.bold ? active : '#666'} size={26} />
                     </BtnOpt>
-                    <BtnOpt onPress={() => { this.sendToEditor('strike'); this.setState({textOpt: null}); }}>
+                    <BtnOpt onPress={() => { this.sendToEditor('strike'); this.setState({option2depthShow: null}); }}>
                       <MaterialIcons name="strikethrough-s" color={format.strike ? active : '#666'} size={22} />
                     </BtnOpt>
-                    <BtnOpt onPress={() => { this.sendToEditor('underline'); this.setState({textOpt: null}); }}>
+                    <BtnOpt onPress={() => { this.sendToEditor('underline'); this.setState({option2depthShow: null}); }}>
                       <MaterialIcons name="format-underlined" color={format.underline ? active : '#666'} size={22} />
                     </BtnOpt>
-                    <BtnOpt onPress={() => { this.sendToEditor('blockquote'); this.setState({textOpt: null}); }}>
+                    <BtnOpt onPress={() => { this.sendToEditor('blockquote'); this.setState({option2depthShow: null}); }}>
                       <FontAwesome name="quote-right" color={format.blockquote ? active : '#666'} size={18} />
                     </BtnOpt>
-                    <BtnOpt onPress={() => { this.sendToEditor('bullet'); this.setState({textOpt: null}); }}>
+                    <BtnOpt onPress={() => { this.sendToEditor('bullet'); this.setState({option2depthShow: null}); }}>
                       <MaterialIcons name="format-list-bulleted" color={format.list == 'bullet' ? active : '#666'} size={24} />
                     </BtnOpt>
-                    <BtnOpt onPress={() => { this.sendToEditor('ordered'); this.setState({textOpt: null}); }}>
+                    <BtnOpt onPress={() => { this.sendToEditor('ordered'); this.setState({option2depthShow: null}); }}>
                       <MaterialIcons name="format-list-numbered" color={format.list == 'ordered' ? active : '#666'} size={24} />
                     </BtnOpt>
-                    <BtnOpt onPress={() => this.setState({textOpt: 3})}>
+                    <BtnOpt onPress={() => this.setState({option2depthShow: 3})}>
                       <MaterialIcons name={!format.align ? "format-align-left" : "format-align-" + format.align} color="#666" size={22} />
                     </BtnOpt>
                   </OptRow>
@@ -369,6 +380,7 @@ const Wrap = styled.View`
 
 const HeaderConBox = styled.View`
   position:relative;
+  ${prop => prop.height}
 `
 // top: -160px;
 

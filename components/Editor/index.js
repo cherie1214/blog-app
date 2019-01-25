@@ -36,12 +36,15 @@ export default class MyWeb extends Component {
   }
 
   handleEditorTouch(){
-    // this.setState({ editorTouched: true }, 
-    //   () => {
-    //     this.setState({ editorTouched: false })
-    //   }
-    // )  
-    this.props._editorTouched = true;
+    this.props._editorFocused(true);
+    this.setState({
+      editorTouched: true,
+    }, () => { 
+      this.props._editorTouched(this.state.editorTouched);
+      this.setState({editorTouched: false }, () => {
+        this.props._editorTouched(this.state.editorTouched);
+      })
+    })
   }
 
 
